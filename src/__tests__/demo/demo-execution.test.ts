@@ -190,10 +190,6 @@ describe('Demo script execution', () => {
 
         expect(mockDocument.createElement).toHaveBeenCalledWith('canvas');
         
-        console.log('mockCanvas width after execution:', mockCanvas.width);
-        console.log('mockCanvas height after execution:', mockCanvas.height);
-        console.log('mockWindow dimensions:', mockWindow.innerWidth, mockWindow.innerHeight);
-        
         expect(mockCanvas.width).toBe(1920);
         expect(mockCanvas.height).toBe(1080);
         expect(mockDocument.getElementById).toHaveBeenCalledWith('loader');
