@@ -210,8 +210,8 @@ export class ASCIIRenderer {
         if (!this._hasOutputChanged(characters) && !this._state.isDirty && !this.pattern.isDirty)
             return;
 
-        this._state.isDirty = false;
         this.pattern.isDirty = false;
+        this._state.isDirty = false;
         this._state.lastHash = this._hash(characters);
         this.renderer.clear(this._state.options.backgroundColor);
         this.renderer.render(characters, this.region);
@@ -221,6 +221,9 @@ export class ASCIIRenderer {
      * Start animation loop.
      */
     public startAnimation(): void {
+        if (this._state.animationId)
+            throw new Error('Animation is already running!');
+
         this._state.options.animated = true;
         this._state.lastTime = performance.now();
 

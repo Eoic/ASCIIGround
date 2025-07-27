@@ -238,10 +238,10 @@ The documentation includes:
 
 ### Core classes
 
-- **ASCIIGround** - main entry point for simple animations.
-- **ASCIIRenderer** - advanced renderer with full control.
+- **ASCIIGround** - main entry point for static and animated backgrounds, suitable for most use cases.
+- **ASCIIRenderer** - renderer for full control over the rendering process.
 - **Pattern classes** - PerlinNoisePattern, RainPattern, StaticNoisePattern.
-- **Custom patterns** - extend the Pattern base class for custom effects.
+- **Custom patterns** - extend the Pattern base class to create your own unique effects.
 
 ## Development
 
@@ -268,16 +268,14 @@ The development server will:
 ### Building the library
 
 ```bash
-npm run build:lib       # Build library for NPM distribution.
-npm run build:demo      # Build demo page.
-npm run build:docs      # Generate API documentation.
 npm run build           # Build library (same as build:lib).
+npm run build:demo      # Build demo page.
 ```
 
 ### Documentation
 
 ```bash
-npm run build:docs      # Generate TypeDoc documentation.
+npm run build:docs      # Generate API documentation.
 ```
 
 The generated documentation will be available in `docs/api/`. You can view it by opening `docs/api/index.html` in your browser or by serving the docs directory with a local server.
@@ -325,7 +323,7 @@ This checks all required files, configurations, and build processes.
 6. Run linting: `npm run lint`.
 7. Commit your changes: `npm run commit` and follow the prompts.
 8. Push to the branch: `git push origin feature/your-feature`.
-9. Create a Pull Request.
+9. Create a pull request.
 
 ### Repository setup (for maintainers)
 
@@ -358,4 +356,4 @@ Before pushing to the remote repository:
 - [ ] Documentation is up to date.
 - [ ] `NPM_TOKEN` secret is configured in GitHub (for publishing).
 - [ ] `CODECOV_TOKEN` secret is configured in GitHub (for test coverage).
-- [ ] GitHub Pages is enabled (for CDN deployment).
+- [ ] GitHub Pages is enabled.

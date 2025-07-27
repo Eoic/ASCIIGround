@@ -10,7 +10,7 @@ export type ControlChangeCallback = (value: ControlValue) => void;
  * Provides real-time updates and pattern switching capabilities.
  */
 export class PatternProxy {
-    private _renderer: ASCIIRenderer;
+    private _renderer: ASCIIRenderer | null = null;
     private _listeners: Map<string, ControlChangeCallback[]> = new Map();
     private _updateTimeout: number | null = null;
     private _pendingPatternUpdates: Record<string, ControlValue> = {};
@@ -25,22 +25,35 @@ export class PatternProxy {
      * Get the current pattern ID.
      */
     public getCurrentPatternId(): string {
-        return this._renderer.pattern.id;
+        return this._renderer!.pattern.id;
     }
 
     /**
      * Switch to a new pattern type by creating and setting a new pattern instance.
      */
     public switchPattern(patternId: string): void {
-        if (this._renderer.pattern.id === patternId) {
+        if (this._renderer!.pattern.id === patternId) {
             console.warn(`Pattern "${patternId}" is already active.`);
             return;
         }
 
         const [PatternConstructor, defaultOptions] = this._getPattern(patternId);
-        this._renderer.pattern = new PatternConstructor(defaultOptions);
-        this._renderer.setOptions(ControlsRegistry.getRendererOptions());
-        this._renderer.render();
+        this._renderer!.pattern = new PatternConstructor(defaultOptions);
+        this._renderer!.setOptions(ControlsRegistry.getRendererOptions());
+        this._renderer!.render();
+    }
+
+    public destroy(): void {
+        this._listeners.clear();
+        this._renderer?.destroy();
+        this._renderer = null;
+        this._pendingPatternUpdates = {};
+        this._pendingRendererUpdates = {};
+
+        if (this._updateTimeout !== null) {
+            clearTimeout(this._updateTimeout);
+            this._updateTimeout = null;
+        }
     }
 
     /**
@@ -91,8 +104,8 @@ export class PatternProxy {
         this._pendingPatternUpdates = {};
         this._pendingRendererUpdates = {};
         
-        if (!this._renderer.isAnimating) 
-            requestAnimationFrame(() => this._renderer.render());
+        if (!this._renderer!.isAnimating) 
+            requestAnimationFrame(() => this._renderer!.render());
     }
 
     /**
@@ -110,11 +123,11 @@ export class PatternProxy {
             processedUpdates[key] = processedValue;
         });
 
-        if (typeof this._renderer.pattern.setOptions === 'function') 
-            this._renderer.pattern.setOptions(processedUpdates);
+        if (typeof this._renderer!.pattern.setOptions === 'function') 
+            this._renderer!.pattern.setOptions(processedUpdates);
         else {
-            const currentOptions = { ...this._renderer.pattern.options, ...processedUpdates };
-            const patternId = this._renderer.pattern.id;
+            const currentOptions = { ...this._renderer!.pattern.options, ...processedUpdates };
+            const patternId = this._renderer!.pattern.id;
             const [PatternConstructor] = this._getPattern(patternId);
 
             if (!PatternConstructor) {
@@ -122,7 +135,7 @@ export class PatternProxy {
                 return;
             }
 
-            this._renderer.pattern = new PatternConstructor(currentOptions);
+            this._renderer!.pattern = new PatternConstructor(currentOptions);
         }
     }
 
@@ -131,7 +144,7 @@ export class PatternProxy {
      */
     private _updateRenderer(): void {
         const pendingUpdates = this._pendingRendererUpdates as Partial<ASCIIRendererOptions>;
-        this._renderer.setOptions(pendingUpdates);
+        this._renderer!.setOptions(pendingUpdates);
     }
 
     /**
@@ -151,7 +164,7 @@ export class PatternProxy {
     }
 
     public getRendererOptions(): Record<string, ControlValue> {
-        const options = this._renderer.options;
+        const options = this._renderer!.options;
         const result: Record<string, ControlValue> = {};
         Object.entries(options).forEach(([key, value]) => result[key] = value as ControlValue);
 
@@ -164,7 +177,7 @@ export class PatternProxy {
      * allows for future flexibility if we need to transform or filter options.
      */
     public getPatternOptions(): Record<string, ControlValue> {
-        const options = this._renderer.pattern.options;
+        const options = this._renderer!.pattern.options;
         const result: Record<string, ControlValue> = {};
         Object.entries(options).forEach(([key, value]) => result[key] = value as ControlValue);
         return result;

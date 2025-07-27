@@ -126,6 +126,12 @@ export class ControlsGenerator {
         listeners.forEach((callback) => callback(value));
     }
 
+    public destroy(): void {
+        this._container.removeEventListener('input', this._handleControlInput);
+        this._listeners.clear();
+        this._clearControls();
+    }
+
     /**
      * Create a section with grouped controls.
      */
