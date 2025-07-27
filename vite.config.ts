@@ -49,18 +49,56 @@ const config: Record<string, UserConfig> = {
                 ],
             })
         ],
+        esbuild: {
+            drop: ['console', 'debugger'],
+            legalComments: 'none',
+            minifyIdentifiers: true,
+            minifySyntax: true,
+            minifyWhitespace: true,
+            treeShaking: true,
+        },
         build: {
             lib: {
                 entry: 'src/index.ts',
                 name: 'ASCIIGround',
-                formats: ['es', 'umd'],
                 fileName: (format) => `asciiground.${format}.js`,
             },
+            minify: 'esbuild',
+            target: 'es2020',
+            sourcemap: false,
+            assetsInlineLimit: 4096,
+            cssCodeSplit: false,
+            chunkSizeWarningLimit: 1000,
             rollupOptions: {
                 external: [],
-                output: {
-                    globals: {},
-                    exports: 'named',
+                output: [
+                    {
+                        format: 'es',
+                        entryFileNames: 'asciiground.es.js',
+                        globals: {},
+                        exports: 'named',
+                        preserveModules: false,
+                        manualChunks: undefined,
+                    },
+                    {
+                        format: 'umd',
+                        name: 'ASCIIGround',
+                        entryFileNames: 'asciiground.umd.js',
+                        globals: {},
+                        exports: 'named',
+                        compact: true,
+                    }
+                ],
+                treeshake: {
+                    moduleSideEffects: false,
+                    propertyReadSideEffects: false,
+                    tryCatchDeoptimization: false,
+                },
+                onwarn(warning, warn) {
+                    if (warning.code === 'CIRCULAR_DEPENDENCY')
+                        return;
+
+                    warn(warning);
                 },
             },
         },

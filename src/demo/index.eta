@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div class="loading gradient-text" id="loading"> Loading ASCIIGround... </div>
+    <div class="loading gradient-text" id="loader"> Loading ASCIIGround... </div>
 
     <div class="header glass">
         <h1 class="gradient-text">
@@ -26,105 +26,7 @@
 
     <form class="controls glass hidden" id="controls">
         <h2 class="gradient-text">Controls</h2>
-
-        <label>
-            <span> Pattern </span>
-
-            <select id="pattern">
-                <option value="static">Static</option>
-                <option value="perlin">Perlin Noise</option>
-                <option value="wave">Wave</option>
-                <option value="rain">Rain</option>
-                <option value="japan-rain">Japan Rain</option>
-            </select>
-        </label>
-
-        <label id="characters-label">
-            <span> Characters (comma-separated) </span>
-            <input type="text" id="characters" value="=,,,,,">
-        </label>
-
-        <label>
-            <span> Speed </span>
-            <input type="number" id="speed" step="0.001" min="0.001" value="0.01">
-        </label>
-
-        <label>
-            <span> Font size </span>
-            <input type="number" id="fontSize" value="36">
-        </label>
-
-        <label>
-            <span> Font family </span>
-            <input type="text" id="fontFamily" value="monospace">
-        </label>
-
-        <label>
-            <span> Text color </span>
-            <input type="color" id="color" value="#4b18d8">
-        </label>
-
-        <label>
-            <span> Background color </span>
-            <input type="color" id="backgroundColor" value="#0A0321">
-        </label>
-
-        <label>
-            <span> Direction </span>
-
-            <select id="direction">
-                <option value="down"> Down </option>
-                <option value="up"> Up </option>
-                <option value="left"> Left </option>
-                <option value="right"> Right </option>
-            </select>
-        </label>
-
-        <label>
-            <span> Amplitude X (wave) </span>
-            <input type="number" id="amplitudeX" value="1" step="0.1">
-        </label>
-
-        <label>
-            <span> Amplitude Y (wave) </span>
-            <input type="number" id="amplitudeY" value="1" step="0.1">
-        </label>
-
-        <label>
-            <span> Frequency (wave) </span>
-            <input type="number" id="frequency" value="1" step="0.1">
-        </label>
-
-        <label>
-            <span> Noise scale (perlin) </span>
-            <input type="number" id="noiseScale" value="0.1" step="0.01">
-        </label>
-
-        <label>
-            <span> Rain density (rain/japan-rain, 0-1) </span>
-            <input type="number" id="rainDensity" min="0" max="1" step="0.01" value="0.9">
-        </label>
-
-        <label>
-            <span> Rain direction (rain) </span>
-
-            <select id="rainDirection">
-                <option value="vertical">Vertical</option>
-                <option value="diagonal-left">Diagonal Left</option>
-                <option value="diagonal-right">Diagonal Right</option>
-            </select>
-        </label>
-
-        <label class="toggle-label">
-            <span> Animation </span>
-            <div class="toggle-switch">
-                <input type="checkbox" id="toggleBtn" checked>
-                <span class="toggle-slider"></span>
-            </div>
-        </label>
     </form>
-
-    <canvas id="background-canvas"></canvas>
 
     <% scripts.forEach(function(scriptPath) { %>
         <% if (scriptPath.endsWith(".ts")) { %>

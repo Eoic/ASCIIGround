@@ -4,16 +4,18 @@ body {
 
 .controls {
     position: fixed;
+    box-sizing: border-box;
     top: 0;
     left: 0;
     z-index: 1000;
     padding: 20px;
     max-width: 600px;
-    max-height: calc(100vh - 40px);
+    height: min-content;
+    max-height: 100%;
     overflow-y: auto;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    gap: 0rem 1rem;
     grid-template-rows: auto;
 }
 
@@ -66,6 +68,101 @@ body {
     box-sizing: border-box;
 }
 
+.controls input[type="range"] {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: all 0.3s ease;
+}
+
+.controls input[type="range"]~.range-value {
+    display: block;
+    margin-top: 8px;
+    color: #f5f5f5;
+    font-size: 0.9rem;
+}
+
+.controls input[type="range"]::-webkit-slider-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    border: none;
+    backdrop-filter: blur(10px);
+}
+
+.controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    cursor: pointer;
+    border: 2px solid #3a3a3a;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.controls input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6), 0 0 0 2px #3a3a3a;
+}
+
+.controls input[type="range"]::-webkit-slider-thumb:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.8), 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.controls input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    border: none;
+    backdrop-filter: blur(10px);
+}
+
+.controls input[type="range"]::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.controls input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6), 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.controls input[type="range"]::-moz-range-thumb:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.8), 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.controls input[type="range"]:focus {
+    outline: none;
+}
+
+.controls input[type="range"]:focus::-webkit-slider-thumb {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6), 0 0 0 2px rgba(102, 126, 234, 0.4);
+}
+
+.controls input[type="range"]:focus::-moz-range-thumb {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6), 0 0 0 2px rgba(102, 126, 234, 0.4);
+}
+
 .controls input[type="text"]::placeholder,
 .controls input[type="number"]::placeholder {
     color: rgba(245, 245, 245, 0.4);
@@ -79,9 +176,9 @@ body {
     box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
 }
 
-.controls input[type="text"]:hover,
-.controls input[type="number"]:hover,
-.controls select:hover {
+.controls input[type="text"]:hover:not(:focus),
+.controls input[type="number"]:hover:not(:focus),
+.controls select:hover:not(:focus) {
     border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -355,10 +452,8 @@ canvas {
     }
 
     .controls .toggle-slider:before {
-        /* height: 18px; */
-        /* width: 18px; */
-        left: 4px;
         top: 50%;
+        left: 4px;
         transform: translateY(-50%);
     }
 

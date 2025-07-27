@@ -36,7 +36,7 @@ jobs:
         npm run build:demo
 
         # Generate the API documentation.
-        npx typedoc src/index.ts --out docs/api
+        npm run build:docs
 
     - name: Setup GitHub Pages.
       uses: actions/configure-pages@v4

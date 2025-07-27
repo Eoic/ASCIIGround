@@ -5,18 +5,20 @@ export default defineConfig({
     test: {
         environment: 'jsdom',
         globals: true,
+        setupFiles: ['src/__tests__/test-setup.ts'],
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html', 'lcov'],
             exclude: [
-                'node_modules/',
                 'dist/',
+                'docs/',
                 'coverage/',
+                'src/plugins/',
                 '**/*.d.ts',
+                'node_modules/',
+                'eslint.config.js',
                 'vite.config.ts',
-                'vitest.config.ts',
-                'examples/',
-                'src/demo.ts'
+                'vitest.config.ts'
             ],
             thresholds: {
                 global: {

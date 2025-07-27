@@ -1,0 +1,5 @@
+const DEBOUNCE_INTERVAL_MS = 0;
+
+export {
+    DEBOUNCE_INTERVAL_MS
+};
