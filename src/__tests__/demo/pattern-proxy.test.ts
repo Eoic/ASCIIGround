@@ -155,23 +155,18 @@ describe('PatternProxy', () => {
     describe('animation handling', () => {
         it('should trigger render when animation is stopped', () => {
             renderer.stopAnimation();
-            
             patternProxy.handleControlChange('pattern', 'characters', ['1', '2', '3']);
-            
-            // Should request animation frame for manual render
             expect(mockRequestAnimationFrame).toHaveBeenCalled();
         });
     });
 
     describe('pattern update fallback', () => {
         it('should handle patterns without setOptions method', () => {
-            // Mock a pattern without setOptions method
             const patternWithoutSetOptions = {
                 id: 'dummy',
                 options: { characters: ['A'] },
-                // No setOptions method
             };
-            
+
             Object.defineProperty(renderer, 'pattern', {
                 get: () => patternWithoutSetOptions,
                 set: () => {},
@@ -185,7 +180,6 @@ describe('PatternProxy', () => {
         it('should handle pattern constructor not found', () => {
             const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
             
-            // Mock a pattern with invalid ID that won't be found in registry
             const invalidPattern = {
                 id: 'non-existent-pattern',
                 options: { characters: ['A'] },
@@ -196,15 +190,11 @@ describe('PatternProxy', () => {
                 set: () => {},
             });
             
-            // Mock getPattern to return null constructor
             const originalGetPattern = patternProxy['_getPattern'];
             patternProxy['_getPattern'] = () => [null as unknown as PatternConstructor, {} as Record<string, unknown>];
-            
             patternProxy.handleControlChange('pattern', 'characters', 'TEST');
-            
             expect(consoleSpy).toHaveBeenCalledWith('Cannot update pattern "non-existent-pattern".');
-            
-            // Restore original method
+
             patternProxy['_getPattern'] = originalGetPattern;
             consoleSpy.mockRestore();
         });

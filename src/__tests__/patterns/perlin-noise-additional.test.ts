@@ -78,7 +78,6 @@ describe('PerlinNoisePattern - Additional Coverage', () => {
         });
 
         it('should handle edge cases in noise generation', () => {
-            // Test with extreme values
             pattern.setOptions({
                 frequency: 0.001,
                 octaves: 1,
@@ -110,7 +109,6 @@ describe('PerlinNoisePattern - Additional Coverage', () => {
             const result1 = pattern.generate(mockContext);
             const result2 = pattern.generate(mockContext);
             
-            // Results should be deterministic for same context
             expect(result1.length).toBe(result2.length);
         });
     });
@@ -145,7 +143,7 @@ describe('PerlinNoisePattern - Additional Coverage', () => {
             
             lacunarityValues.forEach(lacunarity => {
                 pattern.setOptions({ lacunarity });
-                
+
                 expect(() => {
                     pattern.generate(mockContext);
                 }).not.toThrow();
@@ -231,8 +229,7 @@ describe('PerlinNoisePattern - Additional Coverage', () => {
             const noiseFunc = pattern['_getNoiseFunction']('left');
             const result1 = noiseFunc(10, 20, 0);
             const result2 = noiseFunc(10, 20, 10);
-            
-            // Results should be different due to time transformation
+
             expect(result1).not.toBe(result2);
         });
 

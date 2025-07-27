@@ -138,11 +138,11 @@ describe('StaticNoisePattern', () => {
         const result2 = pattern.generate(createMockContext(1.05));
         
         expect(result1.map(c => c.char)).toEqual(result2.map(c => c.char));
-        
+
         const result3 = pattern.generate(createMockContext(1.15));
         const chars1 = result1.map(c => c.char).join('');
         const chars3 = result3.map(c => c.char).join('');
-        
+
         expect(chars1).not.toBe(chars3);
     });
 });

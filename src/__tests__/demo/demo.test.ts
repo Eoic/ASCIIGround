@@ -304,10 +304,8 @@ describe('Demo - PatternControlsManager', () => {
 
         it('should handle pattern controls during listener setup', () => {
             const onControlChangeSpy = vi.spyOn(manager['_controlsGenerator']!, 'onControlChange');
-            
-            // Switch to a pattern that has controls to trigger listener setup
             manager.switchPattern('perlin-noise');
-            
+
             expect(onControlChangeSpy).toHaveBeenCalled();
         });
     });

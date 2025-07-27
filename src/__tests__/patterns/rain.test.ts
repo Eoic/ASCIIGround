@@ -101,10 +101,12 @@ describe('RainPattern', () => {
 
     it('should use characters from options', () => {
         const customChars = ['A', 'B', 'C'];
+
         const pattern = new RainPattern({ 
             characters: customChars,
             rainDensity: 1.0,
         });
+
         pattern.initialize(mockRegion);
         
         const result = pattern.generate(createMockContext());
@@ -205,9 +207,8 @@ describe('RainPattern', () => {
             fadeOpacity: 0.3,
             rainDensity: 0.5,
         });
+
         pattern.initialize(mockRegion);
-        
-        // Generate multiple frames to build up fade trails
         pattern.generate(createMockContext(0.0));
         pattern.update(createMockContext(0.1));
         const result = pattern.generate(createMockContext(0.1));
@@ -219,9 +220,8 @@ describe('RainPattern', () => {
     it('should handle zero rain density', () => {
         const pattern = new RainPattern({ rainDensity: 0 });
         pattern.initialize(mockRegion);
-        
+
         const result = pattern.generate(createMockContext());
-        
         expect(Array.isArray(result)).toBe(true);
     });
 
@@ -240,6 +240,7 @@ describe('RainPattern', () => {
             maxDropLength: 5,
             rainDensity: 1.0,
         });
+
         pattern.initialize(mockRegion);
         
         for (let i = 0; i < 10; i++) {
@@ -273,17 +274,14 @@ describe('RainPattern', () => {
     describe('rain drop mutation', () => {
         it('should handle character mutation over time', () => {
             const pattern = new RainPattern({ 
-                mutationRate: 1.0, // High mutation rate for testing
+                mutationRate: 1.0,
                 rainDensity: 0.5,
             });
+
             pattern.initialize(mockRegion);
-            
-            // Generate initial state
             pattern.generate(createMockContext(0.0));
-            
-            // Update with enough time for mutations to occur
             pattern.update(createMockContext(2.0));
-            
+
             const result = pattern.generate(createMockContext(2.0));
             expect(Array.isArray(result)).toBe(true);
         });
@@ -291,8 +289,7 @@ describe('RainPattern', () => {
         it('should handle drop reset when off screen', () => {
             const pattern = new RainPattern({ rainDensity: 0.8 });
             pattern.initialize(mockRegion);
-            
-            // Force drops to move far down
+
             for (let i = 0; i < 20; i++) {
                 pattern.update(createMockContext(i * 0.5));
                 pattern.generate(createMockContext(i * 0.5));
@@ -305,17 +302,12 @@ describe('RainPattern', () => {
         it('should handle _resetRainDrop method directly', () => {
             const pattern = new RainPattern({ rainDensity: 0.5 });
             pattern.initialize(mockRegion);
-            
-            // Generate to create drops
             pattern.generate(createMockContext(0.0));
             
-            // Access the private raindrops array to test reset
             const rainDrops = pattern['_rainDrops'];
-            if (rainDrops && rainDrops.length > 0) {
-                expect(() => {
-                    pattern['_resetRainDrop'](rainDrops[0], 5.0);
-                }).not.toThrow();
-            }
+
+            if (rainDrops && rainDrops.length > 0) 
+                expect(() => pattern['_resetRainDrop'](rainDrops[0], 5.0)).not.toThrow();
         });
 
         it('should handle reset without region', () => {

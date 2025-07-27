@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
-// Mock DOM APIs since demo.ts manipulates the DOM
 const mockDocument = {
-    createElement: vi.fn(() => ({
+    createElement: vi.fn((_element: string) => ({
         width: 0,
         height: 0,
         style: {},
@@ -30,8 +29,7 @@ const mockWindow = {
 describe('Demo Script Integration', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        
-        // Mock DOM elements
+
         const mockLoader = {
             classList: {
                 add: vi.fn(),
@@ -66,25 +64,18 @@ describe('Demo Script Integration', () => {
 
     describe('DOM manipulation', () => {
         it('should handle DOMContentLoaded event', () => {
-            // Test that the demo script sets up the DOMContentLoaded listener
-            expect(() => {
-                // Import the demo script to trigger the IIFE
-                import('../../demo/demo');
-            }).not.toThrow();
+            expect(async () => await import('../../demo/demo')).not.toThrow();
         });
 
         it('should create canvas element', () => {
-            expect(() => {
-                mockDocument.createElement('canvas');
-            }).not.toThrow();
+            expect(() => mockDocument.createElement('canvas')).not.toThrow();
         });
 
         it('should handle missing DOM elements gracefully', () => {
             mockDocument.getElementById.mockReturnValue(null);
-            
+
             expect(() => {
-                // This would normally fail if demo.ts doesn't handle null elements
-                const element = mockDocument.getElementById('nonexistent');
+                const element = mockDocument.getElementById('nonexistent') as HTMLElement | null;
                 expect(element).toBeNull();
             }).not.toThrow();
         });

@@ -1,13 +1,21 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
-// Test specifically for demo.ts coverage - targeting the main execution functions
+interface MockDocument {
+    createElement: ReturnType<typeof vi.fn>;
+    getElementById: ReturnType<typeof vi.fn>;
+    addEventListener: ReturnType<typeof vi.fn>;
+    body: {
+        appendChild: ReturnType<typeof vi.fn>;
+    };
+}
 
 describe('Demo.ts Coverage Test', () => {
+    let mockDocument: MockDocument;
+
     beforeEach(() => {
         vi.clearAllMocks();
         vi.resetModules();
         
-        // Setup comprehensive mocks
         const mockCanvas = {
             width: 0,
             height: 0,
@@ -55,10 +63,11 @@ describe('Demo.ts Coverage Test', () => {
             removeEventListener: vi.fn(),
         };
 
-        const mockDocument = {
+        mockDocument = {
             createElement: vi.fn((tagName: string) => {
-                if (tagName === 'canvas') return mockCanvas;
-                // Return a complete DOM element mock for other elements
+                if (tagName === 'canvas')
+                    return mockCanvas;
+
                 return {
                     tagName: tagName.toUpperCase(),
                     appendChild: vi.fn(),
@@ -107,7 +116,6 @@ describe('Demo.ts Coverage Test', () => {
             removeEventListener: vi.fn(),
         };
 
-        // Set up global mocks
         Object.assign(globalThis, {
             document: mockDocument,
             window: mockWindow,
@@ -131,47 +139,35 @@ describe('Demo.ts Coverage Test', () => {
 
     it('should execute demo.ts and cover all main functions', async () => {
         await import('../../demo/demo');
-        const mockDocument = globalThis.document;
         
-        expect(mockDocument.addEventListener).toHaveBeenCalledWith('DOMContentLoaded', expect.any(Function));
-        
-        // Get the callback and trigger it to cover the start() function
-        // @ts-expect-error - Accessing mock calls for testing
-        const calls = mockDocument.addEventListener.mock.calls;
-        // @ts-expect-error - Using mock call structure for testing
-        const domLoadedCall = calls.find((call: unknown[]) => call[0] === 'DOMContentLoaded');
+        const addEventListenerMock = mockDocument.addEventListener;
+        expect(addEventListenerMock).toHaveBeenCalledWith('DOMContentLoaded', expect.anything());
+
+        const calls = vi.mocked(addEventListenerMock).mock.calls;
+        const domLoadedCall = calls.find(call => call[0] === 'DOMContentLoaded');
         expect(domLoadedCall).toBeDefined();
         
-        // @ts-expect-error - Accessing mock call data for testing
-        const startFunction = domLoadedCall[1];
-        
-        // Execute the start function to cover its code
-        // @ts-expect-error - Calling function from mock for testing
-        startFunction();
-        
-        // Verify that start() function executed and called the expected functions:
-        
-        // 1. Canvas creation and setup (covers canvas creation code)
-        expect(mockDocument.createElement).toHaveBeenCalledWith('canvas');
-        
-        // 2. DOM element retrieval (covers getElementById calls)
-        expect(mockDocument.getElementById).toHaveBeenCalledWith('loader');
-        expect(mockDocument.getElementById).toHaveBeenCalledWith('controls');
-        
-        // 3. Canvas appended to body (covers document.body.appendChild)
-        expect(mockDocument.body.appendChild).toHaveBeenCalled();
+        if (domLoadedCall) {
+            const startFunction = domLoadedCall[1] as () => void;
+            startFunction();
+            
+            const createElementMock = mockDocument.createElement;
+            expect(createElementMock).toHaveBeenCalledWith('canvas');
+            
+            const getElementByIdMock = mockDocument.getElementById;
+            expect(getElementByIdMock).toHaveBeenCalledWith('loader');
+            expect(getElementByIdMock).toHaveBeenCalledWith('controls');
+
+            const appendChildMock = mockDocument.body.appendChild;
+            expect(appendChildMock).toHaveBeenCalled();
+        }
     });
 
     it('should import demo module successfully', async () => {
-        // This test ensures the demo.ts file is actually loaded and covered
         const demo = await import('../../demo/demo');
-        
-        // The module should be defined (even though it exports nothing)
+
         expect(demo).toBeDefined();
-        
-        // Verify the module executed by checking if addEventListener was called
-        // @ts-expect-error - Accessing mocked global for testing
-        const mockDocument = globalThis.document;
-        expect(mockDocument.addEventListener).toHaveBeenCalled();
+        const addEventListenerMock = mockDocument.addEventListener;
+        expect(addEventListenerMock).toHaveBeenCalled();
     });
 });

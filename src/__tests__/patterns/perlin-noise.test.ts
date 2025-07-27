@@ -69,16 +69,15 @@ describe('PerlinNoisePattern', () => {
         const pattern = new PerlinNoisePattern();
         const result = pattern.generate(createMockContext());
         
-        // Should generate one character per grid position.
         const expectedCount = (mockRegion.endRow - mockRegion.startRow + 1) * 
                              (mockRegion.endColumn - mockRegion.startColumn + 1);
+
         expect(result).toHaveLength(expectedCount);
     });
 
     it('should generate characters at correct positions', () => {
         const pattern = new PerlinNoisePattern();
         const result = pattern.generate(createMockContext());
-        
         expect(result[0].x).toBe(0);
         expect(result[0].y).toBe(0);
         
@@ -104,7 +103,6 @@ describe('PerlinNoisePattern', () => {
     it('should generate consistent patterns for same seed and time', () => {
         const pattern1 = new PerlinNoisePattern({ seed: 42 });
         const pattern2 = new PerlinNoisePattern({ seed: 42 });
-        
         const result1 = pattern1.generate(createMockContext(1.5));
         const result2 = pattern2.generate(createMockContext(1.5));
         
@@ -115,7 +113,6 @@ describe('PerlinNoisePattern', () => {
     it('should generate different patterns for different seeds', () => {
         const pattern1 = new PerlinNoisePattern({ seed: 100, characters: ['A', 'B', 'C'], frequency: 0.9 });
         const pattern2 = new PerlinNoisePattern({ seed: 2000, characters: ['A', 'B', 'C'], frequency: 0.9 });
-
         const result1 = pattern1.generate(createMockContext());
         const result2 = pattern2.generate(createMockContext());
         
@@ -126,7 +123,6 @@ describe('PerlinNoisePattern', () => {
 
     it('should generate animated patterns when time changes', () => {
         const pattern = new PerlinNoisePattern({ seed: 123 });
-        
         const result1 = pattern.generate(createMockContext(0.0));
         const result2 = pattern.generate(createMockContext(50000.0));
 
@@ -174,10 +170,9 @@ describe('PerlinNoisePattern', () => {
     it('should handle different octave values', () => {
         const pattern1 = new PerlinNoisePattern({ octaves: 1, seed: 42 });
         const pattern2 = new PerlinNoisePattern({ octaves: 8, seed: 42 });
-        
         const result1 = pattern1.generate(createMockContext());
         const result2 = pattern2.generate(createMockContext());
-        
+
         expect(result1).toHaveLength(result2.length);
         expect(result1.length).toBeGreaterThan(0);
         expect(result2.length).toBeGreaterThan(0);
@@ -198,10 +193,9 @@ describe('PerlinNoisePattern', () => {
     it('should handle different lacunarity values', () => {
         const pattern1 = new PerlinNoisePattern({ lacunarity: 1.5, seed: 42 });
         const pattern2 = new PerlinNoisePattern({ lacunarity: 3.0, seed: 42 });
-        
         const result1 = pattern1.generate(createMockContext());
         const result2 = pattern2.generate(createMockContext());
-        
+
         expect(result1).toHaveLength(result2.length);
         expect(result1.length).toBeGreaterThan(0);
         expect(result2.length).toBeGreaterThan(0);

@@ -128,27 +128,22 @@ describe('ControlsGenerator', () => {
     describe('destroy', () => {
         it('should remove event listeners and clear state', () => {
             const removeEventListenerSpy = vi.spyOn(mockContainer, 'removeEventListener');
-            
             controlsGenerator.destroy();
-            
+
             expect(removeEventListenerSpy).toHaveBeenCalledWith('input', expect.any(Function));
         });
 
         it('should clear listeners map', () => {
             controlsGenerator.onControlChange('test', () => {});
-            
             controlsGenerator.destroy();
-            
-            // Check that listeners are cleared
+
             expect(controlsGenerator['_listeners'].size).toBe(0);
         });
 
         it('should clear controls from container', () => {
             controlsGenerator.generatePatternControls('perlin-noise');
-            
+
             controlsGenerator.destroy();
-            
-            // Verify that _clearControls was called
             expect(mockContainer.innerHTML).toBe('');
         });
     });
@@ -161,7 +156,7 @@ describe('ControlsGenerator', () => {
         it('should set control value for number input', () => {
             const mockInput = createMockElement();
             mockContainer.querySelector = vi.fn(() => mockInput as unknown as Element);
-            
+
             expect(() => {
                 controlsGenerator.setControlValue('frequency', 0.1);
             }).not.toThrow();
@@ -170,7 +165,7 @@ describe('ControlsGenerator', () => {
         it('should set control value for text input', () => {
             const mockInput = createMockElement();
             mockContainer.querySelector = vi.fn(() => mockInput as unknown as Element);
-            
+
             expect(() => {
                 controlsGenerator.setControlValue('characters', 'ABC');
             }).not.toThrow();
@@ -179,7 +174,7 @@ describe('ControlsGenerator', () => {
         it('should set control value for select input', () => {
             const mockSelect = createMockElement();
             mockContainer.querySelector = vi.fn(() => mockSelect as unknown as Element);
-            
+
             expect(() => {
                 controlsGenerator.setControlValue('pattern', 'rain');
             }).not.toThrow();
@@ -196,7 +191,7 @@ describe('ControlsGenerator', () => {
 
         it('should handle missing control element', () => {
             mockContainer.querySelector = vi.fn(() => null);
-            
+
             expect(() => {
                 controlsGenerator.setControlValue('nonexistent', 'value');
             }).not.toThrow();
@@ -257,12 +252,11 @@ describe('ControlsGenerator', () => {
         });
 
         it('should handle DOM manipulation errors gracefully', () => {
-            // Mock container that throws errors
             const badContainer = {
                 ...mockContainer,
                 appendChild: vi.fn(() => { throw new Error('DOM error'); }),
             } as unknown as HTMLFormElement;
-            
+
             expect(() => {
                 new ControlsGenerator(badContainer);
             }).not.toThrow();
