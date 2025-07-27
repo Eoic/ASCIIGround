@@ -34,7 +34,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && npm run build:lib",
-    "build:lib": "npm run size && vite build --mode lib",
+    "build:lib": "vite build --mode lib && npm run size",
     "build:demo": "vite build --mode demo",
     "build:docs": "typedoc",
     "preview": "vite preview",
