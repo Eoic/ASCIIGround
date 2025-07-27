@@ -22,15 +22,10 @@ describe('ASCIIGround', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-
-        mockRequestAnimationFrame.mockImplementation((_callback: FrameRequestCallback) => {
-            return 123;
-        });
-
+        mockRequestAnimationFrame.mockImplementation((_callback: FrameRequestCallback) => 123);
         canvas = document.createElement('canvas');
         canvas.width = 800;
         canvas.height = 600;
-
         pattern = new DummyPattern();
     });
 
@@ -49,13 +44,14 @@ describe('ASCIIGround', () => {
         it('should initialize with canvas and pattern', () => {
             const asciiGround = new ASCIIGround();
             const result = asciiGround.init(canvas, pattern);
-            
+
             expect(result).toBe(asciiGround);
             expect(result).toBeInstanceOf(ASCIIGround);
         });
 
         it('should initialize with custom options', () => {
             const asciiGround = new ASCIIGround();
+
             const options = {
                 fontSize: 16,
                 color: '#ff0000',
@@ -191,7 +187,7 @@ describe('ASCIIGround', () => {
             const asciiGround = new ASCIIGround();
             asciiGround.init(canvas, pattern);
             asciiGround.destroy();
-            
+
             expect(() => {
                 asciiGround.startAnimation();
             }).toThrow('Renderer is not initialized - call init() first.');
@@ -201,7 +197,7 @@ describe('ASCIIGround', () => {
     describe('method chaining', () => {
         it('should support method chaining', () => {
             const asciiGround = new ASCIIGround();
-            
+
             expect(() => {
                 asciiGround
                     .init(canvas, pattern)
@@ -217,94 +213,84 @@ describe('ASCIIGround', () => {
         it('should handle canvas context unavailable', () => {
             vi.spyOn(canvas, 'getContext').mockReturnValue(null);
             const asciiGround = new ASCIIGround();
-            
-            expect(() => {
-                asciiGround.init(canvas, pattern);
-            }).toThrow('Could not get 2D context from canvas');
+
+            expect(() => asciiGround.init(canvas, pattern)).toThrow('Could not get 2D context from canvas');
         });
 
         it('should handle very small canvas', () => {
             canvas.width = 10;
             canvas.height = 10;
-            
             const asciiGround = new ASCIIGround();
-            
-            expect(() => {
-                asciiGround.init(canvas, pattern);
-            }).not.toThrow();
+
+            expect(() => asciiGround.init(canvas, pattern)).not.toThrow();
         });
 
         it('should handle very large canvas', () => {
             canvas.width = 4000;
             canvas.height = 3000;
-            
+
             const asciiGround = new ASCIIGround();
-            
-            expect(() => {
-                asciiGround.init(canvas, pattern);
-            }).not.toThrow();
+            expect(() => asciiGround.init(canvas, pattern)).not.toThrow();
+            expect(canvas.width).toBe(4000);
+            expect(canvas.height).toBe(3000);
         });
     });
 
     describe('integration with patterns', () => {
         it('should work with PerlinNoisePattern', () => {
             const asciiGround = new ASCIIGround();
+
             const perlinPattern = new PerlinNoisePattern({
                 frequency: 0.02,
                 octaves: 3,
             });
-            
+
             asciiGround.init(canvas, perlinPattern);
-            
-            expect(() => {
-                asciiGround.startAnimation();
-            }).not.toThrow();
+            expect(asciiGround.pattern).toBeInstanceOf(PerlinNoisePattern);
+            expect(() => asciiGround.startAnimation()).not.toThrow();
+            expect(asciiGround.options.animated).toBe(true);
         });
 
         it('should work with RainPattern', () => {
             const asciiGround = new ASCIIGround();
+
             const rainPattern = new RainPattern({
                 rainDensity: 0.5,
                 minDropLength: 5,
                 maxDropLength: 15,
             });
-            
+
             asciiGround.init(canvas, rainPattern);
-            
-            expect(() => {
-                asciiGround.startAnimation();
-            }).not.toThrow();
+
+            expect(asciiGround.pattern).toBeInstanceOf(RainPattern);
+            expect(() => asciiGround.startAnimation()).not.toThrow();
+            expect(asciiGround.options.animated).toBe(true);
         });
 
         it('should work with StaticNoisePattern', () => {
             const asciiGround = new ASCIIGround();
-            const staticPattern = new StaticNoisePattern({
-                seed: 42,
-            });
-            
+            const staticPattern = new StaticNoisePattern({ seed: 42 });
             asciiGround.init(canvas, staticPattern);
-            
-            expect(() => {
-                asciiGround.startAnimation();
-            }).not.toThrow();
+
+            expect(asciiGround.pattern).toBeInstanceOf(StaticNoisePattern);
+            expect(() => asciiGround.startAnimation()).not.toThrow();
+            expect(asciiGround.options.animated).toBe(true);
         });
 
         it('should work with DummyPattern', () => {
             const asciiGround = new ASCIIGround();
             const dummyPattern = new DummyPattern();
-            
             asciiGround.init(canvas, dummyPattern);
-            
-            expect(() => {
-                asciiGround.startAnimation();
-            }).not.toThrow();
+
+            expect(asciiGround.pattern).toBeInstanceOf(DummyPattern);
+            expect(() => asciiGround.startAnimation()).not.toThrow();
+            expect(asciiGround.options.animated).toBe(true);
         });
     });
 
     describe('rendering integration', () => {
         it('should handle different renderer types', () => {
             const asciiGround = new ASCIIGround();
-            
             const rendererTypes: Array<'2D' | 'WebGL'> = ['2D', 'WebGL'];
             
             rendererTypes.forEach(rendererType => {

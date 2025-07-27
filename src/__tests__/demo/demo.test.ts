@@ -277,4 +277,38 @@ describe('Demo - PatternControlsManager', () => {
             expect(manager).toBeInstanceOf(PatternControlsManager);
         });
     });
+
+    describe('internal methods coverage', () => {
+        beforeEach(() => {
+            manager = new PatternControlsManager(
+                mockControlsContainer,
+                renderer
+            );
+        });
+
+        it('should handle renderer control changes in event listeners', () => {
+            // Simulate control change that should trigger renderer control handling
+            expect(() => {
+                manager.onControlChange('fontSize', () => {});
+            }).not.toThrow();
+        });
+
+        it('should set control values during synchronization', () => {
+            const setControlValueSpy = vi.spyOn(manager['_controlsGenerator']!, 'setControlValue');
+            
+            // Trigger synchronization by switching patterns
+            manager.switchPattern('rain');
+            
+            expect(setControlValueSpy).toHaveBeenCalled();
+        });
+
+        it('should handle pattern controls during listener setup', () => {
+            const onControlChangeSpy = vi.spyOn(manager['_controlsGenerator']!, 'onControlChange');
+            
+            // Switch to a pattern that has controls to trigger listener setup
+            manager.switchPattern('perlin-noise');
+            
+            expect(onControlChangeSpy).toHaveBeenCalled();
+        });
+    });
 });

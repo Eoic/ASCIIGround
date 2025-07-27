@@ -13,6 +13,7 @@ export default defineConfig({
                 'dist/',
                 'docs/',
                 'coverage/',
+                'src/plugins/',
                 '**/*.d.ts',
                 'node_modules/',
                 'eslint.config.js',

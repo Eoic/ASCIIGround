@@ -24,6 +24,12 @@ const createCanvasContextMock = () => {
         measureText: vi.fn(() => ({ width: 10 })),
         moveTo: vi.fn(),
         lineTo: vi.fn(),
+        translate: vi.fn(),
+        rotate: vi.fn(),
+        scale: vi.fn(),
+        transform: vi.fn(),
+        setTransform: vi.fn(),
+        resetTransform: vi.fn(),
         
         set fillStyle(value: string | CanvasGradient | CanvasPattern) {
             _fillStyle = typeof value === 'string' ? value : _fillStyle;

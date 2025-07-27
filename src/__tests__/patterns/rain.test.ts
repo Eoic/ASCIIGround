@@ -269,4 +269,71 @@ describe('RainPattern', () => {
             pattern.onMouseInteraction(50, 50, true);
         }).not.toThrow();
     });
+
+    describe('rain drop mutation', () => {
+        it('should handle character mutation over time', () => {
+            const pattern = new RainPattern({ 
+                mutationRate: 1.0, // High mutation rate for testing
+                rainDensity: 0.5,
+            });
+            pattern.initialize(mockRegion);
+            
+            // Generate initial state
+            pattern.generate(createMockContext(0.0));
+            
+            // Update with enough time for mutations to occur
+            pattern.update(createMockContext(2.0));
+            
+            const result = pattern.generate(createMockContext(2.0));
+            expect(Array.isArray(result)).toBe(true);
+        });
+
+        it('should handle drop reset when off screen', () => {
+            const pattern = new RainPattern({ rainDensity: 0.8 });
+            pattern.initialize(mockRegion);
+            
+            // Force drops to move far down
+            for (let i = 0; i < 20; i++) {
+                pattern.update(createMockContext(i * 0.5));
+                pattern.generate(createMockContext(i * 0.5));
+            }
+            
+            const result = pattern.generate(createMockContext(10.0));
+            expect(Array.isArray(result)).toBe(true);
+        });
+
+        it('should handle _resetRainDrop method directly', () => {
+            const pattern = new RainPattern({ rainDensity: 0.5 });
+            pattern.initialize(mockRegion);
+            
+            // Generate to create drops
+            pattern.generate(createMockContext(0.0));
+            
+            // Access the private raindrops array to test reset
+            const rainDrops = pattern['_rainDrops'];
+            if (rainDrops && rainDrops.length > 0) {
+                expect(() => {
+                    pattern['_resetRainDrop'](rainDrops[0], 5.0);
+                }).not.toThrow();
+            }
+        });
+
+        it('should handle reset without region', () => {
+            const pattern = new RainPattern({ rainDensity: 0.5 });
+            
+            // Create a mock drop
+            const mockDrop = {
+                y: 100,
+                column: 5,
+                length: 10,
+                speed: 1.0,
+                characters: ['A', 'B'],
+                lastMutationTime: 0,
+            };
+            
+            expect(() => {
+                pattern['_resetRainDrop'](mockDrop, 5.0);
+            }).not.toThrow();
+        });
+    });
 });

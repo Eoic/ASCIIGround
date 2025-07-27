@@ -43,7 +43,7 @@ describe('createSeededRandom', () => {
         const secondCall = random();
         const thirdCall = random();
         const randomReset = createSeededRandom(999);
-        
+
         expect(randomReset()).toBe(firstCall);
         expect(randomReset()).toBe(secondCall);
         expect(randomReset()).toBe(thirdCall);

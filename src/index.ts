@@ -1,5 +1,5 @@
 /**
- * @fileoverview ASCIIGround - A TypeScript library for creating animated ASCII canvas backgrounds.
+ * ASCIIGround - A TypeScript library for creating animated ASCII canvas backgrounds.
  * 
  * This library provides a comprehensive solution for creating stunning ASCII-based animations
  * that can be used as website backgrounds. It supports various pattern generators including
@@ -7,7 +7,7 @@
  * 
  * @author Karolis Strazdas
  * 
- * @example basic usage
+ * @example Basic usage
  * ```typescript
  * import { ASCIIGround, PerlinNoisePattern } from 'asciiground';
  * 
@@ -19,7 +19,7 @@
  *   .startAnimation();
  * ```
  * 
- * @example canvas setup with rain pattern
+ * @example Canvas setup with rain pattern
  * ```typescript
  * import { ASCIIGround, RainPattern } from 'asciiground';
  * 
@@ -52,7 +52,7 @@ import { ASCIIRenderer, type ASCIIRendererOptions } from './rendering/ascii-rend
  * 
  * @category Main
  * 
- * @example creating and controlling an ASCII animation.
+ * @example Creating and controlling an ASCII animation
  * ```typescript
  * const asciiGround = new ASCIIGround();
  * 
@@ -72,6 +72,14 @@ import { ASCIIRenderer, type ASCIIRendererOptions } from './rendering/ascii-rend
  */
 export class ASCIIGround {
     private _renderer: ASCIIRenderer | null = null;
+
+    public get pattern(): Pattern {
+        return this.renderer.pattern;
+    }
+
+    public get options(): ASCIIRendererOptions {
+        return Object.freeze(this.renderer.options);
+    }
 
     private get renderer(): ASCIIRenderer {
         if (!this._renderer) 
@@ -160,7 +168,7 @@ export class ASCIIGround {
 export default ASCIIGround;
 
 // ============================================================================
-// pattern exports
+// Pattern exports.
 // ============================================================================
 
 /**
@@ -204,7 +212,7 @@ export {
 export { DummyPattern } from './patterns/dummy-pattern';
 
 // ============================================================================
-// rendering exports
+// Rendering exports.
 // ============================================================================
 
 /**
@@ -223,7 +231,7 @@ export {
 } from './rendering/renderer';
 
 // ============================================================================
-// utility exports
+// Utility exports.
 // ============================================================================
 
 /**

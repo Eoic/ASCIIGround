@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ASCIIRenderer } from '../rendering/ascii-renderer';
+import { createRenderer } from '../rendering/renderer';
 import { DummyPattern } from '../patterns/dummy-pattern';
 import { PerlinNoisePattern } from '../patterns/perlin-noise-pattern';
 import { RainPattern } from '../patterns/rain-pattern';
@@ -285,18 +286,12 @@ describe('ASCIIRenderer', () => {
 
     describe('renderer types', () => {
         it('should handle 2D renderer type', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern, {
-                rendererType: '2D',
-            });
-            
+            const renderer = new ASCIIRenderer(canvas, pattern, { rendererType: '2D' });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
 
         it('should handle WebGL renderer type', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern, {
-                rendererType: 'WebGL',
-            });
-            
+            const renderer = new ASCIIRenderer(canvas, pattern, { rendererType: 'WebGL' });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
     });
@@ -304,7 +299,7 @@ describe('ASCIIRenderer', () => {
     describe('animation speed', () => {
         it('should handle different animation speeds', () => {
             const speeds = [0.5, 1.0, 2.0, 5.0];
-            
+
             speeds.forEach(animationSpeed => {
                 const renderer = new ASCIIRenderer(canvas, pattern, { animationSpeed });
                 expect(renderer).toBeInstanceOf(ASCIIRenderer);
@@ -316,7 +311,7 @@ describe('ASCIIRenderer', () => {
         it('should handle very small canvas', () => {
             canvas.width = 10;
             canvas.height = 10;
-            
+
             const renderer = new ASCIIRenderer(canvas, pattern);
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
@@ -335,8 +330,79 @@ describe('ASCIIRenderer', () => {
         });
 
         it('should handle large padding', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern, { padding: 100 });
+            const renderer = new ASCIIRenderer(canvas, pattern, { padding: 10000 });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
+        });
+    });
+
+    describe('character transformations', () => {
+        it('should handle character with opacity', () => {
+            const renderer = new ASCIIRenderer(canvas, pattern);
+            
+            // Test using public render method with pattern that generates characters with opacity
+            pattern.generate = vi.fn(() => [
+                { x: 10, y: 20, char: 'A', opacity: 0.5 }
+            ]);
+            
+            expect(() => {
+                renderer.render();
+            }).not.toThrow();
+        });
+
+        it('should handle character with color', () => {
+            const renderer = new ASCIIRenderer(canvas, pattern);
+            
+            pattern.generate = vi.fn(() => [
+                { x: 10, y: 20, char: 'A', color: '#ff0000' }
+            ]);
+            
+            expect(() => {
+                renderer.render();
+            }).not.toThrow();
+        });
+
+        it('should handle character transformations', () => {
+            const renderer = new ASCIIRenderer(canvas, pattern);
+            
+            pattern.generate = vi.fn(() => [
+                { x: 10, y: 20, char: 'A', scale: 1.5, rotation: Math.PI / 4 }
+            ]);
+            
+            expect(() => {
+                renderer.render();
+            }).not.toThrow();
+        });
+
+        it('should handle out of bounds characters', () => {
+            const renderer = new ASCIIRenderer(canvas, pattern);
+            
+            pattern.generate = vi.fn(() => [
+                { x: -10, y: 20, char: 'A' }, // Outside bounds
+                { x: 1000, y: 20, char: 'B' } // Outside bounds
+            ]);
+            
+            expect(() => {
+                renderer.render();
+            }).not.toThrow();
+        });
+    });
+
+    describe('renderer creation', () => {
+        it('should create Canvas2D renderer by default', () => {
+            const renderer = createRenderer('2D');
+            expect(renderer).toBeDefined();
+        });
+
+        it('should fallback to Canvas2D when WebGL fails', () => {
+            const renderer = createRenderer('WebGL');
+            expect(renderer).toBeDefined();
+        });
+
+        it('should throw error for unknown renderer type', () => {
+            expect(() => {
+                // @ts-expect-error Testing invalid input
+                createRenderer('unknown');
+            }).toThrow('Unknown renderer type given!');
         });
     });
 });

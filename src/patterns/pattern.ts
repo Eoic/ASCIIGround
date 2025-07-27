@@ -1,12 +1,11 @@
 /**
- * @fileoverview Core pattern system for ASCIIGround animations.
+ * Core system for ASCIIGround pattern generators.
  * 
  * This module defines the base pattern interface and implementation that all
- * pattern generators inherit from. It provides a standardized way to create
+ * pattern generators inherit from. It provides a standardized way to create static and
  * animated ASCII effects with configurable characters, timing, and interactivity.
  * 
  * @author Karolis Strazdas
- * @since 0.1.0
  */
 
 /**
