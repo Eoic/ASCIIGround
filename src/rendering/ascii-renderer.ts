@@ -120,6 +120,15 @@ export class ASCIIRenderer {
         return this._state.canvas;
     }
 
+    private get resizeDimensions(): [ width: number, height: number ] {
+        const target = this._state.options.resizeTo;
+
+        if (target instanceof HTMLElement)
+            return [target.clientWidth, target.clientHeight];
+
+        return [target.innerWidth, target.innerHeight];
+    }
+
     /**
      * Get the renderer, throwing an error if not initialized.
      */
@@ -267,18 +276,9 @@ export class ASCIIRenderer {
      * Resize the canvas and recalculate layout.
      */
     public resize(): void {
-        const width = this._state.options.resizeTo instanceof HTMLElement
-            ? this._state.options.resizeTo.clientWidth
-            : this._state.options.resizeTo.innerWidth;
-
-        const height = this._state.options.resizeTo instanceof HTMLElement
-            ? this._state.options.resizeTo.clientHeight
-            : this._state.options.resizeTo.innerHeight;
-
-        this.canvas.width = width;
-        this.canvas.height = height;
+        [this.canvas.width, this.canvas.height] = this.resizeDimensions;
         this._state.region = this._calculateRegion();
-        this.renderer.resize(width, height);
+        this.renderer.resize(this.canvas.width, this.canvas.height);
         this.pattern.initialize(this._state.region);
 
         if (!this.isAnimating) {
@@ -360,6 +360,7 @@ export class ASCIIRenderer {
      * This sets up the rendering context and prepares for rendering.
      */
     private _setupRenderer(): void {
+        [this.canvas.width, this.canvas.height] = this.resizeDimensions;
         this.renderer.initialize(this.canvas, this._state.options);
         this.pattern.initialize(this.region);
 

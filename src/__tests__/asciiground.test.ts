@@ -24,8 +24,8 @@ describe('ASCIIGround', () => {
         vi.clearAllMocks();
         mockRequestAnimationFrame.mockImplementation((_callback: FrameRequestCallback) => 123);
         canvas = document.createElement('canvas');
-        canvas.width = 800;
-        canvas.height = 600;
+        window.innerWidth = 800;
+        window.innerHeight = 600;
         pattern = new DummyPattern();
     });
 
@@ -226,8 +226,8 @@ describe('ASCIIGround', () => {
         });
 
         it('should handle very large canvas', () => {
-            canvas.width = 4000;
-            canvas.height = 3000;
+            window.innerWidth = 4000;
+            window.innerHeight = 3000;
 
             const asciiGround = new ASCIIGround();
             expect(() => asciiGround.init(canvas, pattern)).not.toThrow();

@@ -6,9 +6,6 @@ import { ASCIIRenderer } from '../rendering/ascii-renderer';
 (() => {
     function start() {
         const canvas = document.createElement('canvas');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
         const renderer = new ASCIIRenderer(canvas);
         const loader = document.getElementById('loader') as HTMLElement;
         const controls = document.getElementById('controls') as HTMLFormElement;
