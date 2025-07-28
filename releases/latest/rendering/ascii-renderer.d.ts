@@ -52,6 +52,7 @@ export declare class ASCIIRenderer {
      * Get the canvas element, throwing an error if not initialized.
      */
     private get canvas();
+    private get resizeDimensions();
     /**
      * Get the renderer, throwing an error if not initialized.
      */
