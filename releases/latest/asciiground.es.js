@@ -57,7 +57,7 @@ class p {
    * @param _y - mouse Y position relative to canvas.
    * @param _clicked - Whether mouse was clicked this frame.
    */
-  onMouseInteraction(e, t, s) {
+  onMouseInteraction(e, t, i) {
   }
   /**
    * Check if the pattern options have changed.
@@ -66,8 +66,8 @@ class p {
    */
   _hasOptionsChanged(e) {
     return Object.keys(e).some((t) => {
-      const s = this._options[t], i = e[t];
-      return s !== i;
+      const i = this._options[t], s = e[t];
+      return i !== s;
     });
   }
 }
@@ -75,7 +75,7 @@ class p {
  * Unique identifier for the pattern, that should be overridden in subclasses.
  */
 h(p, "ID");
-class C extends p {
+class D extends p {
   constructor(e = {}) {
     super(e);
   }
@@ -86,7 +86,7 @@ class C extends p {
     return [];
   }
 }
-h(C, "ID", "dummy");
+h(D, "ID", "dummy");
 class d {
   constructor() {
     h(this, "_canvas");
@@ -101,25 +101,25 @@ class d {
   }
   initialize(e, t) {
     this._canvas = e, this._options = t;
-    const s = e.getContext("2d");
-    if (!s)
+    const i = e.getContext("2d");
+    if (!i)
       throw new Error("Could not get 2D context from canvas");
-    this._context = s, this._setupContext();
+    this._context = i, this._setupContext();
   }
   clear(e) {
     this._context.fillStyle = e, this._context.fillRect(0, 0, this._canvas.width, this._canvas.height), this._context.fillStyle = this._options.color;
   }
   render(e, t) {
-    const s = t.startColumn !== 0 || t.startRow !== 0 || t.endColumn !== t.columns || t.endRow !== t.rows;
-    s && (this._context.save(), this._context.beginPath(), this._context.rect(
+    const i = t.startColumn !== 0 || t.startRow !== 0 || t.endColumn !== t.columns || t.endRow !== t.rows;
+    i && (this._context.save(), this._context.beginPath(), this._context.rect(
       t.startColumn * t.charSpacingX,
       t.startRow * t.charSpacingY,
       (t.endColumn - t.startColumn) * t.charSpacingX,
       (t.endRow - t.startRow) * t.charSpacingY
     ), this._context.clip());
-    for (const i of e)
-      i.x < 0 || i.x >= t.canvasWidth || i.y < 0 || i.y >= t.canvasHeight || (i.opacity !== void 0 && (this._context.globalAlpha = i.opacity), i.color && (this._context.fillStyle = i.color), i.scale !== void 0 || i.rotation !== void 0 ? (this._context.save(), this._context.translate(i.x + t.charWidth / 2, i.y + t.charHeight / 2), i.rotation !== void 0 && this._context.rotate(i.rotation), i.scale !== void 0 && this._context.scale(i.scale, i.scale), this._context.fillText(i.char, -t.charWidth / 2, -t.charHeight / 2), this._context.restore()) : this._context.fillText(i.char, i.x, i.y), i.opacity !== void 0 && (this._context.globalAlpha = 1), i.color && (this._context.fillStyle = this._options.color));
-    s && this._context.restore();
+    for (const s of e)
+      s.x < 0 || s.x >= t.canvasWidth || s.y < 0 || s.y >= t.canvasHeight || (s.opacity !== void 0 && (this._context.globalAlpha = s.opacity), s.color && (this._context.fillStyle = s.color), s.scale !== void 0 || s.rotation !== void 0 ? (this._context.save(), this._context.translate(s.x + t.charWidth / 2, s.y + t.charHeight / 2), s.rotation !== void 0 && this._context.rotate(s.rotation), s.scale !== void 0 && this._context.scale(s.scale, s.scale), this._context.fillText(s.char, -t.charWidth / 2, -t.charHeight / 2), this._context.restore()) : this._context.fillText(s.char, s.x, s.y), s.opacity !== void 0 && (this._context.globalAlpha = 1), s.color && (this._context.fillStyle = this._options.color));
+    i && this._context.restore();
   }
   resize(e, t) {
     this._canvas.width = e, this._canvas.height = t, this._setupContext();
@@ -154,8 +154,8 @@ class T {
   clear(e) {
     if (!this._isInitialized)
       return;
-    const t = this._gl, s = e.replace("#", ""), i = parseInt(s.substring(0, 2), 16) / 255, n = parseInt(s.substring(2, 4), 16) / 255, a = parseInt(s.substring(4, 6), 16) / 255;
-    t.clearColor(i, n, a, 1), t.clear(t.COLOR_BUFFER_BIT);
+    const t = this._gl, i = e.replace("#", ""), s = parseInt(i.substring(0, 2), 16) / 255, n = parseInt(i.substring(2, 4), 16) / 255, a = parseInt(i.substring(4, 6), 16) / 255;
+    t.clearColor(s, n, a, 1), t.clear(t.COLOR_BUFFER_BIT);
   }
   render(e, t) {
     this._isInitialized;
@@ -190,7 +190,7 @@ class T {
                 v_texCoord = a_texCoord;
                 v_opacity = a_opacity;
             }
-        `, s = `#version 300 es
+        `, i = `#version 300 es
             precision mediump float;
             
             in vec2 v_texCoord;
@@ -205,18 +205,18 @@ class T {
                 float alpha = texture(u_texture, v_texCoord).r;
                 fragColor = vec4(u_color, alpha * v_opacity);
             }
-        `, i = this._createShader(e.VERTEX_SHADER, t), n = this._createShader(e.FRAGMENT_SHADER, s);
-    if (this._program = e.createProgram(), e.attachShader(this._program, i), e.attachShader(this._program, n), e.linkProgram(this._program), !e.getProgramParameter(this._program, e.LINK_STATUS))
+        `, s = this._createShader(e.VERTEX_SHADER, t), n = this._createShader(e.FRAGMENT_SHADER, i);
+    if (this._program = e.createProgram(), e.attachShader(this._program, s), e.attachShader(this._program, n), e.linkProgram(this._program), !e.getProgramParameter(this._program, e.LINK_STATUS))
       throw new Error("Failed to link WebGL program: " + e.getProgramInfoLog(this._program));
     e.enable(e.BLEND), e.blendFunc(e.SRC_ALPHA, e.ONE_MINUS_SRC_ALPHA);
   }
   _createShader(e, t) {
-    const s = this._gl, i = s.createShader(e);
-    if (s.shaderSource(i, t), s.compileShader(i), !s.getShaderParameter(i, s.COMPILE_STATUS)) {
-      const n = s.getShaderInfoLog(i);
-      throw s.deleteShader(i), new Error(`Failed to compile shader: ${n}`);
+    const i = this._gl, s = i.createShader(e);
+    if (i.shaderSource(s, t), i.compileShader(s), !i.getShaderParameter(s, i.COMPILE_STATUS)) {
+      const n = i.getShaderInfoLog(s);
+      throw i.deleteShader(s), new Error(`Failed to compile shader: ${n}`);
     }
-    return i;
+    return s;
   }
 }
 const I = (c) => {
@@ -248,7 +248,7 @@ const I = (c) => {
   charSpacingX: void 0,
   charSpacingY: void 0,
   resizeTo: window
-}, S = () => ({
+}, C = () => ({
   canvas: null,
   renderer: null,
   pattern: null,
@@ -268,13 +268,11 @@ const I = (c) => {
 });
 class A {
   /**
-   * Create a new ASCII renderer.
-   * @param canvas - the canvas element to render to.
-   * @param pattern - the pattern generator to use.
-   * @param options - rendering options.
+   * Create a new ASCIIRenderer instance.
+   * @param options - the renderer constructor parameters.
    */
-  constructor(e, t, s = {}) {
-    h(this, "_state", S());
+  constructor({ canvas: e, pattern: t, options: i }) {
+    h(this, "_state", C());
     h(this, "_handleResize");
     /**
      * Handle mouse move events to update mouse position.
@@ -291,9 +289,9 @@ class A {
     h(this, "_mouseClickHandler", () => {
       this._state.mouseClicked = !0;
     });
-    this._state.canvas = e, this._state.pattern = t || new C(), this._handleResize = this.resize.bind(this), this._state.options = {
+    i || (i = {}), this._state.canvas = e, this._state.pattern = t || new D(), this._handleResize = this.resize.bind(this), this._state.options = {
       ...x,
-      ...s
+      ...i
     }, this._state.renderer = I(this._state.options.rendererType || "2D"), this._state.region = this._calculateRegion(), this._setupRenderer(), this._state.options.enableMouseInteraction && this._setupMouseEvents();
   }
   /**
@@ -325,9 +323,17 @@ class A {
       throw new Error("Canvas not initialized.");
     return this._state.canvas;
   }
-  get resizeDimensions() {
+  /**
+   * Get the real canvas size, accounting for padding and `resizeTo` target size.
+   * This is used to ensure the canvas is sized correctly for rendering.
+   */
+  get realCanvasSize() {
     const e = this._state.options.resizeTo;
-    return e instanceof HTMLElement ? [e.clientWidth, e.clientHeight] : [e.innerWidth, e.innerHeight];
+    if (e instanceof HTMLElement) {
+      const t = window.getComputedStyle(e), i = parseFloat(t.paddingLeft) + parseFloat(t.paddingRight), s = parseFloat(t.paddingTop) + parseFloat(t.paddingBottom);
+      return [e.clientWidth - i, e.clientHeight - s];
+    }
+    return [e.innerWidth, e.innerHeight];
   }
   /**
    * Get the renderer, throwing an error if not initialized.
@@ -356,12 +362,13 @@ class A {
     return this._state.tempContext;
   }
   /**
-   * Render a single frame.
+   * Render a single frame. This method updates the pattern state and renders characters to the canvas.
+   * @param time - optional timestamp for the frame, defaults to `performance.now()`.
    */
   render(e = performance.now()) {
     const t = e - this._state.lastTime;
     this._state.lastTime = e, this._state.options.animated && (this._state.animationTime += t / 1e3 * this._state.options.animationSpeed);
-    const s = {
+    const i = {
       time: this._state.animationTime,
       deltaTime: t / 1e3,
       animationTime: this._state.animationTime,
@@ -373,8 +380,8 @@ class A {
       animationSpeed: this._state.options.animationSpeed
     };
     this._state.mouseClicked = !1;
-    const i = this.pattern.update(s).generate(s);
-    !this._hasOutputChanged(i) && !this._state.isDirty && !this.pattern.isDirty || (this.pattern.isDirty = !1, this._state.isDirty = !1, this._state.lastHash = this._hash(i), this.renderer.clear(this._state.options.backgroundColor), this.renderer.render(i, this.region));
+    const s = this.pattern.update(i).generate(i);
+    !this._hasOutputChanged(s) && !this._state.isDirty && !this.pattern.isDirty || (this.pattern.isDirty = !1, this._state.isDirty = !1, this._state.lastHash = this._hash(s), this.renderer.clear(this._state.options.backgroundColor), this.renderer.render(s, this.region));
   }
   /**
    * Start animation loop.
@@ -405,13 +412,13 @@ class A {
    * Resize the canvas and recalculate layout.
    */
   resize() {
-    [this.canvas.width, this.canvas.height] = this.resizeDimensions, this._state.region = this._calculateRegion(), this.renderer.resize(this.canvas.width, this.canvas.height), this.pattern.initialize(this._state.region), this.isAnimating || (this._state.isDirty = !0, this.render());
+    [this.canvas.width, this.canvas.height] = this.realCanvasSize, this._state.region = this._calculateRegion(), this.renderer.resize(this.canvas.width, this.canvas.height), this.pattern.initialize(this._state.region), this.isAnimating || (this._state.isDirty = !0, this.render());
   }
   /**
    * Cleanup resources and stop animation.
    */
   destroy() {
-    this.stopAnimation(), this._state.pattern?.destroy(), this._state.renderer?.destroy(), this._state.canvas?.removeEventListener("mousemove", this._mouseMoveHandler), this._state.canvas?.removeEventListener("click", this._mouseClickHandler), this._state.options.resizeTo.removeEventListener("resize", this._handleResize), this._state.resizeObserver?.disconnect(), this._state = S();
+    this.stopAnimation(), this._state.pattern?.destroy(), this._state.renderer?.destroy(), this._state.canvas?.removeEventListener("mousemove", this._mouseMoveHandler), this._state.canvas?.removeEventListener("click", this._mouseClickHandler), this._state.options.resizeTo.removeEventListener("resize", this._handleResize), this._state.resizeObserver?.disconnect(), this._state = C();
   }
   /**
    * Calculate character spacing based on font metrics.
@@ -423,7 +430,7 @@ class A {
       const _ = this.tempContext.measureText(r);
       e = Math.max(e, _.width);
     }
-    const t = e, s = this.tempContext.measureText(this.pattern.options.characters.join("")), i = s.actualBoundingBoxAscent + s.actualBoundingBoxDescent, n = Math.max(i, this._state.options.fontSize), a = this._state.options.charSpacingX && this._state.options.charSpacingX > 0 ? this._state.options.charSpacingX : t, o = this._state.options.charSpacingY && this._state.options.charSpacingY > 0 ? this._state.options.charSpacingY : Math.max(n, this._state.options.fontSize * 1.2);
+    const t = e, i = this.tempContext.measureText(this.pattern.options.characters.join("")), s = i.actualBoundingBoxAscent + i.actualBoundingBoxDescent, n = Math.max(s, this._state.options.fontSize), a = this._state.options.charSpacingX && this._state.options.charSpacingX > 0 ? this._state.options.charSpacingX : t, o = this._state.options.charSpacingY && this._state.options.charSpacingY > 0 ? this._state.options.charSpacingY : Math.max(n, this._state.options.fontSize * 1.2);
     return [t, n, a, o];
   }
   /**
@@ -432,7 +439,7 @@ class A {
    */
   _calculateRegion() {
     this.tempContext.font = `${this._state.options.fontSize}px ${this._state.options.fontFamily}`;
-    const [e, t, s, i] = this._calculateSpacing(), n = Math.floor(this.canvas.width / s), a = Math.floor(this.canvas.height / i);
+    const [e, t, i, s] = this._calculateSpacing(), n = Math.floor(this.canvas.width / i), a = Math.floor(this.canvas.height / s);
     return {
       startColumn: this._state.options.padding,
       endColumn: n - this._state.options.padding,
@@ -442,8 +449,8 @@ class A {
       rows: a,
       charWidth: e,
       charHeight: t,
-      charSpacingX: s,
-      charSpacingY: i,
+      charSpacingX: i,
+      charSpacingY: s,
       canvasWidth: this.canvas.width,
       canvasHeight: this.canvas.height
     };
@@ -453,7 +460,7 @@ class A {
    * This sets up the rendering context and prepares for rendering.
    */
   _setupRenderer() {
-    [this.canvas.width, this.canvas.height] = this.resizeDimensions, this.renderer.initialize(this.canvas, this._state.options), this.pattern.initialize(this.region), this._state.options.resizeTo instanceof HTMLElement ? (this._state.resizeObserver = new ResizeObserver(this._handleResize), this._state.resizeObserver.observe(this._state.options.resizeTo)) : this._state.options.resizeTo.addEventListener("resize", this._handleResize);
+    [this.canvas.width, this.canvas.height] = this.realCanvasSize, this.renderer.initialize(this.canvas, this._state.options), this.pattern.initialize(this.region), this._state.options.resizeTo instanceof HTMLElement ? (this._state.resizeObserver = new ResizeObserver(this._handleResize), this._state.resizeObserver.observe(this._state.options.resizeTo)) : this._state.options.resizeTo.addEventListener("resize", this._handleResize);
   }
   /**
    * Setup mouse event listeners for interaction.
@@ -483,8 +490,8 @@ class A {
    */
   _hash(e) {
     let t = 0;
-    for (const { x: s, y: i, char: n, color: a = "", opacity: o = 1, scale: r = 1, rotation: _ = 0 } of e)
-      t ^= (s * 31 + i * 17 ^ n.charCodeAt(0)) + (a.charCodeAt(0) || 0) * 13 + Math.floor(o * 100) * 7 + Math.floor(r * 100) * 5 + Math.floor(_ * 100) * 3;
+    for (const { x: i, y: s, char: n, color: a = "", opacity: o = 1, scale: r = 1, rotation: _ = 0 } of e)
+      t ^= (i * 31 + s * 17 ^ n.charCodeAt(0)) + (a.charCodeAt(0) || 0) * 13 + Math.floor(o * 100) * 7 + Math.floor(r * 100) * 5 + Math.floor(_ * 100) * 3;
     return t;
   }
   /**
@@ -503,8 +510,8 @@ class A {
    */
   _hasOptionsChanged(e) {
     return Object.keys(e).some((t) => {
-      const s = this._state.options[t], i = e[t];
-      return s !== i;
+      const i = this._state.options[t], s = e[t];
+      return i !== s;
     });
   }
 }
@@ -545,8 +552,8 @@ class b extends p {
    * Update options while preserving expensive permutation table when possible.
    */
   setOptions(t) {
-    const s = this._options.seed;
-    super.setOptions(t), t.seed !== void 0 && t.seed !== s && (this._permutations = this._generatePermutations(this._options.seed));
+    const i = this._options.seed;
+    super.setOptions(t), t.seed !== void 0 && t.seed !== i && (this._permutations = this._generatePermutations(this._options.seed));
   }
   update(t) {
     return this;
@@ -556,36 +563,36 @@ class b extends p {
    * @param context - the current rendering context with time and region info
    * @returns Array of character data for rendering
    */
-  generate({ animationTime: t, region: s }) {
+  generate({ animationTime: t, region: i }) {
     if (this.options.characters.length === 0)
       return [];
-    const i = [];
-    for (let n = s.startRow; n <= s.endRow; n++)
-      for (let a = s.startColumn; a <= s.endColumn; a++) {
+    const s = [];
+    for (let n = i.startRow; n <= i.endRow; n++)
+      for (let a = i.startColumn; a <= i.endColumn; a++) {
         const o = this._fractalNoise(
           a * this._options.frequency,
           n * this._options.frequency,
           t * 1e-3
         ), r = Math.max(0, Math.min(1, (o + 1) / 2)), _ = Math.floor(r * this._options.characters.length), l = Math.max(0, Math.min(_, this._options.characters.length - 1));
-        i.push({
+        s.push({
           char: this._options.characters[l],
-          x: a * s.charSpacingX,
-          y: n * s.charSpacingY,
+          x: a * i.charSpacingX,
+          y: n * i.charSpacingY,
           opacity: r
         });
       }
-    return i;
+    return s;
   }
   /**
    * Generate a proper permutation table for Perlin noise.
    */
   _generatePermutations(t) {
-    const s = y(t), i = Array.from({ length: 256 }, (n, a) => a);
+    const i = y(t), s = Array.from({ length: 256 }, (n, a) => a);
     for (let n = 255; n > 0; n--) {
-      const a = Math.floor(s() * (n + 1)), o = i[n];
-      i[n] = i[a], i[a] = o;
+      const a = Math.floor(i() * (n + 1)), o = s[n];
+      s[n] = s[a], s[a] = o;
     }
-    return i.concat(i);
+    return s.concat(s);
   }
   /**
    * Fade function for smooth interpolation.
@@ -596,46 +603,46 @@ class b extends p {
   /**
    * Linear interpolation.
    */
-  _lerp(t, s, i) {
-    return t + i * (s - t);
+  _lerp(t, i, s) {
+    return t + s * (i - t);
   }
   /**
    * 3D gradient function.
    */
-  _gradient3D(t, s, i, n) {
-    const a = t & 15, o = a < 8 ? s : i, r = a < 4 ? i : a === 12 || a === 14 ? s : n;
+  _gradient3D(t, i, s, n) {
+    const a = t & 15, o = a < 8 ? i : s, r = a < 4 ? s : a === 12 || a === 14 ? i : n;
     return ((a & 1) === 0 ? o : -o) + ((a & 2) === 0 ? r : -r);
   }
   /**
    * Generate 3D Perlin noise at given coordinates.
    */
-  _noise3D(t, s, i) {
-    const n = Math.floor(t) & 255, a = Math.floor(s) & 255, o = Math.floor(i) & 255;
-    t -= Math.floor(t), s -= Math.floor(s), i -= Math.floor(i);
-    const r = this._fade(t), _ = this._fade(s), l = this._fade(i), u = this._permutations[n] + a & 255, m = this._permutations[u] + o & 255, g = this._permutations[u + 1 & 255] + o & 255, f = this._permutations[n + 1 & 255] + a & 255, v = this._permutations[f] + o & 255, D = this._permutations[f + 1 & 255] + o & 255;
+  _noise3D(t, i, s) {
+    const n = Math.floor(t) & 255, a = Math.floor(i) & 255, o = Math.floor(s) & 255;
+    t -= Math.floor(t), i -= Math.floor(i), s -= Math.floor(s);
+    const r = this._fade(t), _ = this._fade(i), l = this._fade(s), u = this._permutations[n] + a & 255, m = this._permutations[u] + o & 255, g = this._permutations[u + 1 & 255] + o & 255, f = this._permutations[n + 1 & 255] + a & 255, v = this._permutations[f] + o & 255, S = this._permutations[f + 1 & 255] + o & 255;
     return this._lerp(
       this._lerp(
         this._lerp(
-          this._gradient3D(this._permutations[m], t, s, i),
-          this._gradient3D(this._permutations[v], t - 1, s, i),
+          this._gradient3D(this._permutations[m], t, i, s),
+          this._gradient3D(this._permutations[v], t - 1, i, s),
           r
         ),
         this._lerp(
-          this._gradient3D(this._permutations[g], t, s - 1, i),
-          this._gradient3D(this._permutations[D], t - 1, s - 1, i),
+          this._gradient3D(this._permutations[g], t, i - 1, s),
+          this._gradient3D(this._permutations[S], t - 1, i - 1, s),
           r
         ),
         _
       ),
       this._lerp(
         this._lerp(
-          this._gradient3D(this._permutations[m + 1 & 255], t, s, i - 1),
-          this._gradient3D(this._permutations[v + 1 & 255], t - 1, s, i - 1),
+          this._gradient3D(this._permutations[m + 1 & 255], t, i, s - 1),
+          this._gradient3D(this._permutations[v + 1 & 255], t - 1, i, s - 1),
           r
         ),
         this._lerp(
-          this._gradient3D(this._permutations[g + 1 & 255], t, s - 1, i - 1),
-          this._gradient3D(this._permutations[D + 1 & 255], t - 1, s - 1, i - 1),
+          this._gradient3D(this._permutations[g + 1 & 255], t, i - 1, s - 1),
+          this._gradient3D(this._permutations[S + 1 & 255], t - 1, i - 1, s - 1),
           r
         ),
         _
@@ -647,13 +654,13 @@ class b extends p {
    * Generate fractal noise using multiple octaves.
    * This creates more natural-looking, organic patterns.
    */
-  _fractalNoise(t, s, i = 0) {
+  _fractalNoise(t, i, s = 0) {
     let n = 0, a = 0, o = 1, r = 1;
     for (let _ = 0; _ < this._octaves; _++)
       n += this._noise3D(
         t * r,
-        s * r,
-        i * r
+        i * r,
+        s * r
       ) * o, a += o, o *= this._persistence, r *= this._lacunarity;
     return n / a;
   }
@@ -661,15 +668,15 @@ class b extends p {
    * Generate animated noise that changes over time.
    * This creates flowing, organic motion patterns.
    */
-  _animatedNoise(t, s, i) {
+  _animatedNoise(t, i, s) {
     const a = this._frequency, o = this._fractalNoise(
       t * a,
-      s * a,
-      i * 0.01
+      i * a,
+      s * 0.01
     ), r = this._fractalNoise(
       (t + 1e3) * a,
-      (s + 1e3) * a,
-      i * 0.01 * 0.8
+      (i + 1e3) * a,
+      s * 0.01 * 0.8
     );
     return (o + r * 0.5) / 1.5;
   }
@@ -677,21 +684,21 @@ class b extends p {
    * Generate a noise function suitable for ASCII pattern generation.
    */
   _getNoiseFunction(t = "down") {
-    return (s, i, n) => {
-      let a = s, o = i;
+    return (i, s, n) => {
+      let a = i, o = s;
       const r = n;
       switch (t) {
         case "left":
-          a = s + n * 0.5;
+          a = i + n * 0.5;
           break;
         case "right":
-          a = s - n * 0.5;
+          a = i - n * 0.5;
           break;
         case "up":
-          o = i + n * 0.5;
+          o = s + n * 0.5;
           break;
         case "down":
-          o = i - n * 0.5;
+          o = s - n * 0.5;
           break;
       }
       return this._animatedNoise(a, o, r);
@@ -709,7 +716,7 @@ const E = {
   fadeOpacity: 0.2,
   headColor: "#FFFFFF"
 };
-class O extends p {
+class L extends p {
   constructor(t = {}) {
     super({ ...E, ...t });
     h(this, "_rainDrops", []);
@@ -717,8 +724,8 @@ class O extends p {
     h(this, "_lastFrameCharacters", []);
   }
   initialize(t) {
-    const s = this._rainDrops.length > 0, i = this._region;
-    this._region = t, !s || !i || Math.abs(i.columns - t.columns) > 2 || Math.abs(i.rows - t.rows) > 2 ? (this._rainDrops = [], this._lastFrameCharacters = [], this._initializeRainDrops()) : (this._adjustDropsToNewRegion(i, t), this._maintainRainDensity());
+    const i = this._rainDrops.length > 0, s = this._region;
+    this._region = t, !i || !s || Math.abs(s.columns - t.columns) > 2 || Math.abs(s.rows - t.rows) > 2 ? (this._rainDrops = [], this._lastFrameCharacters = [], this._initializeRainDrops()) : (this._adjustDropsToNewRegion(s, t), this._maintainRainDensity());
   }
   update(t) {
     return this._region ? (this._updateRainDrops(t), this._maintainRainDensity(), this) : this;
@@ -726,51 +733,51 @@ class O extends p {
   generate(t) {
     if ((!this._region || this._rainDrops.length === 0) && (this._region && this._rainDrops.length === 0 && this._initializeRainDrops(), this._rainDrops.length === 0))
       return [];
-    const s = [];
+    const i = [];
     if (this._options.fadeOpacity > 0)
-      for (const i of this._lastFrameCharacters)
-        s.push({ ...i, opacity: this._options.fadeOpacity });
-    for (const i of this._rainDrops)
-      this._renderRainDrop(i, s, t);
-    return this._lastFrameCharacters = s.filter((i) => i.opacity !== this._options.fadeOpacity), s;
+      for (const s of this._lastFrameCharacters)
+        i.push({ ...s, opacity: this._options.fadeOpacity });
+    for (const s of this._rainDrops)
+      this._renderRainDrop(s, i, t);
+    return this._lastFrameCharacters = i.filter((s) => s.opacity !== this._options.fadeOpacity), i;
   }
   _initializeRainDrops() {
     if (!this._region)
       return;
-    const t = Math.floor(this._region.columns * this._options.rainDensity), s = Math.max(1, t);
-    for (let i = 0; i < s; i++) {
+    const t = Math.floor(this._region.columns * this._options.rainDensity), i = Math.max(1, t);
+    for (let s = 0; s < i; s++) {
       const n = Math.floor(Math.random() * this._region.columns) + this._region.startColumn, a = this._createRainDrop(n, 0);
-      i < Math.max(1, Math.floor(s * 0.3)) && (a.y = Math.random() * this._region.rows), this._rainDrops.push(a);
+      s < Math.max(1, Math.floor(i * 0.3)) && (a.y = Math.random() * this._region.rows), this._rainDrops.push(a);
     }
   }
-  _createRainDrop(t, s = 0) {
-    const i = Math.floor(
+  _createRainDrop(t, i = 0) {
+    const s = Math.floor(
       Math.random() * (this._options.maxDropLength - this._options.minDropLength)
     ) + this._options.minDropLength, n = Array.from(
-      { length: i },
+      { length: s },
       () => this._options.characters[Math.floor(Math.random() * this._options.characters.length)]
     );
     return {
-      y: -Math.floor(Math.random() * i) - Math.random() * 10,
+      y: -Math.floor(Math.random() * s) - Math.random() * 10,
       column: t,
-      length: i,
+      length: s,
       characters: n,
-      lastMutationTime: s,
+      lastMutationTime: i,
       speed: Math.random() * (this._options.maxSpeed - this._options.minSpeed) + this._options.minSpeed
     };
   }
   _updateRainDrops(t) {
     if (this._region)
-      for (const s of this._rainDrops) {
-        if (t.isAnimating && (s.y += s.speed * t.animationSpeed * t.deltaTime), t.animationTime - s.lastMutationTime > 1 / this._options.mutationRate && Math.random() < this._options.mutationRate) {
-          const i = Math.floor(Math.random() * s.length);
-          s.characters[i] = this._options.characters[Math.floor(Math.random() * this._options.characters.length)], s.lastMutationTime = t.animationTime;
+      for (const i of this._rainDrops) {
+        if (t.isAnimating && (i.y += i.speed * t.animationSpeed * t.deltaTime), t.animationTime - i.lastMutationTime > 1 / this._options.mutationRate && Math.random() < this._options.mutationRate) {
+          const s = Math.floor(Math.random() * i.length);
+          i.characters[s] = this._options.characters[Math.floor(Math.random() * this._options.characters.length)], i.lastMutationTime = t.animationTime;
         }
-        s.y - s.length > this._region.endRow && this._resetRainDrop(s, t.animationTime);
+        i.y - i.length > this._region.endRow && this._resetRainDrop(i, t.animationTime);
       }
   }
-  _resetRainDrop(t, s) {
-    this._region && (t.lastMutationTime = s, t.y = -Math.floor(Math.random() * 8) - t.length, t.length = Math.floor(
+  _resetRainDrop(t, i) {
+    this._region && (t.lastMutationTime = i, t.y = -Math.floor(Math.random() * 8) - t.length, t.length = Math.floor(
       Math.random() * (this._options.maxDropLength - this._options.minDropLength)
     ) + this._options.minDropLength, t.characters = Array.from(
       { length: t.length },
@@ -782,19 +789,19 @@ class O extends p {
       return;
     const t = Math.floor(this._region.columns * this._options.rainDensity);
     for (; this._rainDrops.length < t; ) {
-      const s = this._rainDrops.length % this._region.columns + this._region.startColumn, i = this._createRainDrop(s, 0);
-      Math.random() < 0.4 && (i.y = Math.random() * this._region.rows + this._region.startRow), this._rainDrops.push(i);
+      const i = this._rainDrops.length % this._region.columns + this._region.startColumn, s = this._createRainDrop(i, 0);
+      Math.random() < 0.4 && (s.y = Math.random() * this._region.rows + this._region.startRow), this._rainDrops.push(s);
     }
     this._rainDrops.length > t && (this._rainDrops.length = t);
   }
   /**
    * Adjust existing drops to fit a new region without losing current state.
    */
-  _adjustDropsToNewRegion(t, s) {
-    for (const i of this._rainDrops)
-      i.column >= s.startColumn + s.columns ? i.column = i.column % s.columns + s.startColumn : i.column < s.startColumn && (i.column = s.startColumn);
+  _adjustDropsToNewRegion(t, i) {
+    for (const s of this._rainDrops)
+      s.column >= i.startColumn + i.columns ? s.column = s.column % i.columns + i.startColumn : s.column < i.startColumn && (s.column = i.startColumn);
   }
-  _renderRainDrop(t, s, i) {
+  _renderRainDrop(t, i, s) {
     if (this._region)
       for (let n = 0; n < t.length; n++) {
         const a = Math.floor(t.y) - n;
@@ -802,7 +809,7 @@ class O extends p {
           continue;
         const o = t.column * this._region.charSpacingX, r = a * this._region.charSpacingY;
         let _, l = 1;
-        n === 0 ? _ = this._options.headColor : n >= 3 && (l = 1 - n / t.length), s.push({
+        n === 0 ? _ = this._options.headColor : n >= 3 && (l = 1 - n / t.length), i.push({
           x: o,
           y: r,
           color: _,
@@ -816,36 +823,36 @@ class O extends p {
   }
   setOptions(t) {
     if (super.setOptions(t), t.rainDensity !== void 0 && this._region && this._maintainRainDensity(), t.characters !== void 0)
-      for (const s of this._rainDrops)
-        s.characters = Array.from(
-          { length: s.length },
+      for (const i of this._rainDrops)
+        i.characters = Array.from(
+          { length: i.length },
           () => this._options.characters[Math.floor(Math.random() * this._options.characters.length)]
         );
   }
 }
-h(O, "ID", "rain");
-const L = {
+h(L, "ID", "rain");
+const O = {
   seed: 0
 };
 class F extends p {
   constructor(e = {}) {
-    super({ ...L, ...e });
+    super({ ...O, ...e });
   }
   update(e) {
     return this;
   }
   generate({ region: e, animationTime: t }) {
-    const s = [], i = y(this._options.seed + Math.floor(t * 10));
+    const i = [], s = y(this._options.seed + Math.floor(t * 10));
     for (let n = e.startRow; n <= e.endRow; n++)
       for (let a = e.startColumn; a <= e.endColumn; a++) {
-        const o = Math.floor(i() * this._options.characters.length), r = this._options.characters[o] || " ";
-        s.push({
+        const o = Math.floor(s() * this._options.characters.length), r = this._options.characters[o] || " ";
+        i.push({
           char: r,
           x: a * e.charSpacingX,
           y: n * e.charSpacingY
         });
       }
-    return s;
+    return i;
   }
 }
 h(F, "ID", "static");
@@ -873,8 +880,8 @@ class P {
    * @param pattern - The pattern to use for rendering.
    * @param options - Optional renderer options.
    */
-  init(e, t, s) {
-    return this.renderer = new A(e, t, s), this;
+  init(e, t, i) {
+    return this.renderer = new A({ canvas: e, pattern: t, options: i }), this;
   }
   /**
    * Start the animation.
@@ -918,10 +925,10 @@ export {
   P as ASCIIGround,
   A as ASCIIRenderer,
   d as Canvas2DRenderer,
-  C as DummyPattern,
+  D as DummyPattern,
   p as Pattern,
   b as PerlinNoisePattern,
-  O as RainPattern,
+  L as RainPattern,
   F as StaticNoisePattern,
   T as WebGLRenderer,
   I as createRenderer,

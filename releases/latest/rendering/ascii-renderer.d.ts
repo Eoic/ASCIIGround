@@ -30,6 +30,16 @@ export interface ASCIIRendererOptions {
     resizeTo: Window | HTMLElement;
 }
 /**
+ * Constructor options for the ASCIIRenderer.
+ * @category Rendering
+ * @see ASCIIRenderer
+ */
+export interface ASCIIRendererConstructor {
+    canvas: HTMLCanvasElement;
+    pattern?: Pattern;
+    options?: Partial<ASCIIRendererOptions>;
+}
+/**
  * Main ASCII renderer that coordinates pattern generation with rendering back-ends.
  * Supports both 2D canvas and WebGL rendering with automatic fallback.
  * @category Rendering
@@ -52,7 +62,11 @@ export declare class ASCIIRenderer {
      * Get the canvas element, throwing an error if not initialized.
      */
     private get canvas();
-    private get resizeDimensions();
+    /**
+     * Get the real canvas size, accounting for padding and `resizeTo` target size.
+     * This is used to ensure the canvas is sized correctly for rendering.
+     */
+    private get realCanvasSize();
     /**
      * Get the renderer, throwing an error if not initialized.
      */
@@ -66,14 +80,13 @@ export declare class ASCIIRenderer {
      */
     private get tempContext();
     /**
-     * Create a new ASCII renderer.
-     * @param canvas - the canvas element to render to.
-     * @param pattern - the pattern generator to use.
-     * @param options - rendering options.
+     * Create a new ASCIIRenderer instance.
+     * @param options - the renderer constructor parameters.
      */
-    constructor(canvas: HTMLCanvasElement, pattern?: Pattern, options?: Partial<ASCIIRendererOptions>);
+    constructor({ canvas, pattern, options }: ASCIIRendererConstructor);
     /**
-     * Render a single frame.
+     * Render a single frame. This method updates the pattern state and renders characters to the canvas.
+     * @param time - optional timestamp for the frame, defaults to `performance.now()`.
      */
     render(time?: number): void;
     /**
