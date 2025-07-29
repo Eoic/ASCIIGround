@@ -5,12 +5,23 @@ import { ASCIIRenderer } from '../rendering/ascii-renderer';
 
 (() => {
     function start() {
-        const canvas = document.createElement('canvas');
-        const renderer = new ASCIIRenderer(canvas);
+        let canvas: HTMLCanvasElement | null = document.getElementById('canvas') as HTMLCanvasElement | null;
+
+        if (!canvas)
+            canvas = document.createElement('canvas');
+
+        let canvasContainer = document.getElementById('canvas-container') as HTMLDivElement | null;
+
+        if (!canvasContainer) {
+            canvasContainer = document.createElement('div');
+            canvasContainer.id = 'canvas-container';
+            canvasContainer.appendChild(canvas);
+            document.body.appendChild(canvasContainer);
+        }
+
+        const renderer = new ASCIIRenderer({ canvas, options: { resizeTo: canvasContainer } });
         const loader = document.getElementById('loader') as HTMLElement;
         const controls = document.getElementById('controls') as HTMLFormElement;
-
-        document.body.appendChild(canvas);
         handleControls(controls, renderer);
         removeLoader(loader);
     }

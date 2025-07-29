@@ -85,6 +85,12 @@ const mockWindow = {
     innerHeight: 1080,
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
+    getComputedStyle: vi.fn(() => ({
+        paddingLeft: '0px',
+        paddingRight: '0px',
+        paddingTop: '0px',
+        paddingBottom: '0px',
+    })),
 };
 
 Object.assign(globalThis, {
@@ -92,6 +98,7 @@ Object.assign(globalThis, {
     window: mockWindow,
     HTMLCanvasElement: vi.fn(),
     HTMLFormElement: vi.fn(),
+    HTMLElement: vi.fn(),
     requestAnimationFrame: vi.fn((callback: FrameRequestCallback) => {
         callback(1000);
         return 123;
@@ -112,10 +119,73 @@ describe('Demo script execution', () => {
         vi.clearAllMocks();
         mockCanvas = createMockCanvas();
 
+        vi.doMock('../rendering/renderer', () => ({
+            createRenderer: vi.fn(() => ({
+                initialize: vi.fn(),
+                render: vi.fn(),
+                clear: vi.fn(),
+                destroy: vi.fn(),
+                resize: vi.fn(),
+                options: {},
+            })),
+        }));
+
+        vi.doMock('../patterns/dummy-pattern', () => ({
+            DummyPattern: vi.fn(() => ({
+                initialize: vi.fn(),
+                update: vi.fn(() => ({ generate: vi.fn(() => []) })),
+                destroy: vi.fn(),
+                isDirty: false,
+                options: { characters: ['#'] },
+            })),
+        }));
+
         mockDocument.createElement.mockImplementation((tagName: string) => {
             if (tagName === 'canvas')
                 return mockCanvas;
-            
+
+            if (tagName === 'div') {
+                const mockDiv = {
+                    tagName: 'DIV',
+                    id: '',
+                    appendChild: vi.fn(),
+                    removeChild: vi.fn(),
+                    innerHTML: '',
+                    textContent: '',
+                    get clientWidth() { 
+                        return mockWindow.innerWidth; 
+                    },
+                    get clientHeight() { 
+                        return mockWindow.innerHeight; 
+                    },
+                    getBoundingClientRect: vi.fn(() => ({
+                        left: 0, top: 0, right: mockWindow.innerWidth, bottom: mockWindow.innerHeight,
+                        width: mockWindow.innerWidth, height: mockWindow.innerHeight, x: 0, y: 0, toJSON: () => ({}),
+                    })),
+                    style: {
+                        paddingLeft: '0px',
+                        paddingRight: '0px',
+                        paddingTop: '0px',
+                        paddingBottom: '0px',
+                    },
+                    classList: {
+                        add: vi.fn(),
+                        remove: vi.fn(),
+                        contains: vi.fn(),
+                        toggle: vi.fn(),
+                    },
+                    addEventListener: vi.fn(),
+                    removeEventListener: vi.fn(),
+                    setAttribute: vi.fn(),
+                    getAttribute: vi.fn(),
+                    removeAttribute: vi.fn(),
+                    hasAttribute: vi.fn(),
+                };
+
+                Object.setPrototypeOf(mockDiv, HTMLElement.prototype);
+                return mockDiv;
+            }
+
             return {
                 tagName: tagName.toUpperCase(),
                 appendChild: vi.fn(),
@@ -188,13 +258,13 @@ describe('Demo script execution', () => {
         if (domContentLoadedCallback)
             domContentLoadedCallback();
 
+        expect(mockDocument.createElement).toHaveBeenCalledWith('div');
         expect(mockDocument.createElement).toHaveBeenCalledWith('canvas');
-        
+        expect(mockDocument.getElementById).toHaveBeenCalledWith('canvas-container');
         expect(mockCanvas.width).toBe(1920);
         expect(mockCanvas.height).toBe(1080);
         expect(mockDocument.getElementById).toHaveBeenCalledWith('loader');
         expect(mockDocument.getElementById).toHaveBeenCalledWith('controls');
-        expect(mockBody.appendChild).toHaveBeenCalledWith(mockCanvas);
         expect(mockLoader.classList.add).toHaveBeenCalledWith('hidden');
         expect(mockControlsClassList.remove).toHaveBeenCalledWith('hidden');
     });
@@ -240,7 +310,7 @@ describe('Demo script execution', () => {
         expect(mockCanvas.height).toBe(1080);
         expect(mockDocument.getElementById).toHaveBeenCalledWith('loader');
         expect(mockDocument.getElementById).toHaveBeenCalledWith('controls');
-        expect(mockBody.appendChild).toHaveBeenCalledWith(mockCanvas);
+        expect(mockDocument.createElement).toHaveBeenCalledWith('div');
         expect(mockControlsClassList.remove).toHaveBeenCalledWith('hidden');
         expect(mockLoader.classList.add).toHaveBeenCalledWith('hidden');
     });

@@ -28,6 +28,10 @@
         <h2 class="gradient-text">Controls</h2>
     </form>
 
+    <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+
     <% scripts.forEach(function(scriptPath) { %>
         <% if (scriptPath.endsWith(".ts")) { %>
             <script type="module" src="<%= scriptPath %>"></script>

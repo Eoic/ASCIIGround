@@ -131,11 +131,19 @@ export class ASCIIRenderer {
         return this._state.canvas;
     }
 
-    private get resizeDimensions(): [ width: number, height: number ] {
+    /**
+     * Get the real canvas size, accounting for padding and `resizeTo` target size.
+     * This is used to ensure the canvas is sized correctly for rendering.
+     */
+    private get realCanvasSize(): [ width: number, height: number ] {
         const target = this._state.options.resizeTo;
 
-        if (target instanceof HTMLElement)
-            return [target.clientWidth, target.clientHeight];
+        if (target instanceof HTMLElement) {
+            const style = window.getComputedStyle(target);
+            const paddingInline = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+            const paddingBlock = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+            return [target.clientWidth - paddingInline, target.clientHeight - paddingBlock];
+        }
 
         return [target.innerWidth, target.innerHeight];
     }
@@ -204,7 +212,8 @@ export class ASCIIRenderer {
     }
 
     /**
-     * Render a single frame.
+     * Render a single frame. This method updates the pattern state and renders characters to the canvas.
+     * @param time - optional timestamp for the frame, defaults to `performance.now()`.
      */
     public render(time: number = performance.now()): void {
         const deltaTime = time - this._state.lastTime;
@@ -288,7 +297,7 @@ export class ASCIIRenderer {
      * Resize the canvas and recalculate layout.
      */
     public resize(): void {
-        [this.canvas.width, this.canvas.height] = this.resizeDimensions;
+        [this.canvas.width, this.canvas.height] = this.realCanvasSize;
         this._state.region = this._calculateRegion();
         this.renderer.resize(this.canvas.width, this.canvas.height);
         this.pattern.initialize(this._state.region);
@@ -372,7 +381,7 @@ export class ASCIIRenderer {
      * This sets up the rendering context and prepares for rendering.
      */
     private _setupRenderer(): void {
-        [this.canvas.width, this.canvas.height] = this.resizeDimensions;
+        [this.canvas.width, this.canvas.height] = this.realCanvasSize;
         this.renderer.initialize(this.canvas, this._state.options);
         this.pattern.initialize(this.region);
 

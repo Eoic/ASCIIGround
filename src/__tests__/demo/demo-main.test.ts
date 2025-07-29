@@ -4,9 +4,7 @@ interface MockDocument {
     createElement: ReturnType<typeof vi.fn>;
     getElementById: ReturnType<typeof vi.fn>;
     addEventListener: ReturnType<typeof vi.fn>;
-    body: {
-        appendChild: ReturnType<typeof vi.fn>;
-    };
+    body: { appendChild: ReturnType<typeof vi.fn> };
 }
 
 describe('Demo.ts Coverage Test', () => {
@@ -15,7 +13,7 @@ describe('Demo.ts Coverage Test', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.resetModules();
-        
+
         const mockCanvas = {
             width: 0,
             height: 0,
@@ -144,13 +142,13 @@ describe('Demo.ts Coverage Test', () => {
         expect(addEventListenerMock).toHaveBeenCalledWith('DOMContentLoaded', expect.anything());
 
         const calls = vi.mocked(addEventListenerMock).mock.calls;
-        const domLoadedCall = calls.find(call => call[0] === 'DOMContentLoaded');
+        const domLoadedCall = calls.find((call) => call[0] === 'DOMContentLoaded');
         expect(domLoadedCall).toBeDefined();
-        
+
         if (domLoadedCall) {
             const startFunction = domLoadedCall[1] as () => void;
             startFunction();
-            
+
             const createElementMock = mockDocument.createElement;
             expect(createElementMock).toHaveBeenCalledWith('canvas');
             
