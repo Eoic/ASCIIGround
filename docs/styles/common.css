@@ -10,6 +10,10 @@ body {
     background-color: #292929;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 /* Text and color utilities */
 .text-muted {
     color: #ddd;
