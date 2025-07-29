@@ -67,7 +67,6 @@ const mockBody = {
     removeChild: vi.fn(),
 };
 
-// Mock document
 const mockDocument = {
     createElement: vi.fn(),
     getElementById: vi.fn((id: string) => {
@@ -119,24 +118,40 @@ describe('Demo script execution', () => {
         vi.clearAllMocks();
         mockCanvas = createMockCanvas();
 
-        vi.doMock('../rendering/renderer', () => ({
-            createRenderer: vi.fn(() => ({
-                initialize: vi.fn(),
-                render: vi.fn(),
-                clear: vi.fn(),
-                destroy: vi.fn(),
-                resize: vi.fn(),
-                options: {},
-            })),
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+        /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+        vi.doMock('../../rendering/ascii-renderer', () => ({
+            ASCIIRenderer: vi.fn().mockImplementation(({ canvas, options }: any) => {
+                if (canvas && options?.resizeTo) {
+                    const target = options.resizeTo;
+
+                    if (target && 'clientWidth' in target) {
+                        canvas.width = target.clientWidth;
+                        canvas.height = target.clientHeight;
+                    } else if (target && 'innerWidth' in target) {
+                        canvas.width = target.innerWidth;
+                        canvas.height = target.innerHeight;
+                    }
+                }
+                return {
+                    initialize: vi.fn(),
+                    render: vi.fn(),
+                    clear: vi.fn(),
+                    destroy: vi.fn(),
+                    resize: vi.fn(),
+                    options: {},
+                    canvas,
+                };
+            }),
         }));
 
-        vi.doMock('../patterns/dummy-pattern', () => ({
-            DummyPattern: vi.fn(() => ({
-                initialize: vi.fn(),
-                update: vi.fn(() => ({ generate: vi.fn(() => []) })),
-                destroy: vi.fn(),
-                isDirty: false,
-                options: { characters: ['#'] },
+        /* eslint-enable @typescript-eslint/no-explicit-any */
+        /* eslint-enable @typescript-eslint/no-unsafe-member-access */
+        /* eslint-enable @typescript-eslint/no-unsafe-assignment */
+        vi.doMock('../../demo/ui/config-generator', () => ({
+            createPatternControls: vi.fn(() => ({
+                switchPattern: vi.fn(),
             })),
         }));
 
@@ -239,20 +254,6 @@ describe('Demo script execution', () => {
     });
 
     it('should execute start function when DOMContentLoaded fires', async () => {
-        const mockASCIIRenderer = vi.fn();
-
-        vi.doMock('../rendering/ascii-renderer', () => ({
-            ASCIIRenderer: mockASCIIRenderer,
-        }));
-
-        const mockCreatePatternControls = vi.fn(() => ({
-            switchPattern: vi.fn(),
-        }));
-
-        vi.doMock('./ui/config-generator', () => ({
-            createPatternControls: mockCreatePatternControls,
-        }));
-
         await import('../../demo/demo');
 
         if (domContentLoadedCallback)
