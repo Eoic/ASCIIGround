@@ -33,6 +33,17 @@ export interface ASCIIRendererOptions {
     resizeTo: Window | HTMLElement
 }
 
+/**
+ * Constructor options for the ASCIIRenderer.
+ * @category Rendering
+ * @see ASCIIRenderer
+ */
+export interface ASCIIRendererConstructor {
+    canvas: HTMLCanvasElement;
+    pattern?: Pattern;
+    options?: Partial<ASCIIRendererOptions>;
+}
+
 const DEFAULT_OPTIONS: ASCIIRendererOptions = {
     color: '#3e3e80ff',
     fontSize: 32,
@@ -168,12 +179,13 @@ export class ASCIIRenderer {
     }
 
     /**
-     * Create a new ASCII renderer.
-     * @param canvas - the canvas element to render to.
-     * @param pattern - the pattern generator to use.
-     * @param options - rendering options.
+     * Create a new ASCIIRenderer instance.
+     * @param options - the renderer constructor parameters.
      */
-    constructor(canvas: HTMLCanvasElement, pattern?: Pattern, options: Partial<ASCIIRendererOptions> = {}) {
+    constructor({ canvas, pattern, options }: ASCIIRendererConstructor) {
+        if (!options)
+            options = {};
+
         this._state.canvas = canvas;
         this._state.pattern = pattern || new DummyPattern();
         this._handleResize = this.resize.bind(this);

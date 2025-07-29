@@ -66,7 +66,7 @@ describe('PatternProxy', () => {
         });
 
         const pattern = new DummyPattern();
-        renderer = new ASCIIRenderer(mockCanvas, pattern);
+        renderer = new ASCIIRenderer({ canvas: mockCanvas, pattern });
         patternProxy = new PatternProxy(renderer);
     });
 

@@ -103,7 +103,7 @@ export class ASCIIGround {
         pattern: Pattern,
         options?: Partial<ASCIIRendererOptions>
     ): ASCIIGround {
-        this.renderer = new ASCIIRenderer(canvas, pattern, options);
+        this.renderer = new ASCIIRenderer({ canvas, pattern, options });
         return this;
     }
 

@@ -46,7 +46,7 @@ describe('ASCIIRenderer', () => {
 
     describe('constructor', () => {
         it('should create ASCIIRenderer instance with default options', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
             expect(renderer.pattern).toBe(pattern);
@@ -60,7 +60,7 @@ describe('ASCIIRenderer', () => {
                 fontFamily: 'courier',
             };
             
-            const renderer = new ASCIIRenderer(canvas, pattern, options);
+            const renderer = new ASCIIRenderer({ canvas, pattern, options });
             
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
             expect(mockContext.font).toBe('16px courier');
@@ -69,13 +69,13 @@ describe('ASCIIRenderer', () => {
         it('should throw error if canvas context is not available', () => {
             vi.spyOn(canvas, 'getContext').mockReturnValue(null);
             
-            expect(() => new ASCIIRenderer(canvas, pattern)).toThrow('Could not get 2D context from canvas');
+            expect(() => new ASCIIRenderer({ canvas, pattern })).toThrow('Could not get 2D context from canvas');
         });
     });
 
     describe('pattern management', () => {
         it('should set and get pattern', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             const newPattern = new PerlinNoisePattern();
             
             renderer.pattern = newPattern;
@@ -83,7 +83,7 @@ describe('ASCIIRenderer', () => {
         });
 
         it('should initialize pattern when set', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             const newPattern = new PerlinNoisePattern();
             const initializeSpy = vi.spyOn(newPattern, 'initialize');
             
@@ -94,14 +94,14 @@ describe('ASCIIRenderer', () => {
 
     describe('animation control', () => {
         it('should start animation', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             renderer.startAnimation();
             expect(mockRequestAnimationFrame).toHaveBeenCalled();
         });
 
         it('should stop animation', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             renderer.startAnimation();
             renderer.stopAnimation();
@@ -109,7 +109,7 @@ describe('ASCIIRenderer', () => {
         });
 
         it('should not start animation if already running', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             renderer.startAnimation();
             mockRequestAnimationFrame.mockClear();
@@ -118,7 +118,7 @@ describe('ASCIIRenderer', () => {
         });
 
         it('should handle multiple stop calls gracefully', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             renderer.startAnimation();
             renderer.stopAnimation();
@@ -129,7 +129,7 @@ describe('ASCIIRenderer', () => {
 
     describe('options management', () => {
         it('should update options', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             renderer.setOptions({
                 fontSize: 20,
@@ -140,24 +140,27 @@ describe('ASCIIRenderer', () => {
         });
 
         it('should handle padding option', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern, { padding: 10 });
-            
+            const renderer = new ASCIIRenderer({ canvas, pattern, options: { padding: 10 } });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
 
         it('should handle custom character spacing', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern, {
-                charSpacingX: 15,
-                charSpacingY: 20,
+            const renderer = new ASCIIRenderer({
+                canvas,
+                pattern,
+                options: {
+                    charSpacingX: 15,
+                    charSpacingY: 20,
+                },
             });
-            
+
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
     });
 
     describe('resize functionality', () => {
         it('should resize canvas', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             renderer.resize();
             expect(canvas.width).toBeGreaterThan(0);
             expect(canvas.height).toBeGreaterThan(0);
@@ -166,7 +169,7 @@ describe('ASCIIRenderer', () => {
         });
 
         it('should recalculate grid on resize', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             const initializeSpy = vi.spyOn(pattern, 'initialize');
             
             canvas.width = 1200;
@@ -179,10 +182,8 @@ describe('ASCIIRenderer', () => {
 
     describe('mouse interaction', () => {
         it('should handle mouse events when enabled', () => {
-            new ASCIIRenderer(canvas, pattern, {
-                enableMouseInteraction: true,
-            });
-            
+            new ASCIIRenderer({canvas, pattern, options: { enableMouseInteraction: true }});
+
             const mouseEvent = new MouseEvent('mousemove', {
                 clientX: 100,
                 clientY: 200,
@@ -195,11 +196,7 @@ describe('ASCIIRenderer', () => {
 
         it('should not add mouse listeners when disabled', () => {
             const addEventListenerSpy = vi.spyOn(canvas, 'addEventListener');
-            
-            new ASCIIRenderer(canvas, pattern, {
-                enableMouseInteraction: false,
-            });
-            
+            new ASCIIRenderer({ canvas, pattern, options: { enableMouseInteraction: false } });
             expect(addEventListenerSpy).not.toHaveBeenCalledWith('mousemove', expect.any(Function));
         });
     });
@@ -209,15 +206,15 @@ describe('ASCIIRenderer', () => {
             const perlinPattern = new PerlinNoisePattern();
             
             expect(() => {
-                new ASCIIRenderer(canvas, perlinPattern);
+                new ASCIIRenderer({canvas, pattern: perlinPattern });
             }).not.toThrow();
         });
 
         it('should work with RainPattern', () => {
             const rainPattern = new RainPattern();
-            
+
             expect(() => {
-                new ASCIIRenderer(canvas, rainPattern);
+                new ASCIIRenderer({ canvas, pattern: rainPattern });
             }).not.toThrow();
         });
 
@@ -225,14 +222,14 @@ describe('ASCIIRenderer', () => {
             const staticPattern = new StaticNoisePattern();
             
             expect(() => {
-                new ASCIIRenderer(canvas, staticPattern);
+                new ASCIIRenderer({ canvas, pattern: staticPattern });
             }).not.toThrow();
         });
     });
 
     describe('rendering', () => {
         it('should render frame without errors', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             expect(() => {
                 renderer.render();
@@ -245,25 +242,27 @@ describe('ASCIIRenderer', () => {
             const fontSizes = [8, 12, 16, 24, 32];
             
             fontSizes.forEach(fontSize => {
-                new ASCIIRenderer(canvas, pattern, { fontSize });
+                new ASCIIRenderer({ canvas, pattern, options: { fontSize }});
                 expect(mockContext.font).toContain(`${fontSize}px`);
             });
         });
 
         it('should handle different colors', () => {
             const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffffff'];
-            colors.forEach((color) => new ASCIIRenderer(canvas, pattern, { color }));
+            colors.forEach((color) => new ASCIIRenderer({ canvas, pattern, options: { color } }));
         });
     });
 
     describe('destruction', () => {
         it('should clean up resources on destroy', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern, {
-                enableMouseInteraction: true,
+            const renderer = new ASCIIRenderer({
+                canvas,
+                pattern,
+                options: { enableMouseInteraction: true },
             });
-            
+
             renderer.startAnimation();
-            
+
             expect(() => {
                 renderer.destroy();
             }).not.toThrow();
@@ -274,24 +273,26 @@ describe('ASCIIRenderer', () => {
         it('should remove event listeners on destroy', () => {
             const removeEventListenerSpy = vi.spyOn(canvas, 'removeEventListener');
             
-            const renderer = new ASCIIRenderer(canvas, pattern, {
-                enableMouseInteraction: true,
+            const renderer = new ASCIIRenderer({
+                canvas,
+                pattern, 
+                options: { enableMouseInteraction: true },
             });
-            
+
             renderer.destroy();
-            
+
             expect(removeEventListenerSpy).toHaveBeenCalled();
         });
     });
 
     describe('renderer types', () => {
         it('should handle 2D renderer type', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern, { rendererType: '2D' });
+            const renderer = new ASCIIRenderer({ canvas, pattern, options: { rendererType: '2D' } });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
 
         it('should handle WebGL renderer type', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern, { rendererType: 'WebGL' });
+            const renderer = new ASCIIRenderer({ canvas, pattern, options: { rendererType: 'WebGL' } });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
     });
@@ -301,7 +302,7 @@ describe('ASCIIRenderer', () => {
             const speeds = [0.5, 1.0, 2.0, 5.0];
 
             speeds.forEach(animationSpeed => {
-                const renderer = new ASCIIRenderer(canvas, pattern, { animationSpeed });
+                const renderer = new ASCIIRenderer({ canvas, pattern, options: { animationSpeed } });
                 expect(renderer).toBeInstanceOf(ASCIIRenderer);
             });
         });
@@ -312,7 +313,7 @@ describe('ASCIIRenderer', () => {
             canvas.width = 10;
             canvas.height = 10;
 
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
 
@@ -320,24 +321,24 @@ describe('ASCIIRenderer', () => {
             canvas.width = 4000;
             canvas.height = 3000;
             
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
 
         it('should handle zero padding', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern, { padding: 0 });
+            const renderer = new ASCIIRenderer({ canvas, pattern, options: { padding: 0 } });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
 
         it('should handle large padding', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern, { padding: 10000 });
+            const renderer = new ASCIIRenderer({ canvas, pattern, options: { padding: 10000 } });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
     });
 
     describe('character transformations', () => {
         it('should handle character with opacity', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             // Test using public render method with pattern that generates characters with opacity
             pattern.generate = vi.fn(() => [
@@ -350,7 +351,7 @@ describe('ASCIIRenderer', () => {
         });
 
         it('should handle character with color', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             pattern.generate = vi.fn(() => [
                 { x: 10, y: 20, char: 'A', color: '#ff0000' }
@@ -362,7 +363,7 @@ describe('ASCIIRenderer', () => {
         });
 
         it('should handle character transformations', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             pattern.generate = vi.fn(() => [
                 { x: 10, y: 20, char: 'A', scale: 1.5, rotation: Math.PI / 4 }
@@ -374,7 +375,7 @@ describe('ASCIIRenderer', () => {
         });
 
         it('should handle out of bounds characters', () => {
-            const renderer = new ASCIIRenderer(canvas, pattern);
+            const renderer = new ASCIIRenderer({ canvas, pattern });
             
             pattern.generate = vi.fn(() => [
                 { x: -10, y: 20, char: 'A' }, // Outside bounds
