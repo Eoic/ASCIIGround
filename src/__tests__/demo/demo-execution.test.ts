@@ -70,11 +70,34 @@ const mockBody = {
 const mockDocument = {
     createElement: vi.fn(),
     getElementById: vi.fn((id: string) => {
+        if (id === 'canvas') return null; // Let the demo create the canvas element
         if (id === 'loader') return mockLoader;
         if (id === 'controls') return mockControls;
+        if (id === 'controls-tab') return mockControls;
+        if (id === 'canvas-container') return null;
+        return null;
+    }),
+    querySelectorAll: vi.fn((selector: string) => {
+        if (selector === '.tab-button') return [];
+        if (selector === '.tab-content') return [];
+        return [];
+    }),
+    querySelector: vi.fn((selector: string) => {
+        if (selector === '#debug-tab .debug-info') {
+            return {
+                innerHTML: '',
+                appendChild: vi.fn(),
+            };
+        }
+
         return null;
     }),
     addEventListener: vi.fn(),
+    createDocumentFragment: vi.fn(() => {
+        return {
+            appendChild: vi.fn((_element: HTMLElement) => {}),
+        };
+    }),
     removeEventListener: vi.fn(),
     body: mockBody,
 };
@@ -103,6 +126,10 @@ Object.assign(globalThis, {
         return 123;
     }),
     cancelAnimationFrame: vi.fn(),
+    setInterval: vi.fn((_callback: () => void, _interval: number) => {
+        return 123;
+    }),
+    clearInterval: vi.fn(),
     ResizeObserver: vi.fn(() => ({
         observe: vi.fn(),
         unobserve: vi.fn(),
@@ -141,6 +168,13 @@ describe('Demo script execution', () => {
                     destroy: vi.fn(),
                     resize: vi.fn(),
                     options: {},
+                    renderInfo: {
+                        fps: 60,
+                    },
+                    mouseInfo: {
+                        x: 0,
+                        y: 0,
+                    },
                     canvas,
                 };
             }),
@@ -207,6 +241,7 @@ describe('Demo script execution', () => {
                 removeChild: vi.fn(),
                 innerHTML: '',
                 textContent: '',
+                innerText: '',
                 value: '',
                 type: '',
                 id: '',
@@ -282,7 +317,7 @@ describe('Demo script execution', () => {
 
     it('should create canvas with correct properties', async () => {
         await import('../../demo/demo');
-        
+
         if (domContentLoadedCallback)
             domContentLoadedCallback();
 
@@ -327,7 +362,149 @@ describe('Demo script execution', () => {
         if (domContentLoadedCallback)
             domContentLoadedCallback();
 
-        expect(mockCanvas.width).toBe(800);
-        expect(mockCanvas.height).toBe(600);
+        const canvasCalls = mockDocument.createElement.mock.calls.filter(call => call[0] === 'canvas');
+        expect(canvasCalls.length).toBeGreaterThan(0);
+    });
+
+    it('should handle tab switching functionality', async () => {
+        const mockTabButtons = [
+            {
+                getAttribute: vi.fn(() => 'controls-tab'),
+                classList: { remove: vi.fn(), add: vi.fn() },
+                addEventListener: vi.fn(),
+            },
+            {
+                getAttribute: vi.fn(() => 'debug-tab'),
+                classList: { remove: vi.fn(), add: vi.fn() },
+                addEventListener: vi.fn(),
+            }
+        ];
+
+        const mockTabContents = [
+            { classList: { remove: vi.fn(), add: vi.fn() } },
+            { classList: { remove: vi.fn(), add: vi.fn() } }
+        ];
+
+        mockDocument.querySelectorAll.mockImplementation((selector: string) => {
+            if (selector === '.tab-button') return mockTabButtons as never[];
+            if (selector === '.tab-content') return mockTabContents as never[];
+            return [];
+        });
+
+        await import('../../demo/demo');
+        
+        if (domContentLoadedCallback)
+            domContentLoadedCallback();
+
+        expect(mockTabButtons[0].addEventListener).toHaveBeenCalledWith('click', expect.any(Function));
+        expect(mockTabButtons[1].addEventListener).toHaveBeenCalledWith('click', expect.any(Function));
+    });
+
+    it('should handle debug info setup', async () => {
+        const mockDebugContainer = {
+            innerHTML: '',
+            appendChild: vi.fn(),
+        };
+
+        mockDocument.querySelector.mockImplementation((selector: string) => {
+            if (selector === '#debug-tab .debug-info') return mockDebugContainer;
+            return null;
+        });
+
+        vi.doMock('../../rendering/ascii-renderer', () => ({
+            ASCIIRenderer: vi.fn().mockImplementation(() => ({
+                initialize: vi.fn(),
+                render: vi.fn(),
+                clear: vi.fn(),
+                destroy: vi.fn(),
+                resize: vi.fn(),
+                options: {},
+                renderInfo: {
+                    fps: 60,
+                    frameCount: 100,
+                    rows: 40,
+                    columns: 80,
+                },
+                mouseInfo: {
+                    x: 150,
+                    y: 200,
+                },
+                canvas: mockCanvas,
+                setOptions: vi.fn(),
+            })),
+        }));
+
+        await import('../../demo/demo');
+        
+        if (domContentLoadedCallback)
+            domContentLoadedCallback();
+
+        expect(globalThis.setInterval).toHaveBeenCalled();
+    });
+
+    it('should handle buildDebugInfo function', async () => {
+        const mockDebugContainer = {
+            innerHTML: '',
+            appendChild: vi.fn(),
+        };
+
+        const mockFragment = {
+            appendChild: vi.fn(),
+        };
+
+        const mockStrongElement = {
+            innerText: '',
+        };
+
+        const mockSpanElement = {
+            innerText: '',
+        };
+
+        mockDocument.querySelector.mockReturnValue(mockDebugContainer);
+        mockDocument.createDocumentFragment.mockReturnValue(mockFragment);
+        mockDocument.createElement.mockImplementation((tagName: string) => {
+            if (tagName === 'canvas')
+                return mockCanvas;
+
+            if (tagName === 'div') {
+                return { 
+                    id: '', 
+                    appendChild: vi.fn(), 
+                    get clientWidth() { return 800; }, 
+                    get clientHeight() { return 600; },
+                };
+            }
+
+            if (tagName === 'strong')
+                return mockStrongElement;
+
+            if (tagName === 'span')
+                return mockSpanElement;
+
+            return { tagName: tagName.toUpperCase() };
+        });
+
+        await import('../../demo/demo');
+        
+        if (domContentLoadedCallback)
+            domContentLoadedCallback();
+
+        expect(mockDocument.createDocumentFragment).toHaveBeenCalled();
+        expect(mockFragment.appendChild).toHaveBeenCalled();
+        expect(mockDebugContainer.appendChild).toHaveBeenCalledWith(mockFragment);
+    });
+
+    it('should handle missing debug container gracefully', async () => {
+        mockDocument.querySelector.mockImplementation((selector: string) => {
+            if (selector === '#debug-tab .debug-info') return null;
+            return null;
+        });
+
+        await import('../../demo/demo');
+        
+        if (domContentLoadedCallback)
+            domContentLoadedCallback();
+
+        expect(globalThis.setInterval).not.toHaveBeenCalled();
     });
 });

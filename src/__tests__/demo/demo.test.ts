@@ -287,7 +287,6 @@ describe('Demo - PatternControlsManager', () => {
         });
 
         it('should handle renderer control changes in event listeners', () => {
-            // Simulate control change that should trigger renderer control handling
             expect(() => {
                 manager.onControlChange('fontSize', () => {});
             }).not.toThrow();
@@ -295,10 +294,7 @@ describe('Demo - PatternControlsManager', () => {
 
         it('should set control values during synchronization', () => {
             const setControlValueSpy = vi.spyOn(manager['_controlsGenerator']!, 'setControlValue');
-            
-            // Trigger synchronization by switching patterns
             manager.switchPattern('rain');
-            
             expect(setControlValueSpy).toHaveBeenCalled();
         });
 

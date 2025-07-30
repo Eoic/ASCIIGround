@@ -40,7 +40,7 @@ import { DEBUG_INFO_UPDATE_INTERVAL_MS } from './ui/constants';
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
-        tabButtons.forEach(button => {
+        tabButtons.forEach((button) => {
             button.addEventListener('click', () => {
                 const targetTab = button.getAttribute('data-tab');
 
@@ -73,12 +73,15 @@ import { DEBUG_INFO_UPDATE_INTERVAL_MS } from './ui/constants';
     }
 
     function setupDebugInfo(renderer: ASCIIRenderer) {
+        if (!renderer)
+            throw new Error('Renderer not set.');
+
         const debugContainer = document.querySelector('#debug-tab .debug-info') as HTMLElement;
 
         if (!debugContainer)
             return;
 
-        function updateDebugInfo() {
+        const updateDebugInfo = () => {
             const renderInfo = renderer.renderInfo;
             const mouseInfo = renderer.mouseInfo;
 
@@ -90,7 +93,7 @@ import { DEBUG_INFO_UPDATE_INTERVAL_MS } from './ui/constants';
                 'Total symbols': String(renderInfo.rows * renderInfo.columns),
                 'Mouse position': `(${mouseInfo.x}, ${mouseInfo.y})`,
             });
-        }
+        };
 
         setInterval(updateDebugInfo, DEBUG_INFO_UPDATE_INTERVAL_MS);
         updateDebugInfo();
