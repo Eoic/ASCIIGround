@@ -15,10 +15,11 @@
   "name": "ASCIIGround",
   "includeVersion": true,
   "readme": "README.md",
-  "theme": "default",
   "plugin": [
-    "typedoc-plugin-missing-exports"
+    "typedoc-plugin-missing-exports",
+    "typedoc-material-theme",
   ],
+  "themeColor": "#6450A4",
   "sort": [
     "source-order",
     "alphabetical"

@@ -102,6 +102,7 @@
     "eta": "^3.5.0",
     "jsdom": "^26.1.0",
     "typedoc": "^0.28.7",
+    "typedoc-material-theme": "^1.4.0",
     "typedoc-plugin-markdown": "^4.7.1",
     "typedoc-plugin-missing-exports": "^4.0.0",
     "typescript": "~5.8.3",
