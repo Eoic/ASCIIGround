@@ -245,7 +245,6 @@ export class ASCIIRenderer {
     public render(time: number = performance.now()): void {
         const deltaTime = time - this._state.lastTime;
         this._state.lastTime = time;
-        this._updateFps(time);
 
         if (this._state.options.animated)
             this._state.animationTime += (deltaTime / 1000) * this._state.options.animationSpeed;
@@ -268,6 +267,7 @@ export class ASCIIRenderer {
         if (!this._hasOutputChanged(characters) && !this._state.isDirty && !this.pattern.isDirty)
             return;
 
+        this._updateFps(time);
         this.pattern.isDirty = false;
         this._state.isDirty = false;
         this._state.lastHash = this._hash(characters);
