@@ -24,9 +24,22 @@
         </h1>
     </div>
 
-    <form class="controls glass hidden" id="controls">
-        <h2 class="gradient-text">Controls</h2>
-    </form>
+    <div class="controls glass hidden" id="controls">
+        <div class="controls-tabs">
+            <button type="button" class="tab-button active" data-tab="controls-tab">Controls</button>
+            <button type="button" class="tab-button" data-tab="debug-tab">Debug</button>
+        </div>
+        
+        <form class="tab-content active" id="controls-tab">
+            <h2 class="gradient-text">Controls</h2>
+        </form>
+        
+        <div class="tab-content" id="debug-tab">
+            <div class="debug-info">
+                <p>Debug information will be displayed here...</p>
+            </div>
+        </div>
+    </div>
 
     <div id="canvas-container">
         <canvas id="canvas"></canvas>

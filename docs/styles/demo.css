@@ -9,7 +9,8 @@ body {
     left: 0;
     z-index: 1000;
     padding: 20px;
-    max-width: 600px;
+    max-width: 500px;
+    width: 100%;
     height: min-content;
     max-height: 100%;
     overflow-y: auto;
@@ -17,6 +18,8 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 0rem 1rem;
     grid-template-rows: auto;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 .controls h2 {
@@ -250,8 +253,8 @@ body {
 
 .controls::-webkit-scrollbar-thumb {
     border-radius: 3px;
-    background: rgba(102, 126, 234, 0.6);
-    transition: background 0.3s ease;
+    background-color: rgba(102, 126, 234, 0.6);
+    transition: background-color 0.3s ease;
 }
 
 .controls::-webkit-scrollbar-thumb:hover {
@@ -342,10 +345,79 @@ body {
 
 .controls button {
     padding: 8px 16px;
-    margin: 4px;
     font-size: 0.9rem;
-    margin-top: 16px;
     grid-column: 1 / -1;
+}
+
+/* Tab styling */
+.controls-tabs {
+    display: flex;
+    grid-column: 1 / -1;
+    margin: -20px -20px 20px -20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-button {
+    flex: 1;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    color: rgba(245, 245, 245, 0.7);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    position: relative;
+    border-bottom: 2px solid #646464;
+}
+
+.tab-button:hover {
+    color: #f5f5f5;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tab-button.active {
+    color: #f5f5f5;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.69) 0%, rgba(118, 75, 162, 0.2) 100%);
+    border-bottom: 2px solid #667eea;
+}
+
+.tab-content {
+    display: none;
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+.tab-content.active {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0rem 1rem;
+    grid-template-rows: auto;
+}
+
+.tab-content h2 {
+    margin-top: 0;
+    color: #f5f5f5;
+    font-size: 1.2rem;
+    grid-column: 1 / -1;
+}
+
+.debug-info {
+    grid-column: 1 / -1;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #f5f5f5;
+    font-family: 'Courier New', monospace;
+    font-size: 1.15rem;
+    line-height: 1.4;
+    color: rgba(245, 245, 245, 0.8);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 1rem;
 }
 
 .info {
@@ -471,6 +543,20 @@ canvas {
         font-size: 0.8rem;
     }
 
+    .controls-tabs {
+        margin: -15px -15px 16px -15px;
+    }
+
+    .tab-button {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+
+    .tab-content.active {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
     .header h1 {
         font-size: 1.3rem;
     }
@@ -541,7 +627,16 @@ canvas {
     .controls button {
         padding: 5px 10px;
         font-size: 0.75rem;
-        margin: 2px;
+        /* margin: 2px; */
+    }
+
+    .controls-tabs {
+        margin: -12px -12px 12px -12px;
+    }
+
+    .tab-button {
+        padding: 8px 10px;
+        font-size: 0.8rem;
     }
 
     .header {

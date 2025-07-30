@@ -76,6 +76,10 @@ const initState = () => ({
     lastHash: 0,
     isDirty: true,
     resizeObserver: null as ResizeObserver | null,
+    frameCount: 0,
+    lastFpsTime: 0,
+    currentFps: 0,
+    fpsUpdateInterval: 1000,
 });
 
 /**
@@ -93,6 +97,39 @@ export class ASCIIRenderer {
      */
     public get options(): ASCIIRendererOptions {
         return this._state.options;
+    }
+
+    /**
+     * Get the current frames per second (FPS) and related information.
+     * @returns The current rendering information including FPS and frame count.
+     */
+    public get renderInfo(): Record<string, number> {
+        return {
+            fps: this._state.currentFps,
+            rows: this._state.region?.rows || 0,
+            columns: this._state.region?.columns || 0,
+            frameCount: this._state.frameCount,
+        };
+    }
+
+    /**
+     * Get the current mouse interaction state.
+     * @returns An object containing mouse position and click state.
+     */
+    public get mouseInfo(): { x: number; y: number; clicked: boolean } {
+        return {
+            x: this._state.mouseX,
+            y: this._state.mouseY,
+            clicked: this._state.mouseClicked,
+        };
+    }
+
+    /** Get the current render region configuration. */
+    public get region(): RenderRegion {
+        if (!this._state.region)
+            throw new Error('Renderer is not initialized! Make sure to call the constructor first.');
+
+        return this._state.region;
     }
 
     /** Get the current pattern generator. */
@@ -159,22 +196,12 @@ export class ASCIIRenderer {
     }
 
     /**
-     * Get the region, throwing an error if not calculated.
-     */
-    private get region(): RenderRegion {
-        if (!this._state.region)
-            throw new Error('Region not calculated.');
-
-        return this._state.region;
-    }
-
-    /**
      * Get the temp context, ensuring it's initialized.
      */
     private get tempContext(): CanvasRenderingContext2D {
         if (!this._state.tempCanvas) {
             this._state.tempCanvas = document.createElement('canvas');
-            this._state.tempContext = this._state.tempCanvas.getContext('2d');
+            this._state.tempContext = this._state.tempCanvas.getContext('2d', { alpha: false });
 
             if (!this._state.tempContext)
                 throw new Error('Failed to create 2D context for temp canvas');
@@ -207,7 +234,7 @@ export class ASCIIRenderer {
         this._state.region = this._calculateRegion();
         this._setupRenderer();
 
-        if (this._state.options.enableMouseInteraction) 
+        if (this._state.options.enableMouseInteraction)
             this._setupMouseEvents();
     }
 
@@ -218,6 +245,7 @@ export class ASCIIRenderer {
     public render(time: number = performance.now()): void {
         const deltaTime = time - this._state.lastTime;
         this._state.lastTime = time;
+        this._updateFps(time);
 
         if (this._state.options.animated)
             this._state.animationTime += (deltaTime / 1000) * this._state.options.animationSpeed;
@@ -256,6 +284,9 @@ export class ASCIIRenderer {
 
         this._state.options.animated = true;
         this._state.lastTime = performance.now();
+        this._state.frameCount = 0;
+        this._state.lastFpsTime = 0;
+        this._state.currentFps = 0;
 
         const animate = (time: number) => {
             if (!this.isAnimating)
@@ -291,6 +322,11 @@ export class ASCIIRenderer {
         this.pattern.initialize(this._state.region);
         this.renderer.options = this._state.options;
         this._syncAnimationState();
+
+        if (this._state.options.enableMouseInteraction) {
+            this._removeMouseEvents();
+            this._setupMouseEvents();
+        } else this._removeMouseEvents();
     }
 
     /**
@@ -397,8 +433,10 @@ export class ASCIIRenderer {
      */
     private _mouseMoveHandler = (event: MouseEvent) => {
         const rect = this.canvas.getBoundingClientRect();
-        this._state.mouseX = event.clientX - rect.left;
-        this._state.mouseY = event.clientY - rect.top;
+        const sx = this.canvas.width / this.region.columns;
+        const sy = this.canvas.height / this.region.rows;
+        this._state.mouseX = Math.floor((event.clientX - rect.left) / sx);
+        this._state.mouseY = Math.floor((event.clientY - rect.top) / sy);
     };
 
     /**
@@ -416,6 +454,15 @@ export class ASCIIRenderer {
     private _setupMouseEvents(): void {
         this.canvas.addEventListener('mousemove', this._mouseMoveHandler);
         this.canvas.addEventListener('click', this._mouseClickHandler);
+    }
+
+    /**
+     * Remove mouse event listeners to stop interaction.
+     * This is useful when disabling mouse support or cleaning up.
+     */
+    private _removeMouseEvents(): void {
+        this.canvas.removeEventListener('mousemove', this._mouseMoveHandler);
+        this.canvas.removeEventListener('click', this._mouseClickHandler);
     }
 
     /**
@@ -479,5 +526,26 @@ export class ASCIIRenderer {
             const newValue = options[key as keyof ASCIIRendererOptions];
             return oldValue !== newValue;
         });
+    }
+
+    /**
+     * Update FPS calculation based on frame timing.
+     * @param currentTime - the current timestamp.
+     */
+    private _updateFps(currentTime: number): void {
+        this._state.frameCount++;
+        
+        if (this._state.lastFpsTime === 0) {
+            this._state.lastFpsTime = currentTime;
+            return;
+        }
+
+        const timeDiff = currentTime - this._state.lastFpsTime;
+
+        if (timeDiff >= this._state.fpsUpdateInterval) {
+            this._state.currentFps = Math.round((this._state.frameCount * 1000) / timeDiff);
+            this._state.frameCount = 0;
+            this._state.lastFpsTime = currentTime;
+        }
     }
 }
