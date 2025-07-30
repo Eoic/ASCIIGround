@@ -58,6 +58,15 @@ export const controls: RendererControlConfig = {
         description: 'Background color of the canvas.',
     },
     {
+        id: 'enableMouseInteraction',
+        label: 'Enable mouse interaction',
+        type: 'checkbox',
+        outType: 'boolean',
+        value: true,
+        category: 'renderer',
+        description: 'Enable or disable mouse interaction with the renderer.',
+    },
+    {
         id: 'animationSpeed',
         label: 'Animation speed',
         type: 'range',
