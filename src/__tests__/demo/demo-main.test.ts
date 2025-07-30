@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 interface MockDocument {
     createElement: ReturnType<typeof vi.fn>;
+    createDocumentFragment: ReturnType<typeof vi.fn>;
     getElementById: ReturnType<typeof vi.fn>;
+    querySelectorAll: ReturnType<typeof vi.fn>;
+    querySelector: ReturnType<typeof vi.fn>;
     addEventListener: ReturnType<typeof vi.fn>;
     body: { appendChild: ReturnType<typeof vi.fn> };
 }
@@ -72,6 +75,7 @@ describe('Demo.ts Coverage Test', () => {
                     removeChild: vi.fn(),
                     innerHTML: '',
                     textContent: '',
+                    innerText: '',
                     className: '',
                     style: {},
                     value: '',
@@ -98,9 +102,36 @@ describe('Demo.ts Coverage Test', () => {
                     lastChild: null,
                 };
             }),
+            createDocumentFragment: vi.fn(() => ({
+                appendChild: vi.fn(),
+                insertBefore: vi.fn(),
+                removeChild: vi.fn(),
+                replaceChild: vi.fn(),
+                textContent: '',
+                childNodes: [],
+                firstChild: null,
+                lastChild: null,
+                children: [],
+            })),
             getElementById: vi.fn((id: string) => {
                 if (id === 'loader') return mockLoader;
                 if (id === 'controls') return mockControls;
+                if (id === 'controls-tab') return mockControls;
+                if (id === 'canvas-container') return null;
+                return null;
+            }),
+            querySelectorAll: vi.fn((selector: string) => {
+                if (selector === '.tab-button') return [];
+                if (selector === '.tab-content') return [];
+                return [];
+            }),
+            querySelector: vi.fn((selector: string) => {
+                if (selector === '#debug-tab .debug-info') {
+                    return {
+                        innerHTML: '',
+                        appendChild: vi.fn(),
+                    };
+                }
                 return null;
             }),
             addEventListener: vi.fn(),
@@ -122,6 +153,11 @@ describe('Demo.ts Coverage Test', () => {
                 return 123;
             }),
             cancelAnimationFrame: vi.fn(),
+            setInterval: vi.fn((callback: () => void, _interval: number) => {
+                callback();
+                return 1;
+            }),
+            clearInterval: vi.fn(),
             ResizeObserver: vi.fn(() => ({
                 observe: vi.fn(),
                 unobserve: vi.fn(),

@@ -401,9 +401,54 @@ describe('ASCIIRenderer', () => {
 
         it('should throw error for unknown renderer type', () => {
             expect(() => {
-                // @ts-expect-error Testing invalid input
+                // @ts-expect-error Testing invalid input.
                 createRenderer('unknown');
             }).toThrow('Unknown renderer type given!');
+        });
+    });
+
+    describe('info getters', () => {
+        it('should provide render info with FPS and dimensions', () => {
+            const renderer = new ASCIIRenderer({ canvas, pattern });
+            const renderInfo = renderer.renderInfo;
+            
+            expect(renderInfo).toBeDefined();
+            expect(typeof renderInfo.fps).toBe('number');
+            expect(typeof renderInfo.rows).toBe('number');
+            expect(typeof renderInfo.columns).toBe('number');
+            expect(typeof renderInfo.frameCount).toBe('number');
+        });
+
+        it('should provide mouse info with position and click state', () => {
+            const renderer = new ASCIIRenderer({ canvas, pattern });
+            const mouseInfo = renderer.mouseInfo;
+            
+            expect(mouseInfo).toBeDefined();
+            expect(typeof mouseInfo.x).toBe('number');
+            expect(typeof mouseInfo.y).toBe('number');
+            expect(typeof mouseInfo.clicked).toBe('boolean');
+        });
+
+        it('should update FPS in render info during animation', () => {
+            const renderer = new ASCIIRenderer({ canvas, pattern });
+            expect(renderer.renderInfo.fps).toBe(0);
+            expect(renderer.renderInfo.frameCount).toBe(0);
+            renderer.render();
+            renderer.render();
+            expect(renderer.renderInfo.frameCount).toBeGreaterThan(0);
+        });
+
+        it('should update mouse info when interaction is enabled', () => {
+            const renderer = new ASCIIRenderer({ 
+                canvas,
+                pattern,
+                options: { enableMouseInteraction: true },
+            });
+
+            const initialMouseInfo = renderer.mouseInfo;
+            expect(initialMouseInfo.x).toBe(0);
+            expect(initialMouseInfo.y).toBe(0);
+            expect(initialMouseInfo.clicked).toBe(false);
         });
     });
 });

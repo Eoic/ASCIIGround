@@ -26,7 +26,7 @@ const mockWindow = {
     innerHeight: 1080,
 };
 
-describe('Demo Script Integration', () => {
+describe('Demo script integration', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
@@ -48,7 +48,6 @@ describe('Demo Script Integration', () => {
             return null;
         });
 
-        // Setup global mocks
         Object.assign(globalThis, {
             document: mockDocument,
             window: mockWindow,
