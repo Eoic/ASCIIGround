@@ -87,7 +87,6 @@ import { DEBUG_INFO_UPDATE_INTERVAL_MS } from './ui/constants';
 
             buildDebugInfo(debugContainer, {
                 'FPS': renderInfo.fps.toFixed(2),
-                'Frame count': String(renderInfo.frameCount),
                 'Rows': String(renderInfo.rows),
                 'Columns': String(renderInfo.columns),
                 'Total symbols': String(renderInfo.rows * renderInfo.columns),
