@@ -23,11 +23,11 @@ export interface ControlSpec {
     step?: number;
     label: string;
     description?: string;
-    value: string | number | boolean;
+    value: ControlValue;
     category: 'renderer' | 'pattern';
     options?: Array<{ value: string | number | boolean; label: string }>;
-    type: 'number' | 'text' | 'color' | 'select' | 'range' | 'checkbox' | 'textarea';
-    outType: 'string' | 'number' | 'boolean' | 'array';
+    type: 'number' | 'text' | 'color' | 'select' | 'range' | 'checkbox' | 'textarea' | 'color-map';
+    outType: 'string' | 'number' | 'boolean' | 'array' | 'record';
     visibleOn?: Array<{ [key: string]: string | number | boolean }>;
 }
 
@@ -101,7 +101,7 @@ export class ControlsRegistry {
 
     public static parseOutType(
         value: ControlSpec['value'],
-        outType: 'string' | 'number' | 'boolean' | 'array'
+        outType: 'string' | 'number' | 'boolean' | 'array' | 'record'
     ): ControlValue {
         switch (outType) {
             case 'string':
@@ -112,6 +112,8 @@ export class ControlsRegistry {
                 return Boolean(value);
             case 'array':
                 return Array.from(String(value));
+            case 'record':
+                return value as ControlValue;
             default:
                 throw new Error('Unknown outType!');
         }

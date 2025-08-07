@@ -83,7 +83,7 @@ describe('UI Controls', () => {
 
     describe('Control specifications', () => {
         it('should have valid control types', () => {
-            const validTypes = ['number', 'text', 'color', 'select', 'range', 'checkbox', 'textarea'];
+            const validTypes = ['number', 'text', 'color', 'select', 'range', 'checkbox', 'textarea', 'color-map'];
             const rendererControls = ControlsRegistry.getRendererControls();
             
             rendererControls.controls.forEach(control => {
@@ -92,7 +92,7 @@ describe('UI Controls', () => {
         });
 
         it('should have valid output types', () => {
-            const validOutTypes = ['string', 'number', 'boolean', 'array'];
+            const validOutTypes = ['string', 'number', 'boolean', 'array', 'record'];
             const rendererControls = ControlsRegistry.getRendererControls();
             
             rendererControls.controls.forEach(control => {

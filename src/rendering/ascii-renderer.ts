@@ -9,6 +9,8 @@ import { type Renderer, createRenderer } from './renderer';
 export interface ASCIIRendererOptions {
     /** Text color for rendered characters */
     color: string;
+    /** Mapping of characters to specific colors */
+    colorMap: Record<string, string>;
     /** Whether animation is enabled */
     animated: boolean;
     /** Animation speed multiplier */
@@ -46,6 +48,7 @@ export interface ASCIIRendererConstructor {
 
 const DEFAULT_OPTIONS: ASCIIRendererOptions = {
     color: '#3e3e80ff',
+    colorMap: {},
     fontSize: 32,
     fontFamily: 'monospace',
     backgroundColor: '#181818ff',

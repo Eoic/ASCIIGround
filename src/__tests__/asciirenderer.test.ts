@@ -352,14 +352,27 @@ describe('ASCIIRenderer', () => {
 
         it('should handle character with color', () => {
             const renderer = new ASCIIRenderer({ canvas, pattern });
-            
+
             pattern.generate = vi.fn(() => [
                 { x: 10, y: 20, char: 'A', color: '#ff0000' }
             ]);
-            
+
             expect(() => {
                 renderer.render();
             }).not.toThrow();
+        });
+
+        it('should apply color map for characters', () => {
+            const renderer = new ASCIIRenderer({ canvas, pattern, options: { colorMap: { '#': '#00ff00' } } });
+
+            pattern.generate = vi.fn(() => [
+                { x: 10, y: 20, char: '#' }
+            ]);
+
+            const fillSpy = vi.spyOn(mockContext, 'fillStyle', 'set');
+            renderer.render();
+
+            expect(fillSpy).toHaveBeenCalledWith('#00ff00');
         });
 
         it('should handle character transformations', () => {
