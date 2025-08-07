@@ -37,6 +37,13 @@ describe('createSeededRandom', () => {
         expect(value).toBeLessThanOrEqual(1);
     });
 
+    it('should handle negative seed values by converting to positive', () => {
+        const random = createSeededRandom(-12345);
+        const value = random();
+        expect(value).toBeGreaterThan(0);
+        expect(value).toBeLessThanOrEqual(1);
+    });
+
     it('should produce consistent sequences across multiple calls', () => {
         const random = createSeededRandom(999);
         const firstCall = random();
