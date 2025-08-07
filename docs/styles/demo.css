@@ -54,6 +54,42 @@ body {
     min-width: 120px;
 }
 
+.controls .color-map-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.controls .color-map-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.controls .color-map-char {
+    width: 50px;
+    text-align: center;
+}
+
+.controls .color-map-color {
+    width: 40px;
+    padding: 0;
+}
+
+.controls .color-map-row button {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    grid-column: auto;
+}
+
+.controls .color-map-add {
+    margin-top: 8px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    grid-column: auto;
+    align-self: flex-start;
+}
+
 /* Form input styling */
 .controls input[type="text"],
 .controls input[type="number"],

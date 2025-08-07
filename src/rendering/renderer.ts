@@ -99,38 +99,52 @@ export class Canvas2DRenderer implements Renderer {
             this._context.clip();
         }
 
+        const defaultColor = this._options.color;
+        const colorMap = this._options.colorMap;
+        let currentColor = defaultColor;
+        let currentAlpha = 1;
+        this._context.fillStyle = defaultColor;
+
         for (const char of characters) {
-            if (char.x < 0 || char.x >= region.canvasWidth || 
-                char.y < 0 || char.y >= region.canvasHeight) 
+            if (char.x < 0 || char.x >= region.canvasWidth ||
+                char.y < 0 || char.y >= region.canvasHeight)
                 continue;
 
-            if (char.opacity !== undefined) 
-                this._context.globalAlpha = char.opacity;
+            const targetAlpha = char.opacity === undefined ? 1 : char.opacity;
 
-            if (char.color) 
-                this._context.fillStyle = char.color;
-            
+            if (targetAlpha !== currentAlpha) {
+                this._context.globalAlpha = targetAlpha;
+                currentAlpha = targetAlpha;
+            }
+
+            const charColor = char.color || colorMap[char.char] || defaultColor;
+
+            if (charColor !== currentColor) {
+                this._context.fillStyle = charColor;
+                currentColor = charColor;
+            }
+
             if (char.scale !== undefined || char.rotation !== undefined) {
                 this._context.save();
                 this._context.translate(char.x + region.charWidth / 2, char.y + region.charHeight / 2);
 
-                if (char.rotation !== undefined) 
+                if (char.rotation !== undefined)
                     this._context.rotate(char.rotation);
-                
-                if (char.scale !== undefined) 
+
+                if (char.scale !== undefined)
                     this._context.scale(char.scale, char.scale);
-                
+
                 this._context.fillText(char.char, -region.charWidth / 2, -region.charHeight / 2);
                 this._context.restore();
-            } else 
+            } else
                 this._context.fillText(char.char, char.x, char.y);
-
-            if (char.opacity !== undefined) 
-                this._context.globalAlpha = 1;
-
-            if (char.color) 
-                this._context.fillStyle = this._options.color;
         }
+
+        if (currentAlpha !== 1)
+            this._context.globalAlpha = 1;
+
+        if (currentColor !== defaultColor)
+            this._context.fillStyle = defaultColor;
 
         if (needsClipping) 
             this._context.restore();

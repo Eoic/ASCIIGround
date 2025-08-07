@@ -58,7 +58,7 @@ export class ControlsGenerator {
      * Get current value of a control.
      */
     public getControlValue(controlId: string): ControlValue | null {
-        const element = this._container.querySelector(`[data-control-id="${controlId}"]`) as HTMLInputElement;
+        const element = this._container.querySelector(`[data-control-id="${controlId}"]:not(label)`) as HTMLElement;
 
         if (!element)
             return null;
@@ -70,7 +70,7 @@ export class ControlsGenerator {
      * Set value of a control.
      */
     public setControlValue(controlId: string, value: ControlValue): void {
-        const element = this._container.querySelector(`[data-control-id="${controlId}"]`) as HTMLInputElement;
+        const element = this._container.querySelector(`[data-control-id="${controlId}"]:not(label)`) as HTMLInputElement;
 
         if (!element)
             return;
@@ -84,7 +84,7 @@ export class ControlsGenerator {
                 element.value = String(value);
                 const valueDisplay = element.parentElement?.querySelector('.range-value');
 
-                if (valueDisplay) 
+                if (valueDisplay)
                     valueDisplay.textContent = String(value);
 
                 break;
@@ -202,6 +202,9 @@ export class ControlsGenerator {
                 break;
             case 'checkbox':
                 [inputContainer, input] = this._createCheckboxInput(spec);
+                break;
+            case 'color-map':
+                input = this._createColorMapInput(spec);
                 break;
             default:
                 input = this._createTextInput(spec);
@@ -338,25 +341,102 @@ export class ControlsGenerator {
         return [container, input];
     }
 
-    private _parseControlValue(target: HTMLInputElement | HTMLSelectElement, controlId: string): ControlValue {
+    /**
+     * Create color map input allowing character-color pairs.
+     */
+    private _createColorMapInput(spec: ControlSpec): HTMLDivElement {
+        const container = document.createElement('div');
+        container.className = 'color-map';
+
+        const list = document.createElement('div');
+        list.className = 'color-map-list';
+        container.appendChild(list);
+
+        const addButton = document.createElement('button');
+        addButton.type = 'button';
+        addButton.className = 'color-map-add';
+        addButton.textContent = 'Add mapping';
+        container.appendChild(addButton);
+
+        const addRow = (char = '', color = '#ffffff') => {
+            const row = document.createElement('div');
+            row.className = 'color-map-row';
+
+            const charInput = document.createElement('input');
+            charInput.type = 'text';
+            charInput.maxLength = 1;
+            charInput.className = 'color-map-char';
+            charInput.setAttribute('data-control-id', spec.id);
+            charInput.value = char;
+
+            const colorInput = document.createElement('input');
+            colorInput.type = 'color';
+            colorInput.className = 'color-map-color';
+            colorInput.setAttribute('data-control-id', spec.id);
+            colorInput.value = color;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'color-map-remove';
+            removeBtn.textContent = '×';
+
+            removeBtn.addEventListener('click', () => {
+                row.remove();
+                this._emitChange(spec.id, this._getColorMapValue(container));
+            });
+
+            row.appendChild(charInput);
+            row.appendChild(colorInput);
+            row.appendChild(removeBtn);
+            list.appendChild(row);
+        };
+
+        const initial = spec.value as Record<string, string>;
+        Object.entries(initial).forEach(([char, color]) => addRow(char, color));
+
+        addButton.addEventListener('click', () => {
+            addRow();
+            this._emitChange(spec.id, this._getColorMapValue(container));
+        });
+
+        return container;
+    }
+
+    private _getColorMapValue(container: HTMLElement): Record<string, string> {
+        const map: Record<string, string> = {};
+        const rows = container.querySelectorAll('.color-map-row');
+        rows.forEach(row => {
+            const charInput = row.querySelector('.color-map-char') as HTMLInputElement | null;
+            const colorInput = row.querySelector('.color-map-color') as HTMLInputElement | null;
+            if (charInput && charInput.value)
+                map[charInput.value] = colorInput?.value || '';
+        });
+        return map;
+    }
+
+    private _parseControlValue(target: HTMLElement, controlId: string): ControlValue {
         const controlSpec = ControlsRegistry.getControlSpec(controlId);
 
         if (!controlSpec)
-            return target.value as ControlValue;
+            return (target as HTMLInputElement).value as ControlValue;
 
         switch (controlSpec.outType) {
             case 'boolean':
-                if (target.type === 'checkbox')
-                    return target.checked;
+                if ((target as HTMLInputElement).type === 'checkbox')
+                    return (target as HTMLInputElement).checked;
 
-                return Boolean(target.value);
+                return Boolean((target as HTMLInputElement).value);
             case 'number':
-                return parseFloat(target.value);
+                return parseFloat((target as HTMLInputElement).value);
             case 'array':
-                return Array.from(target.value);
+                return Array.from((target as HTMLInputElement).value);
+            case 'record': {
+                const container = target.closest(`label[data-control-id="${controlId}"]`) as HTMLElement;
+                return this._getColorMapValue(container);
+            }
             case 'string':
             default:
-                return target.value;
+                return (target as HTMLInputElement).value;
         }
     }
 

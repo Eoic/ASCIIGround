@@ -2,7 +2,7 @@ import type { ASCIIRenderer, ASCIIRendererOptions } from '../../rendering/ascii-
 import { ControlsRegistry, type PatternConstructor } from './controls/controls-registry';
 import { DEBOUNCE_INTERVAL_MS } from './constants';
 
-export type ControlValue = string | number | boolean | string[];
+export type ControlValue = string | number | boolean | string[] | Record<string, string>;
 export type ControlChangeCallback = (value: ControlValue) => void;
 
 /**

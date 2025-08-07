@@ -30,7 +30,7 @@ export const controls: RendererControlConfig = {
         category: 'renderer',
         description: 'Font family used for rendering characters.',
     },
-    {
+    { 
         id: 'color',
         label: 'Text color',
         type: 'color',
@@ -38,6 +38,15 @@ export const controls: RendererControlConfig = {
         value: '#ffffff',
         category: 'renderer',
         description: 'Color of the rendered characters.',
+    },
+    {
+        id: 'colorMap',
+        label: 'Color map',
+        type: 'color-map',
+        outType: 'record',
+        value: {},
+        category: 'renderer',
+        description: 'Map characters to individual colors.',
     },
     {
         id: 'animated',
