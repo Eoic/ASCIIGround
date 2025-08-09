@@ -11,13 +11,12 @@ A TypeScript library for creating animated ASCII canvas backgrounds.
 
 ## Features
 
-- Multiple animation patterns: **Perlin noise**, **rain**, **static noise** with extensible pattern system.
+- Multiple pattern generation implementations: **Perlin noise**, **rain**, **static noise** with extensible pattern system.
 - Configuration options for font, animation speed, character sets, noise parameters, and much more.
 - Responsive and resizable canvas rendering.
-- Support for both 2D Canvas and WebGL rendering.
+- Support for 2D Canvas and WebGL rendering.
 - Comprehensive API documentation.
 - Mouse interaction support.
-- Supports both ESM and UMD/CDN usage.
 
 ## Installation
 

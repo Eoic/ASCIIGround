@@ -58,7 +58,7 @@ Use this playbook to be productive immediately in this repo. Keep edits small, r
 
 ## Publishing and bundles
 - Outputs: `dist/asciiground.es.js` and `dist/asciiground.umd.js`; types at `dist/index.d.ts`.
-- Size gate via `bundlesize` (30 kB for each build). Keep external deps minimal; the library is currently self-contained.
+- Size gate via `size-limit` (30 kB for each bundle). Keep external deps minimal; the library is currently self-contained.
 
 ## Common pitfalls (and fixes)
 - WebGL renderer is a stub: use `rendererType: '2D'` unless you implement the WebGL pipeline.
