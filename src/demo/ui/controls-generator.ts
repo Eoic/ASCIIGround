@@ -352,9 +352,9 @@ export class ControlsGenerator {
         list.className = 'color-map-list';
         container.appendChild(list);
 
-        const addButton = document.createElement('button');
-        addButton.type = 'button';
-        addButton.className = 'color-map-add';
+    const addButton = document.createElement('button');
+    addButton.type = 'button';
+    addButton.className = 'btn btn-secondary btn-sm color-map-add';
         addButton.textContent = 'Add mapping';
         container.appendChild(addButton);
 
@@ -377,10 +377,12 @@ export class ControlsGenerator {
 
             const removeBtn = document.createElement('button');
             removeBtn.type = 'button';
-            removeBtn.className = 'color-map-remove';
+            removeBtn.className = 'btn btn-outline btn-icon color-map-remove';
             removeBtn.textContent = '×';
 
-            removeBtn.addEventListener('click', () => {
+            removeBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
                 row.remove();
                 this._emitChange(spec.id, this._getColorMapValue(container));
             });
@@ -394,7 +396,8 @@ export class ControlsGenerator {
         const initial = spec.value as Record<string, string>;
         Object.entries(initial).forEach(([char, color]) => addRow(char, color));
 
-        addButton.addEventListener('click', () => {
+        addButton.addEventListener('click', (event) => {
+            console.log(event);
             addRow();
             this._emitChange(spec.id, this._getColorMapValue(container));
         });
@@ -405,12 +408,15 @@ export class ControlsGenerator {
     private _getColorMapValue(container: HTMLElement): Record<string, string> {
         const map: Record<string, string> = {};
         const rows = container.querySelectorAll('.color-map-row');
+
         rows.forEach(row => {
             const charInput = row.querySelector('.color-map-char') as HTMLInputElement | null;
             const colorInput = row.querySelector('.color-map-color') as HTMLInputElement | null;
+
             if (charInput && charInput.value)
                 map[charInput.value] = colorInput?.value || '';
         });
+
         return map;
     }
 
