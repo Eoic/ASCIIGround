@@ -397,7 +397,6 @@ export class ControlsGenerator {
         Object.entries(initial).forEach(([char, color]) => addRow(char, color));
 
         addButton.addEventListener('click', (event) => {
-            console.log(event);
             addRow();
             this._emitChange(spec.id, this._getColorMapValue(container));
         });

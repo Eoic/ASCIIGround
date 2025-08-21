@@ -117,16 +117,49 @@ body {
     text-align: center;
 }
 
+/* Button size utilities */
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+.btn-xs {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+}
+
+/* Minimal outline/glass variant for subtle actions */
+.btn-outline {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Icon button utility (square, centered) */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    line-height: 1;
+}
+
 .btn-fluid {
     width: 100%;
 }
 
 .btn:hover {
-    transform: translateY(-2px) scale(1.02);
+    filter: brightness(110%);
 }
 
 .btn:active {
-    transform: translateY(0) scale(0.98);
+    filter: brightness(125%);
 }
 
 /* Button variants */
