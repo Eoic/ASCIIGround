@@ -90,7 +90,7 @@ export class ControlsGenerator {
                 break;
             }
             default:
-                element.value = String(value);
+                element.value = (Array.isArray(value)) ? value.join('') : String(value);
         }
     }
 
