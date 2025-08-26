@@ -396,7 +396,7 @@ export class ControlsGenerator {
         const initial = spec.value as Record<string, string>;
         Object.entries(initial).forEach(([char, color]) => addRow(char, color));
 
-        addButton.addEventListener('click', (event) => {
+        addButton.addEventListener('click', () => {
             addRow();
             this._emitChange(spec.id, this._getColorMapValue(container));
         });
