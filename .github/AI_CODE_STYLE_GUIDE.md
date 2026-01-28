@@ -271,6 +271,7 @@ public get pattern(): Pattern {
 private get renderer(): ASCIIRenderer {
     if (!this._renderer) 
         throw new Error('Renderer is not initialized');
+
     return this._renderer;
 }
 ```
@@ -545,7 +546,6 @@ describe('PerlinNoisePattern', () => {
 
     it('should create instance with default options', () => {
         const pattern = new PerlinNoisePattern();
-        
         expect(pattern).toBeInstanceOf(PerlinNoisePattern);
         expect(pattern.options.frequency).toBe(0.01);
     });
@@ -553,10 +553,8 @@ describe('PerlinNoisePattern', () => {
     it('should generate deterministic noise with same seed', () => {
         const pattern1 = new PerlinNoisePattern({ seed: 12345 });
         const pattern2 = new PerlinNoisePattern({ seed: 12345 });
-        
         const chars1 = pattern1.generate(mockContext);
         const chars2 = pattern2.generate(mockContext);
-        
         expect(chars1).toEqual(chars2);
     });
 });
