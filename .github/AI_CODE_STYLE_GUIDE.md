@@ -2,22 +2,22 @@
 
 This document provides comprehensive code style guidelines for AI agents working on the ASCIIGround codebase. These guidelines are derived from the existing codebase patterns, ESLint configuration, and TypeScript conventions.
 
-## Table of Contents
+## Table of contents
 
-1. [Code Formatting](#code-formatting)
-2. [TypeScript Conventions](#typescript-conventions)
-3. [Naming Conventions](#naming-conventions)
-4. [File Organization](#file-organization)
-5. [Import/Export Patterns](#importexport-patterns)
-6. [Documentation Standards](#documentation-standards)
-7. [Testing Standards](#testing-standards)
-8. [Error Handling](#error-handling)
-9. [Class and Interface Design](#class-and-interface-design)
-10. [Project-Specific Patterns](#project-specific-patterns)
+1. [Code formatting](#code-formatting)
+2. [TypeScript conventions](#typescript-conventions)
+3. [Naming conventions](#naming-conventions)
+4. [File organization](#file-organization)
+5. [Import/export patterns](#importexport-patterns)
+6. [Documentation standards](#documentation-standards)
+7. [Testing standards](#testing-standards)
+8. [Error handling](#error-handling)
+9. [Class and interface design](#class-and-interface-design)
+10. [Project-specific patterns](#project-specific-patterns)
 
 ---
 
-## Code Formatting
+## Code formatting
 
 ### Indentation
 - **Use 4 spaces** for indentation (not tabs)
@@ -34,7 +34,7 @@ switch (value) {
 }
 ```
 
-### Line Length
+### Line length
 - **Maximum line length: 120 characters**
 - Break long lines logically at appropriate points
 
@@ -45,7 +45,7 @@ switch (value) {
 ### Semicolons
 - **Always use semicolons** at the end of statements
 
-### End of Line
+### End of line
 - **Always include a newline** at the end of files
 
 ### Braces
@@ -65,7 +65,7 @@ if (condition) {
 }
 ```
 
-### Comma Dangling
+### Comma dangling
 - **Arrays**: Never use trailing commas
 - **Objects**: Always use trailing commas for multi-line objects
 - **Imports/Exports**: Never use trailing commas
@@ -92,10 +92,10 @@ import { Component, Helper } from './module';
 - **Avoid inline explanatory comments** - Write self-documenting code instead
 - Use descriptive variable and function names that explain intent
 - Only add comments for non-obvious algorithmic complexity or business logic
-- Use JSDoc for public APIs and complex interfaces (see [Documentation Standards](#documentation-standards))
+- Use JSDoc for public APIs and complex interfaces (see [Documentation standards](#documentation-standards))
 
 ```typescript
-// ❌ Bad - inline comments explain obvious code
+// Bad - inline comments explain obvious code
 function calculateTotal(price: number, quantity: number): number {
     // We do multiplication here.
     const subtotal = price * quantity;
@@ -107,14 +107,14 @@ function calculateTotal(price: number, quantity: number): number {
     return subtotal + tax;
 }
 
-// ✅ Good - self-documenting code with clear names
+// Good - self-documenting code with clear names
 function calculateTotal(price: number, quantity: number): number {
     const subtotal = price * quantity;
     const tax = subtotal * 0.1;
     return subtotal + tax;
 }
 
-// ✅ Good - complex logic with helpful comment
+// Good - complex logic with helpful comment
 function calculateTotal(price: number, quantity: number): number {
     const subtotal = price * quantity;
     // Tax rate of 10% applies to all orders per regulation XYZ-2024.
@@ -124,16 +124,27 @@ function calculateTotal(price: number, quantity: number): number {
 }
 ```
 
+### Emojis and visual markers
+- **Never use emojis** in code, comments, documentation, or commit messages
+- Do not use visual markers like ❌, ✅, 🚀, etc.
+- Use plain text labels instead: "Bad:", "Good:", "Note:", "Warning:", etc.
+
+### Documentation style
+- **Use sentence case for all titles and headers** - Capitalize only the first word
+- Example: "Naming conventions" not "Naming Conventions"
+- Example: "Code formatting" not "Code Formatting"
+- Applies to section headers, JSDoc titles, README sections, etc.
+
 ---
 
-## TypeScript Conventions
+## TypeScript conventions
 
-### Strict Mode
+### Strict mode
 - **Always use TypeScript strict mode** (`"strict": true`)
 - Enable all strict type-checking options
 - Set `noUnusedLocals` and `noUnusedParameters` to `true`
 
-### Type Declarations
+### Type declarations
 - Prefer `interface` for object shapes and API contracts
 - Use `type` for unions, intersections, and complex type manipulations
 - Use `type` for aliasing existing interfaces
@@ -151,7 +162,7 @@ export type RendererType = '2D' | 'WebGL';
 export type DummyPatternOptions = PatternOptions;
 ```
 
-### Type Imports
+### Type imports
 - Use `type` keyword for type-only imports
 
 ```typescript
@@ -159,7 +170,7 @@ import type { Pattern } from './patterns/pattern';
 import type { ASCIIRendererOptions } from './rendering/ascii-renderer';
 ```
 
-### Explicit Return Types
+### Explicit return types
 - Always specify return types for public methods
 - Return types can be inferred for simple private methods
 
@@ -176,7 +187,7 @@ private _setupContext(): void {
 }
 ```
 
-### Generic Types
+### Generic types
 - Use generic constraints when needed
 - Name generic types descriptively (e.g., `TOptions` instead of just `T`)
 
@@ -188,7 +199,7 @@ export abstract class Pattern<TOptions extends PatternOptions> {
 
 ---
 
-## Naming Conventions
+## Naming conventions
 
 ### Files
 - Use **kebab-case** for file names: `perlin-noise-pattern.ts`
@@ -200,7 +211,7 @@ export abstract class Pattern<TOptions extends PatternOptions> {
 - Suffix pattern classes with `Pattern`: `RainPattern`, `StaticNoisePattern`
 - Suffix renderer classes with `Renderer`: `ASCIIRenderer`, `Canvas2DRenderer`
 
-### Interfaces and Types
+### Interfaces and types
 - Use **PascalCase** for interface and type names
 - Suffix options interfaces with `Options`: `PatternOptions`, `ASCIIRendererOptions`
 - No `I` prefix for interfaces
@@ -219,7 +230,7 @@ export interface ASCIIRendererOptions {
 ### Variables and Functions
 - Use **camelCase** for variables and functions: `animationSpeed`, `createRenderer`
 
-### Private Members
+### Private members
 - Prefix private class members with underscore: `_state`, `_renderer`, `_permutations`
 
 ```typescript
@@ -240,7 +251,7 @@ const DEFAULT_OPTIONS: ASCIIRendererOptions = {
 };
 ```
 
-### Static Members
+### Static members
 - Use **UPPER_SNAKE_CASE** for static constants on classes
 
 ```typescript
@@ -264,7 +275,7 @@ private get renderer(): ASCIIRenderer {
 }
 ```
 
-### Unused Parameters
+### Unused parameters
 - Prefix unused parameters with underscore: `_context`, `_options`
 
 ```typescript
@@ -275,9 +286,9 @@ public update(_context: PatternContext): PerlinNoisePattern {
 
 ---
 
-## File Organization
+## File organization
 
-### Directory Structure
+### Directory structure
 ```
 src/
 ├── index.ts              # Main entry point with exports
@@ -298,7 +309,7 @@ src/
     └── utils/
 ```
 
-### File Content Order
+### File content order
 1. Imports (type imports first, then regular imports)
 2. Type definitions and interfaces
 3. Constants
@@ -330,9 +341,9 @@ export default MyClass;
 
 ---
 
-## Import/Export Patterns
+## Import/export patterns
 
-### Import Organization
+### Import organization
 1. Type-only imports first
 2. External dependencies
 3. Internal modules (relative imports)
@@ -343,7 +354,7 @@ import { describe, it, expect } from 'vitest';
 import { createSeededRandom } from '../utils/seeded-random';
 ```
 
-### Export Patterns
+### Export patterns
 
 #### Grouped Exports
 Use grouped exports at the end of the main entry file with JSDoc categories:
@@ -382,7 +393,7 @@ export interface ASCIIRendererOptions {
 }
 ```
 
-### No Trailing Commas in Exports
+### No trailing commas in exports
 ```typescript
 // Correct
 export { 
@@ -399,14 +410,14 @@ export {
 
 ---
 
-## Documentation Standards
+## Documentation standards
 
-### JSDoc Comments
+### JSDoc comments
 - Use JSDoc comments for all public APIs
 - Include `@category` tags for TypeDoc organization
 - Provide examples for main classes and complex APIs
 
-### File-Level Documentation
+### File-level documentation
 Start main files with a comprehensive header:
 
 ```typescript
@@ -433,7 +444,7 @@ Start main files with a comprehensive header:
  */
 ```
 
-### Class Documentation
+### Class documentation
 ```typescript
 /**
  * The main ASCIIGround class that orchestrates pattern generation and rendering.
@@ -461,7 +472,7 @@ export class ASCIIGround {
 }
 ```
 
-### Interface Documentation
+### Interface documentation
 ```typescript
 /**
  * Configuration options for the ASCII renderer.
@@ -477,7 +488,7 @@ export interface ASCIIRendererOptions {
 }
 ```
 
-### Method Documentation
+### Method documentation
 ```typescript
 /**
  * Initialize the ASCIIGround instance with a canvas, a pattern and renderer options.
@@ -495,7 +506,7 @@ public init(
 }
 ```
 
-### Property Documentation
+### Property documentation
 Use inline comments for interface properties:
 
 ```typescript
@@ -511,18 +522,18 @@ export interface PerlinNoisePatternOptions extends PatternOptions {
 
 ---
 
-## Testing Standards
+## Testing standards
 
-### Test File Organization
+### Test file organization
 - Place test files in `src/__tests__/` directory
 - Mirror source structure: `src/patterns/` → `src/__tests__/patterns/`
 - Name test files: `*.test.ts`
 
-### Test Framework
+### Test framework
 - Use Vitest with jsdom environment
 - Import test utilities: `import { describe, it, expect } from 'vitest';`
 
-### Test Structure
+### Test structure
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { PerlinNoisePattern } from '../../patterns/perlin-noise-pattern';
@@ -551,7 +562,7 @@ describe('PerlinNoisePattern', () => {
 });
 ```
 
-### Mock Objects
+### Mock objects
 Create reusable mock objects for testing:
 
 ```typescript
@@ -583,7 +594,7 @@ const mockContext: PatternContext = {
 };
 ```
 
-### Deterministic Testing
+### Deterministic testing
 - Use seeded random number generators for reproducible tests
 - Test with consistent mock data
 
@@ -597,16 +608,16 @@ it('should produce consistent results with seeded random', () => {
 });
 ```
 
-### Test Coverage
+### Test coverage
 - Maintain minimum 80% code coverage (configured in `vitest.config.ts`)
 - Test public APIs thoroughly
 - Test edge cases and error conditions
 
 ---
 
-## Error Handling
+## Error handling
 
-### Throwing Errors
+### Throwing errors
 - Use descriptive error messages
 - Include context about what went wrong
 - Use `Error` constructor
@@ -620,7 +631,7 @@ private get renderer(): ASCIIRenderer {
 }
 ```
 
-### Null/Undefined Checks
+### Null/undefined checks
 - Use explicit null checks with early returns or throws
 - Use optional chaining when appropriate
 
@@ -633,7 +644,7 @@ if (!context)
 this._context = context;
 ```
 
-### Type Guards
+### Type guards
 ```typescript
 if (typeof value !== 'number')
     throw new Error(`Expected number, got ${typeof value}`);
@@ -641,9 +652,9 @@ if (typeof value !== 'number')
 
 ---
 
-## Class and Interface Design
+## Class and interface design
 
-### Method Chaining
+### Method chaining
 - Return `this` from methods that modify state to enable chaining
 - Document that methods support chaining
 
@@ -667,7 +678,7 @@ public get options(): ASCIIRendererOptions {
 }
 ```
 
-### Abstract Classes
+### Abstract classes
 - Use abstract classes for base implementations with shared logic
 - Define abstract methods that subclasses must implement
 
@@ -706,7 +717,7 @@ export interface Renderer {
 }
 ```
 
-### Factory Functions
+### Factory functions
 - Use factory functions for creating instances with complex initialization
 
 ```typescript
@@ -724,9 +735,9 @@ export const createRenderer = (rendererType: '2D' | 'WebGL'): Renderer => {
 
 ---
 
-## Project-Specific Patterns
+## Project-specific patterns
 
-### Pattern Classes
+### Pattern classes
 All pattern classes should:
 1. Extend `Pattern<TOptions>` base class
 2. Define a static `ID` property
@@ -755,7 +766,7 @@ export class PerlinNoisePattern extends Pattern<PerlinNoisePatternOptions> {
 }
 ```
 
-### Options Pattern
+### Options pattern
 Use the options pattern with defaults:
 
 ```typescript
@@ -769,7 +780,7 @@ constructor(options: Partial<MyOptions> = {}) {
 }
 ```
 
-### Initialization Pattern
+### Initialization pattern
 Separate instantiation from initialization:
 
 ```typescript
@@ -780,7 +791,7 @@ const asciiGround = new ASCIIGround();
 asciiGround.init(canvas, pattern, options);
 ```
 
-### State Management
+### State management
 Use private state objects for complex internal state:
 
 ```typescript
@@ -797,7 +808,7 @@ export class ASCIIRenderer {
 }
 ```
 
-### Resource Cleanup
+### Resource cleanup
 Always provide a `destroy()` method for cleanup:
 
 ```typescript
@@ -813,7 +824,7 @@ public destroy(): void {
 
 ---
 
-## Commit Messages
+## Commit messages
 
 Follow [Conventional Commits](https://conventionalcommits.org/) specification:
 
@@ -848,9 +859,9 @@ test: add unit tests for pattern switching
 
 ---
 
-## Build and Development Commands
+## Build and development commands
 
-### Common Commands
+### Common commands
 ```bash
 npm install              # Install dependencies
 npm run dev              # Start dev server with HMR
@@ -866,7 +877,7 @@ npm run typecheck        # Run TypeScript type checking
 npm run clean            # Remove dist, coverage, docs
 ```
 
-### Before Committing
+### Before committing
 1. Run `npm run typecheck` to ensure TypeScript compiles
 2. Run `npm run lint` to check for linting errors
 3. Run `npm run test:run` to ensure all tests pass
@@ -874,13 +885,15 @@ npm run clean            # Remove dist, coverage, docs
 
 ---
 
-## Summary Checklist
+## Summary checklist
 
 When writing code for ASCIIGround, ensure:
 
 - [ ] 4-space indentation, single quotes, semicolons
 - [ ] Maximum 120 characters per line
 - [ ] Trailing newline at end of files
+- [ ] No emojis in code, comments, or documentation
+- [ ] Use sentence case for titles (capitalize only first word)
 - [ ] Avoid inline explanatory comments; use self-documenting code
 - [ ] PascalCase for classes, interfaces, types
 - [ ] camelCase for variables and functions
