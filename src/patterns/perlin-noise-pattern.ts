@@ -160,7 +160,7 @@ export class PerlinNoisePattern extends Pattern<PerlinNoisePatternOptions> {
     /**
      * Generate 3D Perlin noise at given coordinates.
      */
-    public _noise3D(x: number, y: number, z: number): number {
+    private _noise3D(x: number, y: number, z: number): number {
         const X = Math.floor(x) & 255;
         const Y = Math.floor(y) & 255;
         const Z = Math.floor(z) & 255;
@@ -172,36 +172,37 @@ export class PerlinNoisePattern extends Pattern<PerlinNoisePatternOptions> {
         const u = this._fade(x);
         const v = this._fade(y);
         const w = this._fade(z);
-        const a = (this._permutations[X] + Y) & 255;
-        const aa = (this._permutations[a] + Z) & 255;
-        const ab = (this._permutations[(a + 1) & 255] + Z) & 255;
-        const b = (this._permutations[(X + 1) & 255] + Y) & 255;
-        const ba = (this._permutations[b] + Z) & 255;
-        const bb = (this._permutations[(b + 1) & 255] + Z) & 255;
+        const p = this._permutations;
+        const a = p[X] + Y;
+        const aa = p[a] + Z;
+        const ab = p[a + 1] + Z;
+        const b = p[X + 1] + Y;
+        const ba = p[b] + Z;
+        const bb = p[b + 1] + Z;
 
         return this._lerp(
             this._lerp(
                 this._lerp(
-                    this._gradient3D(this._permutations[aa], x, y, z),
-                    this._gradient3D(this._permutations[ba], x - 1, y, z),
+                    this._gradient3D(p[aa], x, y, z),
+                    this._gradient3D(p[ba], x - 1, y, z),
                     u
                 ),
                 this._lerp(
-                    this._gradient3D(this._permutations[ab], x, y - 1, z),
-                    this._gradient3D(this._permutations[bb], x - 1, y - 1, z),
+                    this._gradient3D(p[ab], x, y - 1, z),
+                    this._gradient3D(p[bb], x - 1, y - 1, z),
                     u
                 ),
                 v
             ),
             this._lerp(
                 this._lerp(
-                    this._gradient3D(this._permutations[(aa + 1) & 255], x, y, z - 1),
-                    this._gradient3D(this._permutations[(ba + 1) & 255], x - 1, y, z - 1),
+                    this._gradient3D(p[aa + 1], x, y, z - 1),
+                    this._gradient3D(p[ba + 1], x - 1, y, z - 1),
                     u
                 ),
                 this._lerp(
-                    this._gradient3D(this._permutations[(ab + 1) & 255], x, y - 1, z - 1),
-                    this._gradient3D(this._permutations[(bb + 1) & 255], x - 1, y - 1, z - 1),
+                    this._gradient3D(p[ab + 1], x, y - 1, z - 1),
+                    this._gradient3D(p[bb + 1], x - 1, y - 1, z - 1),
                     u
                 ),
                 v
@@ -214,7 +215,7 @@ export class PerlinNoisePattern extends Pattern<PerlinNoisePatternOptions> {
      * Generate fractal noise using multiple octaves.
      * This creates more natural-looking, organic patterns.
      */
-    public _fractalNoise(x: number, y: number, time: number = 0): number {
+    private _fractalNoise(x: number, y: number, time: number = 0): number {
         let value = 0;
         let maxValue = 0;
         let amplitude = 1;
@@ -233,57 +234,5 @@ export class PerlinNoisePattern extends Pattern<PerlinNoisePatternOptions> {
         }
 
         return value / maxValue;
-    }
-
-    /**
-     * Generate animated noise that changes over time.
-     * This creates flowing, organic motion patterns.
-     */
-    public _animatedNoise(x: number, y: number, time: number): number {
-        const timeScale = 0.01;
-        const spatialScale = this._frequency;
-
-        const noiseOne = this._fractalNoise(
-            x * spatialScale, y * spatialScale,
-            time * timeScale
-        );
-
-        const noiseTwo = this._fractalNoise(
-            (x + 1000) * spatialScale, 
-            (y + 1000) * spatialScale, 
-            time * timeScale * 0.8
-        );
-
-        return (noiseOne + noiseTwo * 0.5) / 1.5;
-    }
-
-    /**
-     * Generate a noise function suitable for ASCII pattern generation.
-     */
-    public _getNoiseFunction(
-        direction: 'left' | 'right' | 'up' | 'down' = 'down'
-    ): (x: number, y: number, time: number) => number {
-        return (x: number, y: number, time: number) => {
-            let dx = x;
-            let dy = y;
-            const dt = time;
-
-            switch (direction) {
-                case 'left':
-                    dx = x + time * 0.5;
-                    break;
-                case 'right':
-                    dx = x - time * 0.5;
-                    break;
-                case 'up':
-                    dy = y + time * 0.5;
-                    break;
-                case 'down':
-                    dy = y - time * 0.5;
-                    break;
-            }
-
-            return this._animatedNoise(dx, dy, dt);
-        };
     }
 }
