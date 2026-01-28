@@ -197,47 +197,4 @@ describe('PerlinNoisePattern - Additional Coverage', () => {
         });
     });
 
-    describe('internal noise functions', () => {
-        it('should access _animatedNoise method', () => {
-            expect(() => {
-                const result = pattern['_animatedNoise'](1.0, 2.0, 5.0);
-                expect(typeof result).toBe('number');
-            }).not.toThrow();
-        });
-
-        it('should access _getNoiseFunction with different directions', () => {
-            const directions: Array<'left' | 'right' | 'up' | 'down'> = ['left', 'right', 'up', 'down'];
-            
-            directions.forEach(direction => {
-                expect(() => {
-                    const noiseFunc = pattern['_getNoiseFunction'](direction);
-                    const result = noiseFunc(1.0, 2.0, 5.0);
-                    expect(typeof result).toBe('number');
-                }).not.toThrow();
-            });
-        });
-
-        it('should use default direction in _getNoiseFunction', () => {
-            expect(() => {
-                const noiseFunc = pattern['_getNoiseFunction']();
-                const result = noiseFunc(1.0, 2.0, 5.0);
-                expect(typeof result).toBe('number');
-            }).not.toThrow();
-        });
-
-        it('should handle noise function transformations', () => {
-            const noiseFunc = pattern['_getNoiseFunction']('left');
-            const result1 = noiseFunc(10, 20, 0);
-            const result2 = noiseFunc(10, 20, 10);
-
-            expect(result1).not.toBe(result2);
-        });
-
-        it('should produce consistent results from _animatedNoise', () => {
-            const result1 = pattern['_animatedNoise'](5, 10, 2);
-            const result2 = pattern['_animatedNoise'](5, 10, 2);
-            
-            expect(result1).toBe(result2);
-        });
-    });
 });

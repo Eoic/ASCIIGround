@@ -321,6 +321,13 @@ export class ASCIIRenderer {
         const oldOptions = this._state.options;
         this._state.options = { ...oldOptions, ...newOptions };
         this._state.isDirty = this._hasOptionsChanged(oldOptions);
+
+        // Handle renderer type change
+        if (newOptions.rendererType !== undefined &&
+            newOptions.rendererType !== oldOptions.rendererType) 
+            this._switchRenderer(newOptions.rendererType);
+        
+
         this._state.region = this._calculateRegion();
         this.pattern.initialize(this._state.region);
         this.renderer.options = this._state.options;
@@ -330,6 +337,42 @@ export class ASCIIRenderer {
             this._removeMouseEvents();
             this._setupMouseEvents();
         } else this._removeMouseEvents();
+    }
+
+    /**
+     * Switch to a different renderer type at runtime.
+     * Creates a new canvas element since a canvas can only have one context type.
+     * @param rendererType - The renderer type to switch to.
+     */
+    private _switchRenderer(rendererType: '2D' | 'WebGL'): void {
+        this._state.renderer?.destroy();
+
+        const oldCanvas = this._state.canvas!;
+        const newCanvas = document.createElement('canvas');
+
+        newCanvas.width = oldCanvas.width;
+        newCanvas.height = oldCanvas.height;
+        newCanvas.className = oldCanvas.className;
+        newCanvas.id = oldCanvas.id;
+
+        for (const attr of Array.from(oldCanvas.attributes)) {
+            if (!['width', 'height', 'class', 'id'].includes(attr.name))
+                newCanvas.setAttribute(attr.name, attr.value);
+        }
+
+        oldCanvas.replaceWith(newCanvas);
+        this._state.canvas = newCanvas;
+
+        if (this._state.options.enableMouseInteraction) {
+            this._removeMouseEvents();
+            newCanvas.addEventListener('mousemove', this._mouseMoveHandler);
+            newCanvas.addEventListener('click', this._mouseClickHandler);
+        }
+
+        this._state.renderer = createRenderer(rendererType);
+        this._state.renderer.initialize(newCanvas, this._state.options);
+        this._state.renderer.resize(newCanvas.width, newCanvas.height);
+        this._state.isDirty = true;
     }
 
     /**

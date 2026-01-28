@@ -3,6 +3,19 @@ import type { RendererControlConfig } from './controls-registry';
 export const controls: RendererControlConfig = {
     label: 'Renderer',
     controls: [{
+        id: 'rendererType',
+        label: 'Renderer type',
+        type: 'select',
+        outType: 'string',
+        value: '2D',
+        options: [
+            { value: '2D', label: '2D Canvas' },
+            { value: 'WebGL', label: 'WebGL' }
+        ],
+        category: 'renderer',
+        description: 'Rendering backend. WebGL offers better performance for large character counts.',
+    },
+    {
         id: 'fontSize',
         label: 'Font size',
         type: 'number',
