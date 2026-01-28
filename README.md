@@ -324,7 +324,7 @@ This checks all required files, configurations, and build processes.
 8. Push to the branch: `git push origin feature/your-feature`.
 9. Create a pull request.
 
-For AI agents: See [AI_CODE_STYLE_GUIDE.md](./AI_CODE_STYLE_GUIDE.md) for comprehensive code style guidelines.
+For AI agents: See [AI_CODE_STYLE_GUIDE.md](./.github/AI_CODE_STYLE_GUIDE.md) for comprehensive code style guidelines.
 
 ### Repository setup (for maintainers)
 
