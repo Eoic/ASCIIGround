@@ -88,6 +88,42 @@ const singleLine = { prop: 'value' };
 import { Component, Helper } from './module';
 ```
 
+### Comments
+- **Avoid inline explanatory comments** - Write self-documenting code instead
+- Use descriptive variable and function names that explain intent
+- Only add comments for non-obvious algorithmic complexity or business logic
+- Use JSDoc for public APIs and complex interfaces (see [Documentation Standards](#documentation-standards))
+
+```typescript
+// ❌ Bad - inline comments explain obvious code
+function calculateTotal(price: number, quantity: number): number {
+    // We do multiplication here.
+    const subtotal = price * quantity;
+    
+    // We apply tax here.
+    const tax = subtotal * 0.1;
+    
+    // We add tax to subtotal.
+    return subtotal + tax;
+}
+
+// ✅ Good - self-documenting code with clear names
+function calculateTotal(price: number, quantity: number): number {
+    const subtotal = price * quantity;
+    const tax = subtotal * 0.1;
+    return subtotal + tax;
+}
+
+// ✅ Good - complex logic with helpful comment
+function calculateTotal(price: number, quantity: number): number {
+    const subtotal = price * quantity;
+    // Tax rate of 10% applies to all orders per regulation XYZ-2024.
+    const taxRate = 0.1;
+    const tax = subtotal * taxRate;
+    return subtotal + tax;
+}
+```
+
 ---
 
 ## TypeScript Conventions
@@ -845,6 +881,7 @@ When writing code for ASCIIGround, ensure:
 - [ ] 4-space indentation, single quotes, semicolons
 - [ ] Maximum 120 characters per line
 - [ ] Trailing newline at end of files
+- [ ] Avoid inline explanatory comments; use self-documenting code
 - [ ] PascalCase for classes, interfaces, types
 - [ ] camelCase for variables and functions
 - [ ] kebab-case for file names
