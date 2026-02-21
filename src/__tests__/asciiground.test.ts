@@ -214,7 +214,7 @@ describe('ASCIIGround', () => {
             vi.spyOn(canvas, 'getContext').mockReturnValue(null);
             const asciiGround = new ASCIIGround();
 
-            expect(() => asciiGround.init(canvas, pattern)).toThrow('Could not get 2D context from canvas');
+            expect(() => asciiGround.init(canvas, pattern)).toThrow('Failed to create 2D context for temp canvas');
         });
 
         it('should handle very small canvas', () => {

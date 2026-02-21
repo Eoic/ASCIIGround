@@ -92,6 +92,8 @@ class MockHTMLCanvasElement {
     }));
 }
 
+const originalCreateElement = document.createElement.bind(document);
+
 beforeEach(() => {
     (global as unknown as { HTMLCanvasElement: unknown }).HTMLCanvasElement = MockHTMLCanvasElement;
     
@@ -108,8 +110,6 @@ beforeEach(() => {
             return null;
         }
     );
-    
-    const originalCreateElement = document.createElement.bind(document);
 
     vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
         if (tagName === 'canvas')

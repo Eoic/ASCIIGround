@@ -69,7 +69,7 @@ describe('ASCIIRenderer', () => {
         it('should throw error if canvas context is not available', () => {
             vi.spyOn(canvas, 'getContext').mockReturnValue(null);
             
-            expect(() => new ASCIIRenderer({ canvas, pattern })).toThrow('Could not get 2D context from canvas');
+            expect(() => new ASCIIRenderer({ canvas, pattern })).toThrow('Failed to create 2D context for temp canvas');
         });
     });
 

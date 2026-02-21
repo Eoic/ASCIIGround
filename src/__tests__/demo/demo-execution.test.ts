@@ -149,7 +149,7 @@ describe('Demo script execution', () => {
         /* eslint-disable @typescript-eslint/no-unsafe-member-access */
         /* eslint-disable @typescript-eslint/no-unsafe-assignment */
         vi.doMock('../../rendering/ascii-renderer', () => ({
-            ASCIIRenderer: vi.fn().mockImplementation(({ canvas, options }: any) => {
+            ASCIIRenderer: vi.fn().mockImplementation(function({ canvas, options }: any) {
                 if (canvas && options?.resizeTo) {
                     const target = options.resizeTo;
 
@@ -270,6 +270,38 @@ describe('Demo script execution', () => {
         mockDocument.addEventListener.mockImplementation((event: string, callback: () => void) => {
             if (event === 'DOMContentLoaded')
                 domContentLoadedCallback = callback;
+        });
+
+        mockDocument.getElementById.mockImplementation((id: string) => {
+            if (id === 'canvas') return null;
+            if (id === 'loader') return mockLoader;
+            if (id === 'controls') return mockControls;
+            if (id === 'controls-tab') return mockControls;
+            if (id === 'canvas-container') return null;
+            return null;
+        });
+
+        mockDocument.querySelectorAll.mockImplementation((selector: string) => {
+            if (selector === '.tab-button') return [];
+            if (selector === '.tab-content') return [];
+            return [];
+        });
+
+        mockDocument.querySelector.mockImplementation((selector: string) => {
+            if (selector === '#debug-tab .debug-info') {
+                return {
+                    innerHTML: '',
+                    appendChild: vi.fn(),
+                };
+            }
+
+            return null;
+        });
+
+        mockDocument.createDocumentFragment.mockImplementation(() => {
+            return {
+                appendChild: vi.fn((_element: HTMLElement) => {}),
+            };
         });
 
         vi.resetModules();
@@ -412,26 +444,28 @@ describe('Demo script execution', () => {
         });
 
         vi.doMock('../../rendering/ascii-renderer', () => ({
-            ASCIIRenderer: vi.fn().mockImplementation(() => ({
-                initialize: vi.fn(),
-                render: vi.fn(),
-                clear: vi.fn(),
-                destroy: vi.fn(),
-                resize: vi.fn(),
-                options: {},
-                renderInfo: {
-                    fps: 60,
-                    frameCount: 100,
-                    rows: 40,
-                    columns: 80,
-                },
-                mouseInfo: {
-                    x: 150,
-                    y: 200,
-                },
-                canvas: mockCanvas,
-                setOptions: vi.fn(),
-            })),
+            ASCIIRenderer: vi.fn().mockImplementation(function() {
+                return {
+                    initialize: vi.fn(),
+                    render: vi.fn(),
+                    clear: vi.fn(),
+                    destroy: vi.fn(),
+                    resize: vi.fn(),
+                    options: {},
+                    renderInfo: {
+                        fps: 60,
+                        frameCount: 100,
+                        rows: 40,
+                        columns: 80,
+                    },
+                    mouseInfo: {
+                        x: 150,
+                        y: 200,
+                    },
+                    canvas: mockCanvas,
+                    setOptions: vi.fn(),
+                };
+            }),
         }));
 
         await import('../../demo/demo');
