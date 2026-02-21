@@ -45,10 +45,6 @@ export class PerlinNoisePattern extends Pattern<PerlinNoisePatternOptions> {
      */
     private _permutations: number[];
 
-    private get _frequency(): number {
-        return this._options.frequency;
-    }
-
     private get _octaves(): number {
         return this._options.octaves;
     }
