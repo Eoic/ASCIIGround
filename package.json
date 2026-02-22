@@ -1,6 +1,6 @@
 {
   "name": "asciiground",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Library for creating animated ASCII canvas backgrounds supporting generative patterns and extensive configuration options.",
   "type": "module",
   "main": "dist/asciiground.umd.js",
