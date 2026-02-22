@@ -330,31 +330,12 @@ For AI agents: See [AI_CODE_STYLE_GUIDE.md](./.github/AI_CODE_STYLE_GUIDE.md) fo
 
 Before pushing to production, ensure these secrets are configured in GitHub:
 
-1. **NPM_TOKEN** - required for automated NPM publishing:
-   - Go to [npmjs.com](https://npmjs.com) → Account → Access Tokens.
-   - Create "Automation" token with "Publish" permissions.
-   - Add to GitHub from Settings → Secrets and variables → Actions.
-
-2. **GitHub Pages** - required for CDN deployment:
+1. **GitHub Pages** - required for CDN deployment:
    - Go to repository Settings → Pages.
    - Set "Source" to "GitHub Actions".
 
-3. **Codecov** - for coverage reporting:
+2. **Codecov** - for coverage reporting:
    - Connect repository at [codecov.io](https://codecov.io).
    - Add `CODECOV_TOKEN` to repository secrets.
 
 See [PUBLISHING.md](./PUBLISHING.md) for complete setup instructions.
-
-### Pre-push checklist
-
-Before pushing to the remote repository:
-
-- [ ] All tests pass: `npm run test:run`.
-- [ ] Code builds successfully: `npm run build`.
-- [ ] Type checking passes: `npm run typecheck`.
-- [ ] Linting passes: `npm run lint`.
-- [ ] Setup validation passes: `./scripts/test-setup.sh`.
-- [ ] Documentation is up to date.
-- [ ] `NPM_TOKEN` secret is configured in GitHub (for publishing).
-- [ ] `CODECOV_TOKEN` secret is configured in GitHub (for test coverage).
-- [ ] GitHub Pages is enabled.

@@ -171,8 +171,8 @@ rm -f pack_test.log
 echo ""
 echo "Checking security..."
 
-# Check for sensitive files that shouldn't be published.
 SENSITIVE_PATTERNS=(".env" "*.key" "*.pem" "credentials" "secrets")
+
 for pattern in "${SENSITIVE_PATTERNS[@]}"; do
     if find . -name "$pattern" -not -path "./node_modules/*" | grep -q .; then
         echo -e "${YELLOW}[WARN]${NC} Found potentially sensitive files matching '$pattern'."
@@ -187,9 +187,8 @@ if [ $FAILED -eq 0 ]; then
     echo ""
     echo "Next steps:"
     echo "1. Update repository URLs in package.json."
-    echo "2. Add NPM_TOKEN to GitHub repository secrets."
-    echo "3. Enable GitHub Pages in repository settings."
-    echo "4. Run './scripts/publish.sh patch' to test publishing."
+    echo "2. Enable GitHub Pages in repository settings."
+    echo "3. Run './scripts/publish.sh patch' to test publishing."
     exit 0
 else
     echo -e "${RED}Some tests failed - please fix the issues above.${NC}"
