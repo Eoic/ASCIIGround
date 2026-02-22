@@ -1,4 +1,4 @@
-import { Pattern } from '../patterns/pattern';
+import { Pattern, RenderRegion } from '../patterns/pattern';
 /**
  * Configuration options for the ASCII renderer.
  * @category Rendering
@@ -6,6 +6,8 @@ import { Pattern } from '../patterns/pattern';
 export interface ASCIIRendererOptions {
     /** Text color for rendered characters */
     color: string;
+    /** Mapping of characters to specific colors */
+    colorMap: Record<string, string>;
     /** Whether animation is enabled */
     animated: boolean;
     /** Animation speed multiplier */
@@ -52,6 +54,22 @@ export declare class ASCIIRenderer {
      * @returns The current ASCIIRendererOptions.
      */
     get options(): ASCIIRendererOptions;
+    /**
+     * Get the current frames per second (FPS) and related information.
+     * @returns The current rendering information including FPS and frame count.
+     */
+    get renderInfo(): Record<string, number>;
+    /**
+     * Get the current mouse interaction state.
+     * @returns An object containing mouse position and click state.
+     */
+    get mouseInfo(): {
+        x: number;
+        y: number;
+        clicked: boolean;
+    };
+    /** Get the current render region configuration. */
+    get region(): RenderRegion;
     /** Get the current pattern generator. */
     get pattern(): Pattern;
     /** Set a new pattern generator for the renderer. */
@@ -71,10 +89,6 @@ export declare class ASCIIRenderer {
      * Get the renderer, throwing an error if not initialized.
      */
     private get renderer();
-    /**
-     * Get the region, throwing an error if not calculated.
-     */
-    private get region();
     /**
      * Get the temp context, ensuring it's initialized.
      */
@@ -140,6 +154,11 @@ export declare class ASCIIRenderer {
      */
     private _setupMouseEvents;
     /**
+     * Remove mouse event listeners to stop interaction.
+     * This is useful when disabling mouse support or cleaning up.
+     */
+    private _removeMouseEvents;
+    /**
      * Reset the animation time to zero.
      * Useful when restarting animations or switching patterns.
      */
@@ -168,4 +187,9 @@ export declare class ASCIIRenderer {
      * @returns True if any option has changed, false otherwise.
      */
     private _hasOptionsChanged;
+    /**
+     * Update FPS calculation based on frame timing.
+     * @param currentTime - the current timestamp.
+     */
+    private _updateFps;
 }

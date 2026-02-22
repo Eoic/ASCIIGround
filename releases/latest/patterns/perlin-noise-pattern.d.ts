@@ -29,7 +29,6 @@ export declare class PerlinNoisePattern extends Pattern<PerlinNoisePatternOption
      * determine gradient directions and hashing in algorithm.
      */
     private _permutations;
-    private get _frequency();
     private get _octaves();
     private get _persistence();
     private get _lacunarity();
@@ -64,19 +63,10 @@ export declare class PerlinNoisePattern extends Pattern<PerlinNoisePatternOption
     /**
      * Generate 3D Perlin noise at given coordinates.
      */
-    _noise3D(x: number, y: number, z: number): number;
+    private _noise3D;
     /**
      * Generate fractal noise using multiple octaves.
      * This creates more natural-looking, organic patterns.
      */
-    _fractalNoise(x: number, y: number, time?: number): number;
-    /**
-     * Generate animated noise that changes over time.
-     * This creates flowing, organic motion patterns.
-     */
-    _animatedNoise(x: number, y: number, time: number): number;
-    /**
-     * Generate a noise function suitable for ASCII pattern generation.
-     */
-    _getNoiseFunction(direction?: 'left' | 'right' | 'up' | 'down'): (x: number, y: number, time: number) => number;
+    private _fractalNoise;
 }
