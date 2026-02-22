@@ -6,7 +6,7 @@ This document explains how to set up automated publishing to NPM and CDN for the
 
 1. **GitHub repository** - ensure your code is hosted on GitHub.
 2. **NPM account** - create an account at [npmjs.com](https://npmjs.com).
-3. **Node.js** - version 18.x or higher.
+3. **Node.js** - version 20.x or higher.
 
 ## Initial setup
 
@@ -20,13 +20,8 @@ This document explains how to set up automated publishing to NPM and CDN for the
    Go to repository Settings → Secrets and variables → Actions and add:
    
    ```
-   NPM_TOKEN: your_npm_publish_token
    CODECOV_TOKEN: your_codecov_token
    ```
-
-   To get your NPM token:
-   - Go to [npmjs.com](https://npmjs.com) → Account → Access Tokens.
-   - Create "Automation" token with "Publish" permissions.
 
    To get your Codecov token:
    - Go to [codecov.io](https://codecov.io), login with GitHub and search for your repository.
@@ -169,8 +164,8 @@ npm run setup           # Initial development setup.
 ### Common issues
 
 1. **NPM publish fails**:
-   - Check if `NPM_TOKEN` secret is set correctly.
    - Check if `CODECOV_TOKEN` is set correctly.
+   - Check if NPM publishing is configured correctly.
    - Verify that the package name is available.
    - Ensure version hasn't been published before.
 
