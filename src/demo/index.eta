@@ -17,13 +17,6 @@
 <body>
     <div class="loading gradient-text" id="loader"> Loading ASCIIGround... </div>
 
-    <div class="header glass">
-        <h1 class="gradient-text">
-            <span class="terminal-symbol">></span>
-            ASCIIGround
-        </h1>
-    </div>
-
     <div class="controls glass hidden" id="controls">
         <div class="controls-tabs">
             <button type="button" class="tab-button active" data-tab="controls-tab">Controls</button>

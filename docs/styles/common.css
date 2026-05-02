@@ -23,33 +23,20 @@ body {
     color: #f5f5f5;
 }
 
-/* Common gradient text styling */
 .gradient-text {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #0d7377 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #7161ef;
     font-weight: 700;
 }
 
-/* Terminal symbol styling with blink animation */
 .terminal-symbol {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #0d7377 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #7161ef;
     font-family: 'Courier New', monospace;
     font-size: 0.8em;
-    animation: terminalBlink 1.5s infinite;
-    text-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
 }
 
-/* Common glass morphism styling */
 .glass {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    background: #1f1f1f;
+    border: 1px solid #4a4a4a;
 }
 
 /* Layout utilities */
@@ -110,8 +97,6 @@ body {
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
-    border-radius: 6px;
-    transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
     text-align: center;
@@ -128,15 +113,13 @@ body {
     font-size: 0.8rem;
 }
 
-/* Minimal outline/glass variant for subtle actions */
 .btn-outline {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: #242424;
+    border: 1px solid #4a4a4a;
 }
 
 .btn-outline:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: #303030;
 }
 
 /* Icon button utility (square, centered) */
@@ -155,39 +138,51 @@ body {
 }
 
 .btn:hover {
-    filter: brightness(110%);
+    background: #8a7af7;
 }
 
 .btn:active {
-    filter: brightness(125%);
+    background: #5b4ad3;
+}
+
+.btn.btn-outline:hover {
+    background: #303030;
+}
+
+.btn.btn-outline:active {
+    background: #262626;
 }
 
 /* Button variants */
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
-}
-
-.btn-primary:hover {
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    background: #7161ef;
+    color: #ffffff;
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #0d7377 0%, #14a085 100%);
-    box-shadow: 0 4px 14px rgba(13, 115, 119, 0.4);
+    background: #4f8df7;
+    color: #ffffff;
 }
 
-.btn-secondary:hover {
-    box-shadow: 0 6px 20px rgba(13, 115, 119, 0.4);
+.btn.btn-secondary:hover {
+    background: #6ea3ff;
+}
+
+.btn.btn-secondary:active {
+    background: #3e73d3;
 }
 
 .btn-dark {
-    background: linear-gradient(135deg, #333 0%, #555 100%);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    background: #333333;
+    color: #ffffff;
 }
 
 .btn-dark:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: #3d3d3d;
+}
+
+.btn-dark:active {
+    background: #262626;
 }
 
 /* Icon styling */
@@ -204,62 +199,6 @@ body {
 .icon-md {
     width: 1.75rem;
     height: 1.75rem;
-}
-
-/* Common animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes terminalBlink {
-
-    0%,
-    50% {
-        opacity: 1;
-    }
-
-    51%,
-    100% {
-        opacity: 0.3;
-    }
-}
-
-/* Animation utilities */
-.fade-in-up {
-    opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
-}
-
-.delay-1 {
-    animation-delay: 0.1s;
-}
-
-.delay-2 {
-    animation-delay: 0.2s;
-}
-
-.delay-3 {
-    animation-delay: 0.3s;
-}
-
-.delay-4 {
-    animation-delay: 0.4s;
-}
-
-.delay-5 {
-    animation-delay: 0.5s;
-}
-
-.delay-6 {
-    animation-delay: 0.6s;
 }
 
 /* Formatting */

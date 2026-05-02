@@ -1,25 +1,10 @@
-# Automatic changelog generation.
 [tool.changelog]
 format = "## [{version}] - {date}"
 template = "CHANGELOG.md.j2"
 
-# Semantic versioning rules.
 [tool.semver]
-# Breaking changes (major version bump)
-major_patterns = [
-    "BREAKING CHANGE:",
-    "feat!:",
-    "fix!:",
-    "perf!:",
-]
-
-# New features (minor version bump).
-minor_patterns = [
-    "feat:",
-    "feature:",
-]
-
-# Bug fixes and patches (patch version bump).
+major_patterns = ["BREAKING CHANGE:", "feat!:", "fix!:", "perf!:"]
+minor_patterns = ["feat:", "feature:"]
 patch_patterns = [
     "fix:",
     "bugfix:",
@@ -31,20 +16,9 @@ patch_patterns = [
     "chore:",
 ]
 
-# Release notes configuration.
 [tool.release]
-exclude_patterns = [
-    "^chore:",
-    "^docs:",
-    "^style:",
-    "Merge ",
-]
+exclude_patterns = ["^chore:", "^docs:", "^style:", "Merge "]
 
-# CDN deployment configuration.
 [tool.cdn]
 base_url = "https://unpkg.com/asciiground"
-files = [
-    "asciiground.umd.js",
-    "asciiground.es.js", 
-    "index.d.ts",
-]
+files = ["asciiground.umd.js", "asciiground.es.js", "index.d.ts"]

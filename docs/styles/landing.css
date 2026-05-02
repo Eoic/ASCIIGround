@@ -23,25 +23,16 @@ body {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 600;
-    opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
-    animation-delay: 0.1s;
 }
 
 h1 {
     font-size: clamp(1.75rem, 8vw, 4rem);
     margin: 0.5rem 0;
-    text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
-    opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
-    animation-delay: 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
 }
-
-
 
 p {
     max-width: 600px;
@@ -49,9 +40,6 @@ p {
     line-height: 1.6;
     margin: 0 2rem;
     color: #ddd;
-    opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
-    animation-delay: 0.3s;
 }
 
 .features {
@@ -60,15 +48,11 @@ p {
     margin: 1.5rem 0;
     flex-wrap: wrap;
     justify-content: center;
-    opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
-    animation-delay: 0.4s;
 }
 
 .feature {
     padding: 0.5rem 1rem;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
     font-size: 0.9rem;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -85,9 +69,6 @@ p {
     gap: 1rem;
     flex-wrap: wrap;
     justify-content: center;
-    opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
-    animation-delay: 0.5s;
     margin-block: 1.75rem;
 }
 
@@ -95,7 +76,6 @@ p {
     padding: 0.75rem 2rem;
     font-size: 1.25rem;
     letter-spacing: 0.5px;
-    border-radius: 8px;
     position: relative;
     overflow: hidden;
 }
@@ -114,9 +94,6 @@ p {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
-    animation-delay: 0.6s;
 }
 
 
