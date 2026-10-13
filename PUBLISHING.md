@@ -18,8 +18,8 @@ This document explains how to set up automated publishing to NPM and CDN for the
 
 2. **Add repository secrets**:
    Go to repository Settings → Secrets and variables → Actions and add:
-   
-   ```
+
+   ```sh
    CODECOV_TOKEN: your_codecov_token
    ```
 
@@ -61,6 +61,7 @@ npm run test:run
      - Deploy to CDN.
 
 2. **Manual publishing**:
+
    ```bash
    # Publish patch version (0.7.3 → 0.7.4)
    npm run publish:patch
@@ -87,16 +88,19 @@ npm run test:run
 After publishing, your library will be available via CDN:
 
 ### Latest version
+
 ```html
 <script src="https://Eoic.github.io/asciiground/releases/latest/asciiground.umd.js"></script>
 ```
 
 ### Specific version
+
 ```html
 <script src="https://Eoic.github.io/asciiground/releases/v1.0.0/asciiground.umd.js"></script>
 ```
 
 ### Alternative CDNs
+
 ```html
 <!-- unpkg -->
 <script src="https://unpkg.com/asciiground@latest/dist/asciiground.umd.js"></script>
@@ -117,7 +121,7 @@ npm run test:coverage   # Generate coverage report.
 # Quality assurance.
 npm run typecheck       # TypeScript type checking.
 npm run lint            # ESLint checking.
-npm run lint:fix        # Auto-fix ESLint issues.
+npm run lint:fix         # Auto-fix ESLint issues.
 
 # Publishing (if not using GitHub Actions).
 npm run publish:patch   # Publish patch version.
@@ -133,16 +137,19 @@ npm run setup           # Initial development setup.
 ## CI/CD pipeline details
 
 ### Triggers
+
 - **Push to master** - runs tests and builds.
 - **Pull request** - runs full test suite.
 - **Manual workflow** - version bump, release creation and publishing.
 
 ### Build matrix
+
 - Tests run on Node.js 18.x, 20.x, 22.x.
 - Cross-platform testing (Ubuntu).
 - Coverage reporting to Codecov.
 
 ### Security
+
 - NPM token stored securely in GitHub Secrets.
 - No sensitive data in the repository.
 - Automated security scanning (dependabot).
@@ -150,12 +157,14 @@ npm run setup           # Initial development setup.
 ## Monitoring and maintenance
 
 ### Package health
-- **NPM** - https://www.npmjs.com/package/asciiground
+
+- **NPM** - <https://www.npmjs.com/package/asciiground>
 - **Bundle size** - tracked in CI pipeline.
 - **Test coverage** - reported to Codecov.
 - **Type safety** - enforced via TypeScript.
 
 ### Documentation
+
 - **API docs** - auto-generated from JSDoc comments.
 - **Examples** - live demo deployed to GitHub Pages.
 
@@ -180,6 +189,7 @@ npm run setup           # Initial development setup.
    - Review failing test output in CI.
 
 ### Debug commands
+
 ```bash
 # Check build output.
 npm run build && ls -la dist/
