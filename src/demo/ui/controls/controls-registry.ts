@@ -20,8 +20,9 @@ export type PatternConstructor = new (options?: Record<string, unknown>) => Patt
 export interface ControlSpec {
     id: string;
     min?: number;
+    exclusiveMin?: number;
     max?: number;
-    step?: number;
+    step?: number | 'any';
     label: string;
     description?: string;
     value: ControlValue;
