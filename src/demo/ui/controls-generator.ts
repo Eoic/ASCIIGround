@@ -7,6 +7,7 @@ import type { ControlValue } from './pattern-proxy';
  */
 export class ControlsGenerator {
     private _container: HTMLFormElement;
+    private _lastValidNumbers = new WeakMap<HTMLInputElement, string>();
     private _listeners: Map<string, Array<(value: ControlValue) => void>> = new Map();
 
     constructor(container: HTMLFormElement) {
@@ -83,6 +84,8 @@ export class ControlsGenerator {
             case 'number':
             case 'range': {
                 element.value = formatControlValue(value);
+                element.setCustomValidity('');
+                this._lastValidNumbers.set(element, element.value);
                 const valueDisplay = element.parentElement?.querySelector('.range-value');
 
                 if (valueDisplay)
@@ -117,6 +120,7 @@ export class ControlsGenerator {
      */
     private _addContainerListeners(): void {
         this._container.addEventListener('input', this._handleControlInput);
+        this._container.addEventListener('focusout', this._handleControlBlur);
     }
 
     /**
@@ -129,6 +133,7 @@ export class ControlsGenerator {
 
     public destroy(): void {
         this._container.removeEventListener('input', this._handleControlInput);
+        this._container.removeEventListener('focusout', this._handleControlBlur);
         this._listeners.clear();
         this._clearControls();
     }
@@ -246,6 +251,8 @@ export class ControlsGenerator {
         const input = document.createElement('input');
         input.type = spec.type === 'range' ? 'range' : 'number';
         input.value = formatControlValue(spec.value);
+        input.required = spec.type === 'number';
+        this._lastValidNumbers.set(input, input.value);
 
         if (spec.min !== undefined)
             input.min = String(spec.min);
@@ -459,6 +466,24 @@ export class ControlsGenerator {
         }
 
         const value = this._parseControlValue(target, controlId);
+
+        if (target.type === 'number') {
+            let error = '';
+            const spec = ControlsRegistry.getControlSpec(controlId);
+
+            if (typeof value !== 'number' || !Number.isFinite(value))
+                error = 'Enter a valid number.';
+            else if (spec?.exclusiveMin !== undefined && value <= spec.exclusiveMin)
+                error = `Must be greater than ${spec.exclusiveMin}.`;
+
+            target.setCustomValidity(error);
+
+            if (!target.validity.valid)
+                return;
+
+            this._lastValidNumbers.set(target, target.value);
+        }
+
         const controls = ControlsRegistry.getAllControlsSpecs();
 
         for (const control of controls) {
@@ -478,6 +503,20 @@ export class ControlsGenerator {
         }
 
         this._emitChange(controlId, value);
+    };
+
+    private _handleControlBlur = (event: FocusEvent): void => {
+        const target = event.target as HTMLInputElement;
+
+        if (target.type !== 'number' || target.validity.valid)
+            return;
+
+        const value = this._lastValidNumbers.get(target);
+
+        if (value !== undefined) {
+            target.value = value;
+            target.setCustomValidity('');
+        }
     };
 
     /**
