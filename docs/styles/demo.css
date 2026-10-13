@@ -2,21 +2,31 @@ body {
     overflow: hidden;
 }
 
+.controls-toggle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    height: 36px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+}
+
 .controls {
     position: fixed;
     box-sizing: border-box;
-    top: 0;
+    top: 36px;
     left: 0;
     z-index: 1000;
-    padding: 20px;
-    max-width: 500px;
+    padding: 12px;
+    max-width: 400px;
     width: 100%;
     height: min-content;
-    max-height: 100%;
+    max-height: calc(100% - 36px);
     overflow-y: auto;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0rem 1rem;
+    gap: 0 12px;
     grid-template-rows: auto;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -31,12 +41,12 @@ body {
 
 .controls label {
     display: block;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 .controls label span {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     color: #f5f5f5;
     font-weight: 500;
     font-size: 0.9rem;
@@ -104,7 +114,7 @@ body {
 .controls input[type="number"],
 .controls select {
     width: 100%;
-    padding: 10px 12px;
+    padding: 6px 8px;
     background: #242424;
     border: 1px solid #4a4a4a;
     color: #f5f5f5;
@@ -205,7 +215,7 @@ body {
 
 .controls input[type="color"] {
     width: 100%;
-    height: 40px;
+    height: 32px;
     padding: 0;
     border: 1px solid #4a4a4a;
     background: #242424;
@@ -356,7 +366,7 @@ body {
 .controls-tabs {
     display: flex;
     grid-column: 1 / -1;
-    margin: -20px -20px 20px -20px;
+    margin: -12px -12px 12px;
     background: #242424;
     border-bottom: 1px solid #4a4a4a;
 }
@@ -395,7 +405,7 @@ body {
 .tab-content.active {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0rem 1rem;
+    gap: 0 12px;
     grid-template-rows: auto;
 }
 
@@ -490,18 +500,12 @@ canvas {
     color: #8c8c8c;
 }
 
-@media (max-width: 1024px) {
-    .controls {
-        max-width: 500px;
-    }
-}
-
 @media (max-width: 768px) {
     .controls {
-        max-width: 400px;
-        padding: 15px;
+        max-width: 100%;
+        padding: 12px;
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 0;
     }
 
     .controls h2 {
@@ -509,7 +513,7 @@ canvas {
     }
 
     .controls label {
-        margin-bottom: 14px;
+        margin-bottom: 10px;
     }
 
     .controls label span {
@@ -519,12 +523,12 @@ canvas {
     .controls input[type="text"],
     .controls input[type="number"],
     .controls select {
-        padding: 8px 10px;
+        padding: 6px 8px;
         font-size: 0.85rem;
     }
 
     .controls input[type="color"] {
-        height: 35px;
+        height: 32px;
     }
 
     .controls .toggle-slider:before {
@@ -543,17 +547,17 @@ canvas {
     }
 
     .controls-tabs {
-        margin: -15px -15px 16px -15px;
+        margin: -12px -12px 12px;
     }
 
     .tab-button {
-        padding: 10px 12px;
+        padding: 6px 8px;
         font-size: 0.85rem;
     }
 
     .tab-content.active {
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 0;
     }
 
     .header h1 {
@@ -581,13 +585,12 @@ canvas {
 @media (max-width: 480px) {
     .controls {
         padding: 12px;
-        max-width: calc(100vw - 40px);
         grid-template-columns: 1fr;
         gap: 12px;
     }
 
     .controls label {
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     .controls label.row {
@@ -604,7 +607,7 @@ canvas {
     .controls input[type="text"],
     .controls input[type="number"],
     .controls select {
-        padding: 8px 10px;
+        padding: 6px 8px;
         font-size: 0.8rem;
     }
 
@@ -633,7 +636,7 @@ canvas {
     }
 
     .tab-button {
-        padding: 8px 10px;
+        padding: 6px 8px;
         font-size: 0.8rem;
     }
 

@@ -17,6 +17,16 @@
 <body>
     <div class="loading gradient-text" id="loader"> Loading ASCIIGround... </div>
 
+    <button
+        type="button"
+        class="controls-toggle btn btn-primary hidden"
+        id="controls-toggle"
+        aria-controls="controls"
+        aria-expanded="true"
+    >
+        Hide controls
+    </button>
+
     <div class="controls glass hidden" id="controls">
         <div class="controls-tabs">
             <button type="button" class="tab-button active" data-tab="controls-tab">Controls</button>
