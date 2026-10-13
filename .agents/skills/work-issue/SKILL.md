@@ -29,9 +29,13 @@ file references, checks run, and unresolved concerns instead of raw logs. Review
 Implement the smallest complete change and follow the checks in `AGENTS.md`. Review the final diff against
 the expected results and address substantive findings. Distinguish completed checks from checks that could not run.
 
-When asked to deliver a PR, commit with a Conventional Commit message and open one PR for the issue.
-Use `Closes #<number>` and describe the behavior change and validation briefly. Check CI and fix failures
-caused by the change. Leave merging and publishing to the user unless requested.
+Present the completed diff and validation results for user review. Wait for explicit approval to commit
+and push the reviewed changes, even when a PR was requested. Follow the approval rule in `AGENTS.md`
+for later edits, including review and CI fixes.
+
+After approval, commit with a Conventional Commit message and open one PR for the issue when requested.
+Use `Closes #<number>` and describe the behavior change and validation briefly. Check CI and prepare fixes
+for failures caused by the change. Leave merging and publishing to the user unless requested.
 
 When project updates are requested, use the existing ASCIIGround project statuses. An open PR is not completed work.
 

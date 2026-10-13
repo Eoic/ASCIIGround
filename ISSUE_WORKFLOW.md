@@ -6,8 +6,12 @@ Start a fresh chat for each issue. Select **Worktree**, choose an up-to-date `ma
 Example prompt:
 
 > Use work-issue to implement #38. Check its expected results, keep the change minimal, and use a separate
-> subagent to review the completed diff. Run the relevant checks, open a short PR, and update the ASCIIGround
-> project status. Leave merging to me.
+> subagent to review the completed diff. Run the relevant checks and show me the changes for review.
+> Wait for my explicit approval before committing or pushing. After approval, open a short PR and update
+> the ASCIIGround project status. Leave merging to me.
+
+Review the final diff and check results before approving commits or pushes. A PR request does not replace
+this approval. Later edits, including review and CI fixes, must be reviewed and approved before delivery.
 
 ## Parallel work
 

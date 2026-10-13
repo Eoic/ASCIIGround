@@ -9,6 +9,11 @@ ASCIIGround is a TypeScript library for animated ASCII backgrounds. The public A
 - Test observable behavior through public APIs. Tests live in `src/__tests__` and use Vitest with canvas mocks.
 - Preserve dirty tracking and resource cleanup when changing patterns or renderers. Check visual changes in a browser.
 
+Complete the changes and checks, then present the diff and validation results for user review. Do not commit
+or push until the user explicitly approves those actions for the reviewed changes. A request to implement
+an issue or open a PR does not by itself authorize committing or pushing. Later edits, including review or
+CI fixes, need review and approval before another commit or push.
+
 Use the Node version in `.nvmrc` and install with `npm ci`. Run focused tests while developing and
 `npm run check` before submitting code changes. For documentation-only changes, check links and `git diff --check`.
 
