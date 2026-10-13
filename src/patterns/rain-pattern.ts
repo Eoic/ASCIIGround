@@ -70,7 +70,7 @@ export class RainPattern extends Pattern<RainPatternOptions> {
     private _lastFrameCharacters: CharacterData[] = [];
 
     constructor(options: Partial<RainPatternOptions> = {}) {
-        super({ ...DEFAULT_RAIN_OPTIONS, ...options } as RainPatternOptions);
+        super({ ...DEFAULT_RAIN_OPTIONS, ...options });
     }
 
     public initialize(region: RenderRegion): void {

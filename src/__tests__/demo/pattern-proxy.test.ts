@@ -190,8 +190,8 @@ describe('PatternProxy', () => {
                 set: () => {},
             });
             
-            const originalGetPattern = patternProxy['_getPattern'];
-            patternProxy['_getPattern'] = () => [null as unknown as PatternConstructor, {} as Record<string, unknown>];
+            const originalGetPattern = patternProxy['_getPattern'].bind(patternProxy);
+            patternProxy['_getPattern'] = () => [null as unknown as PatternConstructor, {}];
             patternProxy.handleControlChange('pattern', 'characters', 'TEST');
             expect(consoleSpy).toHaveBeenCalledWith('Cannot update pattern "non-existent-pattern".');
 

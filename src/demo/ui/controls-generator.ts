@@ -1,3 +1,4 @@
+import { formatControlValue } from './control-value';
 import { ControlsRegistry, type ControlSpec } from './controls/controls-registry';
 import type { ControlValue } from './pattern-proxy';
 
@@ -70,7 +71,7 @@ export class ControlsGenerator {
      * Set value of a control.
      */
     public setControlValue(controlId: string, value: ControlValue): void {
-        const element = this._container.querySelector(`[data-control-id="${controlId}"]:not(label)`) as HTMLInputElement;
+        const element = this._container.querySelector<HTMLInputElement>(`[data-control-id="${controlId}"]:not(label)`);
 
         if (!element)
             return;
@@ -81,16 +82,16 @@ export class ControlsGenerator {
                 break;
             case 'number':
             case 'range': {
-                element.value = String(value);
+                element.value = formatControlValue(value);
                 const valueDisplay = element.parentElement?.querySelector('.range-value');
 
                 if (valueDisplay)
-                    valueDisplay.textContent = String(value);
+                    valueDisplay.textContent = formatControlValue(value);
 
                 break;
             }
             default:
-                element.value = (Array.isArray(value)) ? value.join('') : String(value);
+                element.value = (Array.isArray(value)) ? value.join('') : formatControlValue(value);
         }
     }
 
@@ -244,7 +245,7 @@ export class ControlsGenerator {
     private _createNumberInput(spec: ControlSpec): [HTMLInputElement | HTMLDivElement, HTMLInputElement] {
         const input = document.createElement('input');
         input.type = spec.type === 'range' ? 'range' : 'number';
-        input.value = String(spec.value);
+        input.value = formatControlValue(spec.value);
 
         if (spec.min !== undefined)
             input.min = String(spec.min);
@@ -258,7 +259,7 @@ export class ControlsGenerator {
         if (spec.type === 'range') {
             const valueDisplay = document.createElement('span');
             valueDisplay.className = 'range-value';
-            valueDisplay.textContent = String(spec.value);
+            valueDisplay.textContent = formatControlValue(spec.value);
             input.addEventListener('input', () => valueDisplay.textContent = input.value);
 
             const container = document.createElement('div');
@@ -278,7 +279,7 @@ export class ControlsGenerator {
     private _createTextInput(spec: ControlSpec): HTMLInputElement {
         const input = document.createElement('input');
         input.type = 'text';
-        input.value = String(spec.value);
+        input.value = formatControlValue(spec.value);
         return input;
     }
 
@@ -287,7 +288,7 @@ export class ControlsGenerator {
      */
     private _createTextAreaInput(spec: ControlSpec): HTMLTextAreaElement {
         const input = document.createElement('textarea');
-        input.value = String(spec.value);
+        input.value = formatControlValue(spec.value);
         input.rows = 2;
         return input;
     }
@@ -298,7 +299,7 @@ export class ControlsGenerator {
     private _createColorInput(spec: ControlSpec): HTMLInputElement {
         const input = document.createElement('input');
         input.type = 'color';
-        input.value = String(spec.value);
+        input.value = formatControlValue(spec.value);
         return input;
     }
 
@@ -352,9 +353,9 @@ export class ControlsGenerator {
         list.className = 'color-map-list';
         container.appendChild(list);
 
-    const addButton = document.createElement('button');
-    addButton.type = 'button';
-    addButton.className = 'btn btn-secondary btn-sm color-map-add';
+        const addButton = document.createElement('button');
+        addButton.type = 'button';
+        addButton.className = 'btn btn-secondary btn-sm color-map-add';
         addButton.textContent = 'Add mapping';
         container.appendChild(addButton);
 
@@ -409,8 +410,8 @@ export class ControlsGenerator {
         const rows = container.querySelectorAll('.color-map-row');
 
         rows.forEach(row => {
-            const charInput = row.querySelector('.color-map-char') as HTMLInputElement | null;
-            const colorInput = row.querySelector('.color-map-color') as HTMLInputElement | null;
+            const charInput = row.querySelector<HTMLInputElement>('.color-map-char');
+            const colorInput = row.querySelector<HTMLInputElement>('.color-map-color');
 
             if (charInput && charInput.value)
                 map[charInput.value] = colorInput?.value || '';
@@ -423,7 +424,7 @@ export class ControlsGenerator {
         const controlSpec = ControlsRegistry.getControlSpec(controlId);
 
         if (!controlSpec)
-            return (target as HTMLInputElement).value as ControlValue;
+            return (target as HTMLInputElement).value;
 
         switch (controlSpec.outType) {
             case 'boolean':

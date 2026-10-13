@@ -892,7 +892,7 @@ When writing code for ASCIIGround, ensure:
 - [ ] Trailing newline at end of files
 - [ ] No emojis in code, comments, or documentation
 - [ ] Use sentence case for titles (capitalize only first word)
-- [ ] Avoid inline explanatory comments; use self-documenting code
+- [ ] Avoid inline explanatory comments. Use self-documenting code
 - [ ] PascalCase for classes, interfaces, types
 - [ ] camelCase for variables and functions
 - [ ] kebab-case for file names

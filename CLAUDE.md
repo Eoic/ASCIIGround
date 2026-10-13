@@ -34,7 +34,7 @@ npm run clean            # Remove dist, coverage, docs/api, docs/demo
 ### Core components
 
 - **ASCIIGround** (`src/index.ts`): Facade class with chainable API: `.init()` -> `.startAnimation()` / `.stopAnimation()` -> `.setPattern()` / `.setOptions()` -> `.destroy()`
-- **ASCIIRenderer** (`src/rendering/ascii-renderer.ts`): Manages animation loop, state, resize handling; delegates drawing to Renderer implementations
+- **ASCIIRenderer** (`src/rendering/ascii-renderer.ts`): Manages animation loop, state, resize handling. Delegates drawing to Renderer implementations
 - **Renderer** (`src/rendering/renderer.ts`): Interface with `Canvas2DRenderer` (implemented) and `WebGLRenderer` (stubbed). Use `createRenderer('2D'|'WebGL')` factory
 
 ### Pattern system
@@ -51,7 +51,7 @@ npm run clean            # Remove dist, coverage, docs/api, docs/demo
 
 Vite multi-mode config (`vite.config.ts`):
 
-- `mode lib`: Builds library (ES + UMD) with d.ts via `vite-plugin-dts`
+- `mode lib`: Builds library (ES + CJS + UMD) with dual-module declarations via `vite-plugin-dts`
 - `mode demo`: Builds demo to `docs/demo` using Eta template plugin (`src/plugins/eta-plugin.ts`)
 - Default dev: Serves demo with HMR and template middleware
 
@@ -87,7 +87,7 @@ Detailed guidelines in `.github/AI_CODE_STYLE_GUIDE.md`. Key points:
 ### Documentation
 
 - JSDoc for all public APIs with `@category` tags
-- Avoid inline comments; write self-documenting code
+- Avoid inline comments. Write self-documenting code
 - Only comment non-obvious algorithmic complexity or business logic
 
 ## Testing
@@ -96,7 +96,7 @@ Detailed guidelines in `.github/AI_CODE_STYLE_GUIDE.md`. Key points:
 - Tests in `src/__tests__/` mirroring source structure
 - Global canvas mocks in `src/__tests__/test-setup.ts`
 - Use `createSeededRandom()` for deterministic tests
-- Test public APIs; don't reach into private state
+- Test public APIs. Don't reach into private state
 - Minimum 80% coverage required
 
 ## Pattern authoring
@@ -111,7 +111,7 @@ Detailed guidelines in `.github/AI_CODE_STYLE_GUIDE.md`. Key points:
 
 - ASCIIRenderer uses character-list hash and dirty flags to avoid redundant draws
 - Set `pattern.isDirty = true` when option changes affect visual output
-- Resize uses `ResizeObserver` for HTMLElements; clean up in `destroy()`
+- Resize uses `ResizeObserver` for HTMLElements. Clean up in `destroy()`
 - Mouse interaction gated by `enableMouseInteraction` option
 
 ## Commit messages

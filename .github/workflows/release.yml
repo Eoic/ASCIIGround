@@ -2,193 +2,53 @@ name: Release and publish
 
 on:
   workflow_dispatch:
-    inputs:
-      version_type:
-        description: 'Version bump type'
-        required: true
-        default: 'patch'
-        type: choice
-        options:
-        - patch
-        - minor
-        - major
-      pre_release:
-        description: 'Create pre-release'
-        required: false
-        default: false
-        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
 
 jobs:
-  release-and-publish:
+  release:
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: write
-      pull-requests: write
-      actions: write
-
+      id-token: write
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        fetch-depth: 0
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '24.x'
-        registry-url: 'https://registry.npmjs.org'
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: npm ci
-
-    - name: Configure Git
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-
-    - name: Run tests
-      run: npm run test:run
-
-    - name: Bump version
-      id: version
-      run: |
-        NEW_VERSION=$(npm version ${{ github.event.inputs.version_type }} --no-git-tag-version)
-        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-        echo "version_number=${NEW_VERSION#v}" >> $GITHUB_OUTPUT
-
-    - name: Update package files
-      run: |
-        git add package.json package-lock.json
-        git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}"
-
-    - name: Build library
-      run: npm run build
-
-    - name: Generate changelog
-      id: changelog
-      run: |
-        # Install conventional-changelog-cli
-        npm install -g conventional-changelog-cli
-        
-        # Generate changelog using conventional commits with custom config
-        conventional-changelog -p angular -i RELEASE_NOTES.md -s -r 1 \
-          --config .conventionalcommits.json || true
-        
-        # If no RELEASE_NOTES.md was generated or it's empty, create a basic one
-        if [ ! -s RELEASE_NOTES.md ]; then
-          echo "## ${{ steps.version.outputs.new_version }}" > RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          echo "_Released on $(date +'%Y-%m-%d')_" >> RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          
-          # Fallback to simple git log if conventional-changelog finds nothing
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ -z "$LAST_TAG" ]; then
-            echo "### Initial Release" >> RELEASE_NOTES.md
-            echo "" >> RELEASE_NOTES.md
-            echo "This is the first release of ASCIIGround library." >> RELEASE_NOTES.md
-          else
-            echo "### Changes" >> RELEASE_NOTES.md
-            echo "" >> RELEASE_NOTES.md
-            git log --pretty=format:"- %s" $LAST_TAG..HEAD >> RELEASE_NOTES.md || echo "- No changes" >> RELEASE_NOTES.md
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - run: npm ci
+      - run: npm run check
+      - name: Check release tag
+        id: version
+        run: |
+          version=$(node -p "require('./package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if git rev-parse --verify "refs/tags/v$version" >/dev/null 2>&1; then
+            test "$(git rev-list -n 1 "v$version")" = "$GITHUB_SHA"
           fi
-        fi
-        
-        # Add metadata to the changelog
-        echo "" >> RELEASE_NOTES.md
-        echo "---" >> RELEASE_NOTES.md
-        echo "" >> RELEASE_NOTES.md
-        echo "**Release Date:** $(date +'%Y-%m-%d')" >> RELEASE_NOTES.md
-        echo "**Version:** ${{ steps.version.outputs.new_version }}" >> RELEASE_NOTES.md
-        
-        # Add comparison link if we have a previous tag
-        LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-        if [ ! -z "$LAST_TAG" ]; then
-          echo "**Full Changelog:** https://github.com/${{ github.repository }}/compare/$LAST_TAG...${{ steps.version.outputs.new_version }}" >> RELEASE_NOTES.md
-        fi
-
-    - name: Push changes
-      run: |
-        git push origin master
-
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.version.outputs.new_version }}
-        release_name: "Release ${{ steps.version.outputs.new_version }}"
-        body_path: RELEASE_NOTES.md
-        draft: false
-        prerelease: ${{ github.event.inputs.pre_release }}
-
-    - name: Upload UMD build
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/asciiground.umd.js
-        asset_name: asciiground.umd.js
-        asset_content_type: application/javascript
-
-    - name: Upload ES module build
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/asciiground.es.js
-        asset_name: asciiground.es.js
-        asset_content_type: application/javascript
-
-    - name: Upload TypeScript definitions
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/index.d.ts
-        asset_name: index.d.ts
-        asset_content_type: application/typescript
-
-    - name: Publish to NPM
-      run: |
-        if [ "${{ github.event.inputs.pre_release }}" == "true" ]; then
-          echo "Publishing pre-release with beta tag"
-          npm publish --provenance --tag beta
-        else
-          echo "Publishing stable release"
-          npm publish --provenance
-        fi
-
-    - name: Deploy to GitHub pages (CDN)
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
-        destination_dir: releases/${{ steps.version.outputs.new_version }}
-        keep_files: true
-
-    - name: Update latest CDN link
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
-        destination_dir: releases/latest
-        keep_files: false
-
-    - name: Notify success
-      run: |
-        if [ "${{ github.event.inputs.pre_release }}" == "true" ]; then
-          echo "Successfully published pre-release version ${{ steps.version.outputs.new_version }} to NPM (beta tag) and CDN."
-          echo "NPM: https://www.npmjs.com/package/asciiground (install with: npm install asciiground@beta)"
-        else
-          echo "Successfully published stable version ${{ steps.version.outputs.new_version }} to NPM and CDN."
-          echo "NPM: https://www.npmjs.com/package/asciiground"
-        fi
-        echo "CDN: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/releases/latest/asciiground.umd.js"
+      - run: npm pack
+      - name: Publish package and create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if [[ "$VERSION" == *-* ]]; then
+            npm publish "asciiground-$VERSION.tgz" --provenance --access public --tag beta
+            release_flags=(--prerelease --latest=false)
+          else
+            npm publish "asciiground-$VERSION.tgz" --provenance --access public
+            release_flags=(--latest)
+          fi
+          gh release create "v$VERSION" --target "$GITHUB_SHA" --generate-notes \
+            --title "Release v$VERSION" "${release_flags[@]}" \
+            "asciiground-$VERSION.tgz" dist/asciiground.es.js dist/asciiground.cjs dist/asciiground.umd.js

@@ -1,3 +1,4 @@
+import { formatControlValue } from '../control-value';
 /**
  * Control types and specifications for dynamic UI generation.
  */
@@ -105,15 +106,15 @@ export class ControlsRegistry {
     ): ControlValue {
         switch (outType) {
             case 'string':
-                return String(value);
+                return formatControlValue(value);
             case 'number':
                 return Number(value);
             case 'boolean':
                 return Boolean(value);
             case 'array':
-                return Array.from(String(value));
+                return Array.from(formatControlValue(value));
             case 'record':
-                return value as ControlValue;
+                return value;
             default:
                 throw new Error('Unknown outType!');
         }

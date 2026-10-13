@@ -115,8 +115,8 @@ const mockWindow = {
     })),
 };
 
+vi.stubGlobal('document', mockDocument);
 Object.assign(globalThis, {
-    document: mockDocument,
     window: mockWindow,
     HTMLCanvasElement: vi.fn(),
     HTMLFormElement: vi.fn(),

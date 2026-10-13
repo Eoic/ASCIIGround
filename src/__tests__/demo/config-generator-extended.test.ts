@@ -79,6 +79,10 @@ describe('PatternControlsManager Extended Tests', () => {
             }),
             clearTimeout: vi.fn(),
             window: {
+                innerWidth: 800,
+                innerHeight: 600,
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn(),
                 setTimeout: vi.fn((callback: () => void) => {
                     callback();
                     return 123;

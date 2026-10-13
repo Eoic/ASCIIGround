@@ -7,7 +7,7 @@ Use this playbook to be productive immediately in this repo. Keep edits small, r
 - Rendering layers:
   - `ASCIIGround` orchestrates an `ASCIIRenderer` instance and exposes a chainable API: `.init() -> .startAnimation()/.stopAnimation() -> .setPattern()/.setOptions() -> .destroy()`.
   - `ASCIIRenderer` manages state, animation loop, resize handling, and delegates drawing to a `Renderer` implementation.
-  - `rendering/renderer.ts` defines `Renderer` plus `Canvas2DRenderer` (implemented) and `WebGLRenderer` (stubbed; logs fallback warnings), and `createRenderer('2D'|'WebGL')`.
+  - `rendering/renderer.ts` defines `Renderer` plus `Canvas2DRenderer` (implemented) and `WebGLRenderer` (stubbed, logs fallback warnings), and `createRenderer('2D'|'WebGL')`.
 - Pattern system:
   - Base `Pattern<TOptions>` in `src/patterns/pattern.ts` with `initialize(region)`, `update(ctx)`, `generate(ctx): CharacterData[]`, `setOptions()`, and dirty flag.
   - Built-ins: `PerlinNoisePattern`, `RainPattern`, `StaticNoisePattern`, `DummyPattern` under `src/patterns/*-pattern.ts`.
@@ -27,42 +27,42 @@ Use this playbook to be productive immediately in this repo. Keep edits small, r
 - Tests: 
   - Watch: `npm run test:watch`
   - Single run: `npm run test:run`
-  - Coverage: `npm run test:coverage` (V8; thresholds 80%).
+  - Coverage: `npm run test:coverage` (V8, thresholds 80%).
 - Lint/Format: `npm run lint` / `npm run lint:fix` (ESLint 9, flat config).
 - Clean: `npm run clean` (removes dist/docs/coverage).
 
 ## Testing conventions
-- Vitest + jsdom; global canvas mocks in `src/__tests__/test-setup.ts`.
-- Prefer integration-style tests through `ASCIIGround`/`ASCIIRenderer` public APIs; don’t reach into private state.
+- Vitest + jsdom. Global canvas mocks in `src/__tests__/test-setup.ts`.
+- Prefer integration-style tests through `ASCIIGround`/`ASCIIRenderer` public APIs. Don’t reach into private state.
 - For new patterns, add tests under `src/__tests__/patterns/*.test.ts` mirroring existing ones. Use deterministic seeds via `createSeededRandom` where relevant.
 - CI expects coverage >= 80% (see `vitest.config.ts`).
 
 ## Rendering and performance notes
-- `ASCIIRenderer` avoids redundant draws using a character-list hash and pattern/renderer dirty flags; maintain this by:
+- `ASCIIRenderer` avoids redundant draws using a character-list hash and pattern/renderer dirty flags. Maintain this by:
   - Setting `pattern.isDirty = true` when option changes affect visual output, or override `setOptions` to compute it as done in built-ins.
   - When adding renderer options, update `_hasOptionsChanged`, `_calculateSpacing`, and `_calculateRegion` as needed.
-- Resize behavior: canvas sizes to `options.resizeTo` (Window or HTMLElement). `ResizeObserver` is used for HTMLElements; remember to clean up in `destroy()`.
-- Mouse interaction: gated by `enableMouseInteraction`; renderer updates `mouseInfo` and resets `clicked` each frame.
+- Resize behavior: canvas sizes to `options.resizeTo` (Window or HTMLElement). `ResizeObserver` is used for HTMLElements. Remember to clean up in `destroy()`.
+- Mouse interaction: gated by `enableMouseInteraction`. Renderer updates `mouseInfo` and resets `clicked` each frame.
 
 ## Pattern authoring checklist
-- Extend `Pattern<TOptions>`; set static `ID`.
-- Implement `update(ctx)` and `generate(ctx)`; return a flat array of `CharacterData` in pixel coordinates using `region.charSpacingX/Y`.
+- Extend `Pattern<TOptions>`. Set static `ID`.
+- Implement `update(ctx)` and `generate(ctx)`. Return a flat array of `CharacterData` in pixel coordinates using `region.charSpacingX/Y`.
 - Call `initialize(region)` to cache region-dependent data and precalculated values.
 - Implement `setOptions()` to preserve expensive state (see `PerlinNoisePattern.setOptions` for seed/permutation reuse) and set `isDirty` when visuals change.
-- Keep characters within `region.start/endRow/Column`; renderer clips if needed.
+- Keep characters within `region.start/endRow/Column`. Renderer clips if needed.
 
 ## Demo integration
-- Template: `src/demo/index.eta`; plugin injects `styles`/`scripts` based on `vite.config.ts`.
-- Dev server renders Eta in middleware; changing the template triggers a full reload.
-- Ship demo assets to `docs/demo` via `npm run build:demo`; public site expects `index.html` emitted by the Eta plugin.
+- Template: `src/demo/index.eta`. Plugin injects `styles`/`scripts` based on `vite.config.ts`.
+- Dev server renders Eta in middleware. Changing the template triggers a full reload.
+- Ship demo assets to `docs/demo` via `npm run build:demo`. Public site expects `index.html` emitted by the Eta plugin.
 
 ## Publishing and bundles
-- Outputs: `dist/asciiground.es.js` and `dist/asciiground.umd.js`; types at `dist/index.d.ts`.
-- Size gate via `size-limit` (30 kB for each bundle). Keep external deps minimal; the library is currently self-contained.
+- Outputs: `dist/asciiground.es.js` and `dist/asciiground.umd.js`. Types at `dist/index.d.ts`.
+- Size gate via `size-limit` (30 kB for each bundle). Keep external deps minimal. The library is currently self-contained.
 
 ## Common pitfalls (and fixes)
 - WebGL renderer is a stub: use `rendererType: '2D'` unless you implement the WebGL pipeline.
-- Font metrics: spacing uses measured max glyph width and height; unusual fonts/spacings may need explicit `charSpacingX/Y`.
+- Font metrics: spacing uses measured max glyph width and height. Unusual fonts/spacings may need explicit `charSpacingX/Y`.
 - Accessing `ASCIIGround` before `.init()` throws. Chain correctly in docs and tests.
 
 ## Key files map
@@ -83,32 +83,32 @@ If anything here seems off or incomplete (e.g., new scripts, patterns, or render
 - Clear intent over clever code: be boring and obvious.
 
 Simplicity means:
-- One responsibility per function/class; avoid premature abstractions.
-- Prefer straightforward solutions; if it needs long explanation, simplify it.
+- One responsibility per function/class. Avoid premature abstractions.
+- Prefer straightforward solutions. If it needs long explanation, simplify it.
 
 ### Process
-Planning & staging: break complex work into 3–5 stages in `IMPLEMENTATION_PLAN.md` with Goal, Success Criteria, Tests, Status. Update as you go; remove when done.
+Planning & staging: break complex work into 3–5 stages in `IMPLEMENTATION_PLAN.md` with Goal, Success Criteria, Tests, Status. Update as you go. Remove when done.
 
 Implementation flow (no TDD requirement):
 1) Understand: review similar code in `src/patterns`, `rendering`, and tests.
 2) Implement: minimal change that fits existing patterns and builds.
 3) Add/Update tests: cover new behavior using Vitest/jsdom setup.
-4) Refactor: keep code clear; maintain public APIs.
+4) Refactor: keep code clear. Maintain public APIs.
 
-When stuck (after 3 attempts), stop and document: what failed, errors, hypotheses; research 2–3 alternatives; reconsider abstraction/scope; try a simpler or different angle.
+When stuck (after 3 attempts), stop and document: what failed, errors, hypotheses. Research 2–3 alternatives. Reconsider abstraction/scope. Try a simpler or different angle.
 
 ### Technical standards
-Architecture principles: dependency injection; interfaces over singletons; explicit data flow and deps.
+Architecture principles: dependency injection. Interfaces over singletons. Explicit data flow and deps.
 
 Code quality: new changes must pass existing tests, include tests for new functionality, and follow lint/format rules.
 
-Error handling: fail fast with descriptive messages, include context, handle at appropriate level; don’t swallow exceptions.
+Error handling: fail fast with descriptive messages, include context, handle at appropriate level. Don’t swallow exceptions.
 
 Decision framework: prefer options that optimize testability, readability, consistency with project patterns, simplicity, and reversibility.
 
-Project integration: learn by finding 3 similar features/components, mirror conventions and utilities, follow existing test patterns. Use the project’s build/test/lint toolchain; don’t introduce new tools without strong justification.
+Project integration: learn by finding 3 similar features/components, mirror conventions and utilities, follow existing test patterns. Use the project’s build/test/lint toolchain. Don’t introduce new tools without strong justification.
 
 ### Quality gates
-Definition of Done: tests written and passing; code matches conventions; no lint/format warnings; clear commit messages; implementation matches plan; no TODOs without issue numbers.
+Definition of Done: tests written and passing. Code matches conventions. No lint/format warnings. Clear commit messages. Implementation matches plan. No TODOs without issue numbers.
 
 Test guidelines: test behavior (public APIs), keep names clear, use existing helpers (`src/__tests__/test-setup.ts`), and ensure determinism (e.g., `createSeededRandom`).

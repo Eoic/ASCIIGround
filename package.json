@@ -3,7 +3,7 @@
   "version": "1.4.0",
   "description": "Library for creating animated ASCII canvas backgrounds supporting generative patterns and extensive configuration options.",
   "type": "module",
-  "main": "dist/asciiground.umd.js",
+  "main": "dist/asciiground.cjs",
   "module": "dist/asciiground.es.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -13,9 +13,14 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/asciiground.es.js",
-      "require": "./dist/asciiground.umd.js"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/asciiground.es.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/asciiground.cjs"
+      }
     }
   },
   "size-limit": [
@@ -34,7 +39,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && npm run build:lib",
-    "build:lib": "vite build --mode lib && npm run size",
+    "build:lib": "vite build --mode lib && cp dist/index.d.mts dist/index.d.ts && npm run size",
     "build:demo": "vite build --mode demo",
     "build:docs": "typedoc",
     "preview": "vite preview",
@@ -44,17 +49,14 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest --watch",
     "prepublishOnly": "npm run build",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "clean": "rm -rf dist coverage docs/api docs/demo",
-    "publish:patch": "./scripts/publish.sh patch",
-    "publish:minor": "./scripts/publish.sh minor",
-    "publish:major": "./scripts/publish.sh major",
     "setup": "./scripts/setup.sh",
     "version:check": "npm outdated",
     "version:update": "npm update",
     "size": "size-limit",
-    "commit": "cz"
+    "check": "npm run lint && npm run test:coverage && npm run build && npm run build:demo && npm run build:docs"
   },
   "keywords": [
     "ascii",
@@ -89,31 +91,25 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@size-limit/file": "^12.0.0",
-    "@types/eslint__js": "^8.42.3",
-    "@types/node": "^25.3.0",
-    "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^10.0.1",
-    "eta": "^4.5.1",
-    "jsdom": "^28.1.0",
-    "size-limit": "^12.0.0",
-    "typedoc": "^0.28.17",
+    "@size-limit/file": "^14.2.0",
+    "@types/node": "^24.19.2",
+    "@vitest/coverage-v8": "^5.0.4",
+    "eslint": "^10.12.0",
+    "eta": "^4.6.0",
+    "jsdom": "^30.1.2",
+    "size-limit": "^14.2.0",
+    "typedoc": "^0.28.20",
     "typedoc-material-theme": "^1.4.1",
-    "typedoc-plugin-markdown": "^4.10.0",
-    "typedoc-plugin-missing-exports": "^4.1.2",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.56.0",
-    "vite": "^7.3.1",
+    "typedoc-plugin-missing-exports": "^4.1.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.2",
+    "vite": "^8.3.4",
     "vite-plugin-dts": "^5.1.2",
-    "vitest": "^4.0.18"
+    "vitest": "^5.0.4"
   },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
+  "unpkg": "dist/asciiground.umd.js",
+  "jsdelivr": "dist/asciiground.umd.js",
   "allowScripts": {
-    "fsevents@2.3.3": true,
-    "esbuild@0.28.2": true
+    "fsevents@2.3.3": true
   }
 }
