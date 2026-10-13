@@ -7,7 +7,7 @@ export const controls: RendererControlConfig = {
         label: 'Font size',
         type: 'number',
         outType: 'number',
-        value: 36,
+        value: 16,
         min: 8,
         max: 72,
         step: 1,

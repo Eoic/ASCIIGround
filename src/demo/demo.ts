@@ -34,6 +34,17 @@ import { DEBUG_INFO_UPDATE_INTERVAL_MS } from './ui/constants';
         setupDebugInfo(renderer);
         controls.classList.remove('hidden');
         controlsManager.switchPattern('perlin-noise');
+
+        const toggle = document.getElementById('controls-toggle');
+
+        if (toggle) {
+            toggle.classList.remove('hidden');
+            toggle.addEventListener('click', () => {
+                const hidden = controls.classList.toggle('hidden');
+                toggle.setAttribute('aria-expanded', String(!hidden));
+                toggle.textContent = hidden ? 'Show controls' : 'Hide controls';
+            });
+        }
     }
 
     function setupTabSwitching() {
