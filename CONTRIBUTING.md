@@ -15,3 +15,5 @@ feat: add a noise pattern
 For breaking changes, add `!` after the type and explain the change in a `BREAKING CHANGE:` footer.
 
 See [Publishing](PUBLISHING.md) for releases and [Code style](.github/AI_CODE_STYLE_GUIDE.md) for coding conventions.
+
+For agent-assisted development, see [Working on issues with Codex](ISSUE_WORKFLOW.md).
