@@ -244,98 +244,20 @@ The documentation includes:
 
 ## Development
 
-### Setup
-
 ```bash
 git clone https://github.com/Eoic/asciiground.git
 cd asciiground
-npm install
-```
-
-### Development server
-
-```bash
+nvm use
+npm ci
 npm run dev
 ```
 
-The development server will:
-- Generate the demo page from the template.
-- Serve the demo with live library hot-reloading.
-- Open the demo page in your browser.
-- Watches for changes and reloads the page automagically.
-
-### Building the library
-
 ```bash
-npm run build           # Build library (same as build:lib).
-npm run build:demo      # Build demo page.
+npm run check         # Lint, tests, type checking, and builds
+npm run test:watch    # Tests in watch mode
+npm run build         # Library → dist/
+npm run build:demo    # Demo → docs/demo/
+npm run build:docs    # API documentation → docs/api/
 ```
 
-### Documentation
-
-```bash
-npm run build:docs      # Generate API documentation.
-```
-
-The generated documentation will be available in `docs/api/`. You can view it by opening `docs/api/index.html` in your browser or by serving the docs directory with a local server.
-
-### Type checking
-
-```bash
-npm run typecheck
-```
-
-### Testing
-
-```bash
-npm run test:watch     # Run tests in watch mode.
-npm run test:run       # Run tests once.
-npm run test:coverage  # Generate coverage report.
-```
-
-### Publishing
-
-This project uses automated publishing via GitHub Actions. See [PUBLISHING.md](./PUBLISHING.md) for detailed setup instructions.
-
-```bash
-npm run publish:patch  # 1.0.0 → 1.0.1.
-npm run publish:minor  # 1.0.0 → 1.1.0.
-npm run publish:major  # 1.0.0 → 2.0.0.
-```
-
-### Validate setup
-
-Before first publish, run the setup validation:
-
-```bash
-./scripts/test-setup.sh
-```
-
-This checks all required files, configurations, and build processes.
-
-### Development workflow
-1. Fork the repository.
-2. Create a feature branch: `git checkout -b feature/your-feature`.
-3. Make your changes and add tests.
-4. Run the test suite: `npm run test:run`.
-5. Run type checking: `npm run typecheck`.
-6. Run linting: `npm run lint`.
-7. Commit your changes: `npm run commit` and follow the prompts.
-8. Push to the branch: `git push origin feature/your-feature`.
-9. Create a pull request.
-
-For AI agents: See [AI_CODE_STYLE_GUIDE.md](./.github/AI_CODE_STYLE_GUIDE.md) for comprehensive code style guidelines.
-
-### Repository setup (for maintainers)
-
-Before pushing to production, ensure these secrets are configured in GitHub:
-
-1. **GitHub Pages** - required for CDN deployment:
-   - Go to repository Settings → Pages.
-   - Set "Source" to "GitHub Actions".
-
-2. **Codecov** - for coverage reporting:
-   - Connect repository at [codecov.io](https://codecov.io).
-   - Add `CODECOV_TOKEN` to repository secrets.
-
-See [PUBLISHING.md](./PUBLISHING.md) for complete setup instructions.
+See [Contributing](CONTRIBUTING.md) for the development workflow and [Publishing](PUBLISHING.md) for releases and repository setup.

@@ -46,7 +46,7 @@ export interface ASCIIRendererConstructor {
     options?: Partial<ASCIIRendererOptions>;
 }
 
-const DEFAULT_OPTIONS: ASCIIRendererOptions = {
+const DEFAULT_OPTIONS: Omit<ASCIIRendererOptions, 'resizeTo'> = {
     color: '#3e3e80ff',
     colorMap: {},
     fontSize: 32,
@@ -59,7 +59,6 @@ const DEFAULT_OPTIONS: ASCIIRendererOptions = {
     animationSpeed: 1,
     charSpacingX: undefined,
     charSpacingY: undefined,
-    resizeTo: window,
 };
 
 const initState = () => ({
@@ -67,7 +66,7 @@ const initState = () => ({
     renderer: null as Renderer | null,
     pattern: null as Pattern | null,
     region: null as RenderRegion | null,
-    options: DEFAULT_OPTIONS,
+    options: { ...DEFAULT_OPTIONS, resizeTo: window } as ASCIIRendererOptions,
     lastTime: 0,
     animationId: null as number | null,
     animationTime: 0,
@@ -230,6 +229,7 @@ export class ASCIIRenderer {
 
         this._state.options = {
             ...DEFAULT_OPTIONS,
+            resizeTo: window,
             ...options,
         };
 

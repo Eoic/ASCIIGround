@@ -65,6 +65,10 @@ describe('PatternProxy Extended Tests', () => {
             setInterval: vi.fn(),
             clearInterval: vi.fn(),
             window: {
+                innerWidth: 800,
+                innerHeight: 600,
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn(),
                 setTimeout: vi.fn((callback: () => void) => {
                     callback();
                     return 123;
@@ -265,6 +269,10 @@ describe('PatternProxy Extended Tests', () => {
             
             Object.assign(globalThis, {
                 window: {
+                    innerWidth: 800,
+                    innerHeight: 600,
+                    addEventListener: vi.fn(),
+                    removeEventListener: vi.fn(),
                     setTimeout: mockSetTimeout,
                     clearTimeout: mockClearTimeout,
                 },

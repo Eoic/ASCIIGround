@@ -26,8 +26,12 @@ describe('ControlsGenerator DOM integration', () => {
         const addBtn = container.querySelector('label[data-control-id="colorMap"] .color-map-add') as HTMLButtonElement;
         addBtn.click();
 
-        const charInput = container.querySelector('label[data-control-id="colorMap"] .color-map-char') as HTMLInputElement;
-        const colorInput = container.querySelector('label[data-control-id="colorMap"] .color-map-color') as HTMLInputElement;
+        const charInput = container.querySelector<HTMLInputElement>(
+            'label[data-control-id="colorMap"] .color-map-char'
+        )!;
+        const colorInput = container.querySelector<HTMLInputElement>(
+            'label[data-control-id="colorMap"] .color-map-color'
+        )!;
 
         charInput.value = '#';
         charInput.dispatchEvent(new Event('input', { bubbles: true }));

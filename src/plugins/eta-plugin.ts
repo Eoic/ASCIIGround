@@ -37,7 +37,7 @@ export function etaPlugin(options: EtaPluginOptions): Plugin {
 
         configureServer(server) {
             if (options.isDev) {
-                const templatePath = resolve(__dirname, '../demo/index.eta');
+                const templatePath = resolve(import.meta.dirname, '../demo/index.eta');
 
                 server.watcher.add(templatePath);
 
@@ -74,10 +74,10 @@ export function etaPlugin(options: EtaPluginOptions): Plugin {
 
         generateBundle(_, bundle) {
             if (!options.isDev) {
-                const mainChunk = Object.values(bundle).find(chunk => chunk.type === 'chunk' && chunk.isEntry);
+                const mainChunk = Object.values(bundle).find(chunk => chunk.type === 'chunk' && chunk.name === 'main');
 
                 if (mainChunk && mainChunk.type === 'chunk') {
-                    const template = readFileSync(resolve(__dirname, '../demo/index.eta'), 'utf-8');
+                    const template = readFileSync(resolve(import.meta.dirname, '../demo/index.eta'), 'utf-8');
 
                     const rendered = eta.renderString(template, {
                         styles: options.styles,

@@ -48,8 +48,8 @@ describe('Demo script integration', () => {
             return null;
         });
 
+        vi.stubGlobal('document', mockDocument);
         Object.assign(globalThis, {
-            document: mockDocument,
             window: mockWindow,
             HTMLCanvasElement: vi.fn(),
             HTMLFormElement: vi.fn(),

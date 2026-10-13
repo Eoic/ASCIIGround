@@ -145,8 +145,8 @@ describe('Demo.ts Coverage Test', () => {
             removeEventListener: vi.fn(),
         };
 
+        vi.stubGlobal('document', mockDocument);
         Object.assign(globalThis, {
-            document: mockDocument,
             window: mockWindow,
             requestAnimationFrame: vi.fn((cb: FrameRequestCallback) => {
                 cb(1000);

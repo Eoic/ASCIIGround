@@ -1,3 +1,4 @@
+import { formatControlValue } from './control-value';
 import type { ASCIIRenderer } from '../../rendering/ascii-renderer';
 import { ControlsGenerator } from './controls-generator';
 import { PatternProxy, type ControlValue } from './pattern-proxy';
@@ -54,7 +55,7 @@ export class PatternControlsManager {
         this._addControlChangeListeners();
 
         this._controlsGenerator!
-            .onControlChange('pattern', (value: ControlValue) => this._handlePatternChange(String(value)));
+            .onControlChange('pattern', (value: ControlValue) => this._handlePatternChange(formatControlValue(value)));
 
         ControlsRegistry.getRendererControls().controls.forEach((control) => {
             this._controlsGenerator!.onControlChange((control.id), (value: ControlValue) => {
