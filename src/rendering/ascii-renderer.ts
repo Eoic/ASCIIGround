@@ -266,14 +266,15 @@ export class ASCIIRenderer {
 
         this._state.mouseClicked = false;
         const characters = this.pattern.update(context).generate(context);
+        const hash = this._hash(characters);
 
-        if (!this._hasOutputChanged(characters) && !this._state.isDirty && !this.pattern.isDirty)
+        if (hash === this._state.lastHash && !this._state.isDirty && !this.pattern.isDirty)
             return;
 
         this._updateFps(time);
         this.pattern.isDirty = false;
         this._state.isDirty = false;
-        this._state.lastHash = this._hash(characters);
+        this._state.lastHash = hash;
         this.renderer.clear(this._state.options.backgroundColor);
         this.renderer.render(characters, this.region);
     }
@@ -506,16 +507,6 @@ export class ASCIIRenderer {
         }
 
         return hash;
-    }
-
-    /**
-     * Check if the output has changed since the last render.
-     * This is used to avoid unnecessary rendering when nothing has changed.
-     * @param list - the current character data list.
-     * @returns True if the output has changed, false otherwise.
-     */
-    private _hasOutputChanged(list: CharacterData[]): boolean {
-        return this._hash(list) !== this._state.lastHash;
     }
 
     /**
