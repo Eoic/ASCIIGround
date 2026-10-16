@@ -25,7 +25,7 @@ export default tseslint.config(
         },
     },
     {
-        files: ['**/*.ts', 'scripts/**/*.js', 'scripts/**/*.mjs'],
+        files: ['**/*.ts', 'scripts/**/*.js', '**/*.mjs'],
         rules: {
             curly: ['error', 'multi-or-nest'],
             quotes: ['error', 'single'],
@@ -48,6 +48,15 @@ export default tseslint.config(
         rules: {
             ...tseslint.configs.disableTypeChecked.rules,
             'no-undef': 'error',
+        },
+    },
+    {
+        files: ['scripts/release/*.mjs'],
+        languageOptions: {
+            globals: {
+                fetch: 'readonly',
+                AbortSignal: 'readonly',
+            },
         },
     },
     {

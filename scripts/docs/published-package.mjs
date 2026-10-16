@@ -6,9 +6,14 @@ import { URL } from 'node:url';
 const stableVersionPattern = /^\d+\.\d+\.\d+$/;
 const relativeMarkdownLinkPattern = /\]\((\.\.?\/[^\s)]+)\)/g;
 
-export function listPublishedVersions() {
-    const versions = runNpmJson(['view', 'asciiground', 'versions']);
-    return versions.filter(version => stableVersionPattern.test(version)).reverse();
+export function listPublishedVersions(expectedVersion) {
+    const versions = runNpmJson(['view', 'asciiground', 'versions', '--prefer-online']);
+    const stableVersions = versions.filter(version => stableVersionPattern.test(version)).reverse();
+
+    if (expectedVersion && !stableVersions.includes(expectedVersion))
+        throw new Error(`Cannot deploy docs without the published version ${expectedVersion}`);
+
+    return stableVersions;
 }
 
 export async function preparePublishedPackage(version, workspace) {

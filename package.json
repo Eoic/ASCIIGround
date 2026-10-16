@@ -50,7 +50,7 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest --watch",
     "prepublishOnly": "npm run build",
-    "lint": "eslint \"src/**/*.ts\" \"scripts/**/*.{js,mjs}\"",
+    "lint": "eslint \"src/**/*.{ts,mjs}\" \"scripts/**/*.{js,mjs}\"",
     "lint:fix": "npm run lint -- --fix",
     "clean": "rm -rf dist coverage docs/api docs/demo docs/versions",
     "setup": "./scripts/setup.sh",
