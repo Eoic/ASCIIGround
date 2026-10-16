@@ -4,6 +4,10 @@ on:
   push:
     branches: [development]
   workflow_dispatch:
+    inputs:
+      version:
+        description: Stable release version required in the deployed docs
+        type: string
 
 permissions:
   contents: read
@@ -16,6 +20,7 @@ jobs:
   build:
     if: github.ref == 'refs/heads/development'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -23,8 +28,26 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - name: Resolve required release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          version="$REQUESTED_VERSION"
+          if [[ -z "$version" ]]; then
+            version=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq '.tag_name | ltrimstr("v")')
+          fi
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Wait for npm publication
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: node scripts/verify-release.mjs package "$VERSION"
       - run: npm run build:demo
       - run: npm run build:docs:versions
+        env:
+          DOCS_RELEASE_VERSION: ${{ steps.release.outputs.version }}
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v3
         with:

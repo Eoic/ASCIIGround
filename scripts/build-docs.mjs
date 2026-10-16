@@ -19,7 +19,7 @@ async function buildDocumentation(includePublishedVersions) {
         const versions = [development];
 
         if (includePublishedVersions) {
-            for (const version of listPublishedVersions())
+            for (const version of listPublishedVersions(process.env.DOCS_RELEASE_VERSION))
                 versions.push(await buildPublishedVersion(version, workspace));
         }
 
