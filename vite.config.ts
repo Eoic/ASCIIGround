@@ -11,7 +11,10 @@ export default defineConfig(({ mode }) => {
                     { dir: 'dist', moduleFormat: 'esm' },
                     { dir: 'dist', moduleFormat: 'cjs' }
                 ],
-                include: ['src/index.ts', 'src/patterns/**/*.ts', 'src/rendering/**/*.ts', 'src/utils/**/*.ts'],
+                include: [
+                    'src/vite-env.d.ts', 'src/index.ts', 'src/patterns/**/*.ts',
+                    'src/rendering/**/*.ts', 'src/utils/**/*.ts'
+                ],
             })],
             build: {
                 target: 'es2020',

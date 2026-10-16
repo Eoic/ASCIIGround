@@ -203,7 +203,7 @@ describe('Demo - PatternControlsManager', () => {
 
         it('should handle renderer state changes', () => {
             expect(() => {
-                renderer.startAnimation();
+                expect(renderer.isAnimating).toBe(true);
                 manager.switchPattern('rain');
                 renderer.stopAnimation();
             }).not.toThrow();
@@ -261,7 +261,7 @@ describe('Demo - PatternControlsManager', () => {
 
         it('should handle complete workflow', () => {
             expect(() => {
-                renderer.startAnimation();
+                expect(renderer.isAnimating).toBe(true);
                 manager.switchPattern('rain');
                 manager.onControlChange('rainDensity', () => {});
                 manager.switchPattern('perlin-noise');

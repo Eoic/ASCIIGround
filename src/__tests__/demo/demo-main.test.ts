@@ -29,6 +29,9 @@ describe('Demo.ts Coverage Test', () => {
                 fillText: vi.fn(),
                 measureText: vi.fn(() => ({ width: 10 })),
                 clearRect: vi.fn(),
+                beginPath: vi.fn(),
+                rect: vi.fn(),
+                clip: vi.fn(),
                 save: vi.fn(),
                 restore: vi.fn(),
                 translate: vi.fn(),
@@ -148,10 +151,7 @@ describe('Demo.ts Coverage Test', () => {
         vi.stubGlobal('document', mockDocument);
         Object.assign(globalThis, {
             window: mockWindow,
-            requestAnimationFrame: vi.fn((cb: FrameRequestCallback) => {
-                cb(1000);
-                return 123;
-            }),
+            requestAnimationFrame: vi.fn(() => 123),
             cancelAnimationFrame: vi.fn(),
             setInterval: vi.fn((callback: () => void, _interval: number) => {
                 callback();

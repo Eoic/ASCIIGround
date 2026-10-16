@@ -3,6 +3,8 @@ import type { PatternControlConfig } from './controls-registry';
 
 export const controls: PatternControlConfig = {
     label: 'Perlin noise',
+    defaultAnimationSpeed: 70,
+    defaultCharacterDensity: 4,
     pattern: PerlinNoisePattern,
     controls: [
         {
@@ -10,7 +12,7 @@ export const controls: PatternControlConfig = {
             label: 'Characters',
             type: 'text',
             outType: 'array',
-            value: '.+#@',
+            value: ' .:-=+*#%@',
             category: 'pattern',
             description: 'Characters used for rendering (from lightest to darkest).',
         },
@@ -19,7 +21,7 @@ export const controls: PatternControlConfig = {
             label: 'Frequency',
             type: 'range',
             outType: 'number',
-            value: 0.05,
+            value: 0.08,
             min: 0.001,
             max: 0.5,
             step: 0.001,
@@ -31,7 +33,7 @@ export const controls: PatternControlConfig = {
             label: 'Octaves',
             type: 'range',
             outType: 'number',
-            value: 5,
+            value: 1,
             min: 1,
             max: 8,
             step: 1,
@@ -43,7 +45,7 @@ export const controls: PatternControlConfig = {
             label: 'Persistence',
             type: 'range',
             outType: 'number',
-            value: 0.5,
+            value: 0.4,
             min: 0.1,
             max: 1.0,
             step: 0.01,

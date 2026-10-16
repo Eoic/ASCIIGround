@@ -13,12 +13,23 @@ export class PatternProxy {
     private _renderer: ASCIIRenderer | null = null;
     private _listeners: Map<string, ControlChangeCallback[]> = new Map();
     private _updateTimeout: number | null = null;
+    private _renderFrame: number | null = null;
+    private _onRendererChange?: () => void;
+    private _hasCustomAnimationSpeed = false;
+    private _hasCustomCharacterDensity = false;
     private _pendingPatternUpdates: Record<string, ControlValue> = {};
     private _pendingRendererUpdates: Record<string, ControlValue> = {};
 
-    constructor(renderer: ASCIIRenderer) {
+    constructor(renderer: ASCIIRenderer, onRendererChange?: () => void) {
         this._renderer = renderer;
-        this._renderer.setOptions(ControlsRegistry.getRendererOptions());
+        this._onRendererChange = onRendererChange;
+        const defaults = ControlsRegistry.getPatternControls(renderer.pattern.id);
+
+        this._renderer.setOptions({
+            ...ControlsRegistry.getRendererOptions(),
+            animationSpeed: defaults.defaultAnimationSpeed ?? 1,
+            characterDensity: defaults.defaultCharacterDensity ?? 1,
+        });
     }
 
     /**
@@ -39,21 +50,20 @@ export class PatternProxy {
 
         const [PatternConstructor, defaultOptions] = this._getPattern(patternId);
         this._renderer!.pattern = new PatternConstructor(defaultOptions);
-        this._renderer!.setOptions(ControlsRegistry.getRendererOptions());
+        const defaults = ControlsRegistry.getPatternControls(patternId);
+
+        this._renderer!.setOptions({
+            ...(!this._hasCustomAnimationSpeed && { animationSpeed: defaults.defaultAnimationSpeed ?? 1 }),
+            ...(!this._hasCustomCharacterDensity && { characterDensity: defaults.defaultCharacterDensity ?? 1 }),
+        });
+
         this._renderer!.render();
     }
 
     public destroy(): void {
-        this._listeners.clear();
+        this.dispose();
         this._renderer?.destroy();
         this._renderer = null;
-        this._pendingPatternUpdates = {};
-        this._pendingRendererUpdates = {};
-
-        if (this._updateTimeout !== null) {
-            clearTimeout(this._updateTimeout);
-            this._updateTimeout = null;
-        }
     }
 
     /**
@@ -104,8 +114,15 @@ export class PatternProxy {
         this._pendingPatternUpdates = {};
         this._pendingRendererUpdates = {};
         
-        if (!this._renderer!.isAnimating) 
-            requestAnimationFrame(() => this._renderer!.render());
+        if (!this._renderer!.isAnimating) {
+            if (this._renderFrame !== null)
+                cancelAnimationFrame(this._renderFrame);
+
+            this._renderFrame = requestAnimationFrame(() => {
+                this._renderFrame = null;
+                this._renderer?.render();
+            });
+        }
     }
 
     /**
@@ -145,6 +162,7 @@ export class PatternProxy {
     private _updateRenderer(): void {
         const pendingUpdates = this._pendingRendererUpdates as Partial<ASCIIRendererOptions>;
         this._renderer!.setOptions(pendingUpdates);
+        this._onRendererChange?.();
     }
 
     /**
@@ -153,6 +171,12 @@ export class PatternProxy {
     public handleControlChange(controlCategory: string, controlId: string, value: ControlValue): void {
         switch (controlCategory) {
             case 'renderer':
+                if (controlId === 'animationSpeed')
+                    this._hasCustomAnimationSpeed = true;
+
+                if (controlId === 'characterDensity')
+                    this._hasCustomCharacterDensity = true;
+
                 this._updateRendererProperty(controlId, value);
                 break;
             case 'pattern':
@@ -204,6 +228,11 @@ export class PatternProxy {
      * Should be called when the proxy is no longer needed.
      */
     public dispose(): void {
+        if (this._renderFrame !== null) {
+            cancelAnimationFrame(this._renderFrame);
+            this._renderFrame = null;
+        }
+
         if (this._updateTimeout !== null) {
             clearTimeout(this._updateTimeout);
             this._updateTimeout = null;

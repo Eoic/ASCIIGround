@@ -101,6 +101,20 @@ describe('Canvas2DRenderer', () => {
         expect(context.fillText).toHaveBeenLastCalledWith('B', 0, 0);
     });
 
+    it('toggles pattern opacity without changing character data', () => {
+        const { renderer, context } = setupCanvas();
+        const alphas: number[] = [];
+        context.fillText.mockImplementation(() => { alphas.push(context.globalAlpha); });
+        const characters = [{ x: 10, y: 20, char: 'A', opacity: 0.25 }];
+        renderer.render(characters, region);
+        renderer.options = { ...options, enableOpacity: false };
+        renderer.render(characters, region);
+        renderer.options = { ...options, enableOpacity: true };
+        renderer.render(characters, region);
+        expect(alphas).toEqual([0.25, 1, 0.25]);
+        expect(characters[0].opacity).toBe(0.25);
+    });
+
     it('retains font and color after resize, option changes, and clearing', () => {
         const { renderer, canvas, context } = setupCanvas();
         renderer.options = { ...options, fontSize: 24, color: '#abcdef' };
@@ -116,9 +130,9 @@ describe('Canvas2DRenderer', () => {
 });
 
 describe('renderer selection', () => {
-    it('uses 2D when WebGL is unavailable and rejects invalid renderer types', () => {
+    it('creates the requested backend and rejects invalid renderer types', () => {
         vi.stubGlobal('WebGL2RenderingContext', undefined);
-        expect(createRenderer('WebGL')).toBeInstanceOf(Canvas2DRenderer);
+        expect(createRenderer('WebGL')).toBeInstanceOf(WebGLRenderer);
         expect(createRenderer('2D')).toBeInstanceOf(Canvas2DRenderer);
         expect(() => createRenderer('invalid' as '2D')).toThrow('Unknown renderer type');
     });
@@ -129,7 +143,7 @@ describe('renderer selection', () => {
         const renderer = new WebGLRenderer();
         const canvas = document.createElement('canvas');
         vi.spyOn(canvas, 'getContext').mockReturnValue(null);
-        expect(() => renderer.initialize(canvas)).toThrow('Could not get WebGL2 context');
+        expect(() => renderer.initialize(canvas, options)).toThrow('Could not get WebGL2 context');
         expect(() => {
             renderer.clear('#000000');
             renderer.resize(100, 100);

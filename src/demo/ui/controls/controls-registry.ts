@@ -35,6 +35,8 @@ export interface ControlSpec {
 
 export interface PatternControlConfig {
     label: string;
+    defaultAnimationSpeed?: number;
+    defaultCharacterDensity?: number;
     controls: ControlSpec[];
     pattern: PatternConstructor;
 }

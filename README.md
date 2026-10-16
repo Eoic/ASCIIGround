@@ -90,6 +90,31 @@ asciiGround
   .startAnimation();
 ```
 
+### Rendering
+
+```typescript
+// Use WebGL2 with automatic Canvas 2D fallback.
+asciiGround.setOptions({ rendererType: 'WebGL' });
+
+// Check the active renderer or switch back to Canvas 2D (the default).
+console.log(asciiGround.options.rendererType);
+asciiGround.setOptions({ rendererType: '2D' });
+```
+
+Switching renderers replaces the canvas. Use `asciiGround.canvas` to access the current element and reattach application listeners.
+
+### Character density and opacity
+
+```typescript
+asciiGround.setOptions({
+  fontSize: 16,
+  charSpacingX: 22,     // Fixed base spacing, independent of font size.
+  charSpacingY: 44,
+  characterDensity: 2,  // Approximately twice as many grid positions. Default: 1.
+  enableOpacity: false, // Disable pattern fades. Default: true.
+});
+```
+
 ### CDN usage
 
 ```html
@@ -103,7 +128,6 @@ asciiGround
     <script src="https://unpkg.com/asciiground@latest/dist/asciiground.umd.js"></script>
     <script>
         const { ASCIIGround, PerlinNoisePattern } = window.ASCIIGround;
-
         const canvas = document.getElementById('ascii-canvas');
 
         const pattern = new PerlinNoisePattern({ 
@@ -123,6 +147,7 @@ asciiGround
 ## Available patterns
 
 ### Perlin noise
+
 Creates smooth, organic-looking patterns like clouds, terrain or flowing effects.
 
 ```typescript
@@ -139,6 +164,7 @@ const pattern = new PerlinNoisePattern({
 ```
 
 ### Rain
+
 Creates a downward flowing effect reminiscent of digital rain.
 
 ```typescript
@@ -158,6 +184,7 @@ const pattern = new RainPattern({
 ```
 
 ### Static noise
+
 Random noise effect for TV static or glitch aesthetics.
 
 ```typescript
@@ -229,6 +256,7 @@ asciiGround
 Complete API documentation is available at [https://eoic.github.io/ASCIIGround/api/](https://eoic.github.io/ASCIIGround/api/).
 
 The documentation includes:
+
 - Complete class and interface references.
 - Pattern creation guides.
 - Configuration options.

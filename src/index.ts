@@ -27,7 +27,7 @@
  * 
  * const pattern = new RainPattern({ 
  *   characters: ['|', '!', '1', ':'],
- *   dropDensity: 0.8,
+ *   rainDensity: 0.8,
  * });
  * 
  * const asciiGround = new ASCIIGround()
@@ -78,7 +78,12 @@ export class ASCIIGround {
     }
 
     public get options(): ASCIIRendererOptions {
-        return Object.freeze(this.renderer.options);
+        return Object.freeze({ ...this.renderer.options });
+    }
+
+    /** The active canvas, which can change on backend switching or fallback. */
+    public get canvas(): HTMLCanvasElement {
+        return this.renderer.canvas;
     }
 
     private get renderer(): ASCIIRenderer {

@@ -96,6 +96,8 @@ export class ControlsGenerator {
             default:
                 element.value = (Array.isArray(value)) ? value.join('') : formatControlValue(value);
         }
+
+        this._updateControlVisibility(controlId, value);
     }
 
     /**
@@ -220,10 +222,9 @@ export class ControlsGenerator {
         input.setAttribute('id', `${spec.category}-${spec.id}`);
         input.setAttribute('name', spec.id);
 
-        if (inputContainer) {
-            inputContainer.setAttribute('data-control-id', spec.id);
+        if (inputContainer)
             label.appendChild(inputContainer);
-        } else label.appendChild(input);
+        else label.appendChild(input);
 
         let isVisible = true;
 
@@ -484,6 +485,11 @@ export class ControlsGenerator {
             this._lastValidNumbers.set(target, target.value);
         }
 
+        this._updateControlVisibility(controlId, value);
+        this._emitChange(controlId, value);
+    };
+
+    private _updateControlVisibility(controlId: string, value: ControlValue): void {
         const controls = ControlsRegistry.getAllControlsSpecs();
 
         for (const control of controls) {
@@ -502,8 +508,7 @@ export class ControlsGenerator {
                 ?.classList.toggle('hidden', !isVisible);
         }
 
-        this._emitChange(controlId, value);
-    };
+    }
 
     private _handleControlBlur = (event: FocusEvent): void => {
         const target = event.target as HTMLInputElement;

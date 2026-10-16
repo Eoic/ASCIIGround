@@ -95,8 +95,13 @@ import { DEBUG_INFO_UPDATE_INTERVAL_MS } from './ui/constants';
         const updateDebugInfo = () => {
             const renderInfo = renderer.renderInfo;
             const mouseInfo = renderer.mouseInfo;
+            const backendSelect = document.querySelector<HTMLSelectElement>('[name="rendererType"]');
+
+            if (backendSelect)
+                backendSelect.value = renderer.options.rendererType;
 
             buildDebugInfo(debugContainer, {
+                'Backend': renderer.options.rendererType === 'WebGL' ? 'WebGL' : 'Canvas 2D',
                 'FPS': renderInfo.fps.toFixed(2),
                 'Rows': String(renderInfo.rows),
                 'Columns': String(renderInfo.columns),

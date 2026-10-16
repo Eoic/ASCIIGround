@@ -213,8 +213,7 @@ describe('ASCIIGround', () => {
         it('should handle canvas context unavailable', () => {
             vi.spyOn(canvas, 'getContext').mockReturnValue(null);
             const asciiGround = new ASCIIGround();
-
-            expect(() => asciiGround.init(canvas, pattern)).toThrow('Failed to create 2D context for temp canvas');
+            expect(() => asciiGround.init(canvas, pattern)).toThrow('Could not get 2D context from canvas');
         });
 
         it('should handle very small canvas', () => {
@@ -292,7 +291,9 @@ describe('ASCIIGround', () => {
         it('should handle different renderer types', () => {
             const asciiGround = new ASCIIGround();
             const rendererTypes: Array<'2D' | 'WebGL'> = ['2D', 'WebGL'];
-            
+            canvas.cloneNode = vi.fn(() => document.createElement('canvas'));
+            canvas.replaceWith = vi.fn();
+
             rendererTypes.forEach(rendererType => {
                 expect(() => {
                     asciiGround.init(canvas, pattern, { rendererType });

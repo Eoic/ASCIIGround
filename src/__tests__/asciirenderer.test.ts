@@ -68,8 +68,7 @@ describe('ASCIIRenderer', () => {
 
         it('should throw error if canvas context is not available', () => {
             vi.spyOn(canvas, 'getContext').mockReturnValue(null);
-            
-            expect(() => new ASCIIRenderer({ canvas, pattern })).toThrow('Failed to create 2D context for temp canvas');
+            expect(() => new ASCIIRenderer({ canvas, pattern })).toThrow('Could not get 2D context from canvas');
         });
     });
 
@@ -292,6 +291,8 @@ describe('ASCIIRenderer', () => {
         });
 
         it('should handle WebGL renderer type', () => {
+            canvas.cloneNode = vi.fn(() => document.createElement('canvas'));
+            canvas.replaceWith = vi.fn();
             const renderer = new ASCIIRenderer({ canvas, pattern, options: { rendererType: 'WebGL' } });
             expect(renderer).toBeInstanceOf(ASCIIRenderer);
         });
