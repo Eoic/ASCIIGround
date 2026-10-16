@@ -5,6 +5,7 @@ ASCIIGround is a TypeScript library for animated ASCII backgrounds. The public A
 
 - Keep changes focused and use existing tools and conventions. Add abstractions or helper scripts only when needed.
 - Keep prose and PR descriptions short and concrete. Never use semicolons in prose. Keep semicolons in TypeScript.
+- Never use em dashes in any output, including documentation, comments, UI text, PR descriptions, and messages.
 - Follow nearby code and the ESLint configuration. Consult [Code style](.github/AI_CODE_STYLE_GUIDE.md) when needed.
 - Test observable behavior through public APIs. Tests live in `src/__tests__` and use Vitest with canvas mocks.
 - Preserve dirty tracking and resource cleanup when changing patterns or renderers. Check visual changes in a browser.

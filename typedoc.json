@@ -12,6 +12,8 @@
     "src/vite-env.d.ts"
   ],
   "out": "docs/api",
+  "customJs": "scripts/docs/version-selector.js",
+  "customCss": "scripts/docs/version-selector.css",
   "name": "ASCIIGround",
   "includeVersion": true,
   "readme": "README.md",
@@ -89,7 +91,7 @@
   "navigationLinks": {
     "GitHub": "https://github.com/Eoic/asciiground",
     "NPM": "https://www.npmjs.com/package/asciiground",
-    "Demo": "https://eoic.github.io/ASCIIGround/demo"
+    "Demo (development)": "https://eoic.github.io/ASCIIGround/demo"
   },
   "sidebarLinks": {
     "GitHub": "https://github.com/Eoic/asciiground", 
@@ -98,7 +100,7 @@
   "hideGenerator": false,
   "githubPages": true,
   "sourceLinkTemplate": "https://github.com/Eoic/asciiground/blob/{gitRevision}/{path}#L{line}",
-  "gitRevision": "master",
+  "gitRevision": "development",
   "gitRemote": "origin",
   "disableSources": false,
   "basePath": "./src",

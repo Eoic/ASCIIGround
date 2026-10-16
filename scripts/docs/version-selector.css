@@ -1,0 +1,16 @@
+.docs-version {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.docs-version select {
+    font: inherit;
+    padding: 0.35rem 0.5rem;
+    color: var(--color-text);
+    background: var(--color-background);
+    border: 1px solid var(--color-accent);
+    border-radius: 0.25rem;
+}

@@ -11,6 +11,10 @@ The workflow checks and builds the package, publishes to npm, and creates a GitH
 
 GitHub Pages deploys the latest docs and demo from `development`. `master` remains the default branch and receives release PRs only. Feature and fix PRs target `development`.
 
+The docs version selector includes development and every stable npm version. Release docs live at `versions/<version>/` and use the README and API declarations from that published package. Publication triggers a docs deployment. To rebuild manually, run **Deploy documentation and examples** on `development`.
+
+Build development docs with `npm run build:docs`, or include published versions with `npm run build:docs:versions` (requires npm registry access).
+
 For a beta, use `npm version preminor --preid=beta --no-git-tag-version`. Increment it with `prerelease`, or promote it with `patch`. Prereleases publish under `@beta`. Stable releases use `@latest`.
 
 If publication fails, fix the cause and rerun. If npm succeeded but GitHub release creation failed, create the GitHub release at the workflow's commit without publishing again. Published npm versions cannot be overwritten.
