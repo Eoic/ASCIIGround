@@ -130,6 +130,7 @@ function calculateTotal(price: number, quantity: number): number {
 - Use plain text labels instead: "Bad:", "Good:", "Note:", "Warning:", etc.
 
 ### Documentation style
+- Never use em dashes in any output, including documentation, comments, UI text, PR descriptions, and messages.
 - **Use sentence case for all titles and headers** - Capitalize only the first word
 - Example: "Naming conventions" not "Naming Conventions"
 - Example: "Code formatting" not "Code Formatting"
