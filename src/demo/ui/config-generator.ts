@@ -14,7 +14,14 @@ export class PatternControlsManager {
 
     constructor(controlsContainer: HTMLFormElement, renderer: ASCIIRenderer) {
         this._controlsGenerator = new ControlsGenerator(controlsContainer);
-        this._patternProxy = new PatternProxy(renderer);
+
+        this._patternProxy = new PatternProxy(renderer, () => {
+            this._controlsGenerator!.setControlValue(
+                'rendererType',
+                renderer.options.rendererType
+            );
+        });
+
         const currentPatternId = this._patternProxy.getCurrentPatternId();
         this._controlsGenerator.generatePatternControls(currentPatternId);
         this._setupEventListeners();

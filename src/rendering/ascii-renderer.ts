@@ -11,19 +11,23 @@ export interface ASCIIRendererOptions {
     color: string;
     /** Mapping of characters to specific colors */
     colorMap: Record<string, string>;
+    /** Apply per-character opacity from patterns. Defaults to true. CSS color alpha is preserved. */
+    enableOpacity?: boolean;
     /** Whether animation is enabled */
     animated: boolean;
     /** Animation speed multiplier */
     animationSpeed: number;
     /** Font size in pixels */
     fontSize: number;
+    /** Approximate grid-cell count multiplier. Defaults to 1. Invalid or nonpositive values use 1. */
+    characterDensity?: number;
     /** Font family to use for rendering */
     fontFamily: string;
     /** Background color */
     backgroundColor: string;
     /** Padding around the rendered area */
     padding: number;
-    /** Renderer type to use */
+    /** Active renderer type. Falls back to 2D if WebGL initialization or drawing fails. */
     rendererType: '2D' | 'WebGL';
     /** Enable mouse interaction support */
     enableMouseInteraction: boolean;
@@ -49,7 +53,9 @@ export interface ASCIIRendererConstructor {
 const DEFAULT_OPTIONS: Omit<ASCIIRendererOptions, 'resizeTo'> = {
     color: '#3e3e80ff',
     colorMap: {},
+    enableOpacity: true,
     fontSize: 32,
+    characterDensity: 1,
     fontFamily: 'monospace',
     backgroundColor: '#181818ff',
     padding: 0,
@@ -161,9 +167,10 @@ export class ASCIIRenderer {
     }
 
     /**
-     * Get the canvas element, throwing an error if not initialized.
+     * Get the active canvas. Backend switches and WebGL fallback replace the element
+     * with a clone, preserving its attributes. Reattach application listeners to this canvas.
      */
-    private get canvas(): HTMLCanvasElement {
+    public get canvas(): HTMLCanvasElement {
         if (!this._state.canvas)
             throw new Error('Canvas not initialized.');
 
@@ -233,8 +240,6 @@ export class ASCIIRenderer {
             ...options,
         };
 
-        this._state.renderer = createRenderer(this._state.options.rendererType || '2D');
-        this._state.region = this._calculateRegion();
         this._setupRenderer();
 
         if (this._state.options.enableMouseInteraction)
@@ -275,8 +280,18 @@ export class ASCIIRenderer {
         this.pattern.isDirty = false;
         this._state.isDirty = false;
         this._state.lastHash = hash;
-        this.renderer.clear(this._state.options.backgroundColor);
-        this.renderer.render(characters, this.region);
+
+        try {
+            this.renderer.clear(this._state.options.backgroundColor);
+            this.renderer.render(characters, this.region);
+        } catch (error) {
+            if (this._state.options.rendererType !== 'WebGL')
+                throw error;
+
+            this._fallbackToCanvas(error);
+            this.renderer.clear(this._state.options.backgroundColor);
+            this.renderer.render(characters, this.region);
+        }
     }
 
     /**
@@ -321,7 +336,15 @@ export class ASCIIRenderer {
     public setOptions(newOptions: Partial<ASCIIRendererOptions>): void {
         const oldOptions = this._state.options;
         this._state.options = { ...oldOptions, ...newOptions };
-        this._state.isDirty = this._hasOptionsChanged(oldOptions);
+        this._state.isDirty = this._state.isDirty || this._hasOptionsChanged(oldOptions);
+
+        if (oldOptions.rendererType !== this._state.options.rendererType) {
+            this._removeMouseEvents();
+            this.renderer.destroy();
+            this._replaceCanvas();
+            this._initializeBackend();
+        }
+
         this._state.region = this._calculateRegion();
         this.pattern.initialize(this._state.region);
         this.renderer.options = this._state.options;
@@ -341,11 +364,10 @@ export class ASCIIRenderer {
         this._state.region = this._calculateRegion();
         this.renderer.resize(this.canvas.width, this.canvas.height);
         this.pattern.initialize(this._state.region);
+        this._state.isDirty = true;
 
-        if (!this.isAnimating) {
-            this._state.isDirty = true;
+        if (!this.isAnimating)
             this.render();
-        }
     }
 
     /**
@@ -354,6 +376,7 @@ export class ASCIIRenderer {
     public destroy(): void {
         this.stopAnimation();
         this._state.pattern?.destroy();
+        this._state.canvas?.removeEventListener('webglcontextlost', this._contextLostHandler);
         this._state.renderer?.destroy();
         this._state.canvas?.removeEventListener('mousemove', this._mouseMoveHandler);
         this._state.canvas?.removeEventListener('click', this._mouseClickHandler);
@@ -387,7 +410,10 @@ export class ASCIIRenderer {
             ? this._state.options.charSpacingY 
             : Math.max(charHeight, this._state.options.fontSize * 1.2);
 
-        return [charWidth, charHeight, charSpacingX, charSpacingY];
+        const density = this._state.options.characterDensity ?? 1;
+        const spacingScale = Number.isFinite(density) && density > 0 ? Math.sqrt(density) : 1;
+
+        return [charWidth, charHeight, charSpacingX / spacingScale, charSpacingY / spacingScale];
     }
 
     /**
@@ -422,13 +448,65 @@ export class ASCIIRenderer {
      */
     private _setupRenderer(): void {
         [this.canvas.width, this.canvas.height] = this.realCanvasSize;
-        this.renderer.initialize(this.canvas, this._state.options);
+        this._initializeBackend();
+        this._state.region = this._calculateRegion();
         this.pattern.initialize(this.region);
 
         if (this._state.options.resizeTo instanceof HTMLElement) {
             this._state.resizeObserver = new ResizeObserver(this._handleResize);
             this._state.resizeObserver.observe(this._state.options.resizeTo);
         } else this._state.options.resizeTo.addEventListener('resize', this._handleResize);
+    }
+
+    private _replaceCanvas(): void {
+        const previous = this.canvas;
+        previous.removeEventListener('webglcontextlost', this._contextLostHandler);
+
+        const replacement = previous.cloneNode(true) as HTMLCanvasElement;
+        previous.replaceWith(replacement);
+        this._state.canvas = replacement;
+
+        if (this._state.options.resizeTo === previous) {
+            this._state.options = { ...this._state.options, resizeTo: replacement };
+            this._state.resizeObserver?.disconnect();
+            this._state.resizeObserver?.observe(replacement);
+        }
+    }
+
+    private _initializeBackend(): void {
+        this._state.renderer = createRenderer(this._state.options.rendererType);
+
+        try {
+            this.renderer.initialize(this.canvas, this._state.options);
+        } catch (error) {
+            if (this._state.options.rendererType !== 'WebGL') {
+                this.renderer.destroy();
+                throw error;
+            }
+
+            this._fallbackToCanvas(error);
+        }
+
+        if (this._state.options.rendererType === 'WebGL')
+            this.canvas.addEventListener('webglcontextlost', this._contextLostHandler);
+    }
+
+    private _contextLostHandler = (): void => {
+        this._state.isDirty = true;
+        this.render();
+    };
+
+    private _fallbackToCanvas(error: unknown): void {
+        console.warn('WebGL failed, falling back to Canvas 2D:', error);
+        this._removeMouseEvents();
+        this.renderer.destroy();
+        this._replaceCanvas();
+        this._state.options = { ...this._state.options, rendererType: '2D' };
+        this._state.renderer = createRenderer('2D');
+        this.renderer.initialize(this.canvas, this._state.options);
+
+        if (this._state.options.enableMouseInteraction)
+            this._setupMouseEvents();
     }
 
     /**

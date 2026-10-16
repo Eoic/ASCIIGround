@@ -3,6 +3,7 @@ import type { PatternControlConfig } from './controls-registry';
 
 export const controls: PatternControlConfig = {
     label: 'Static noise',
+    defaultAnimationSpeed: 0.5,
     pattern: StaticNoisePattern,
     controls: [
         {
@@ -10,7 +11,7 @@ export const controls: PatternControlConfig = {
             label: 'Characters',
             type: 'text',
             outType: 'array',
-            value: '█▓▒░',
+            value: '  .·:+',
             category: 'pattern',
             description: 'Characters used for rendering.',
         }

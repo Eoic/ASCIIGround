@@ -82,12 +82,11 @@ describe('ControlsGenerator DOM integration', () => {
     it('should toggle conditional control visibility', () => {
         const animatedInput = container.querySelector('input[data-control-id="animated"]') as HTMLInputElement;
         const speedLabel = container.querySelector('label[data-control-id="animationSpeed"]')!;
-        expect(speedLabel.classList.contains('hidden')).toBe(true);
-
-        animatedInput.checked = true;
-        animatedInput.dispatchEvent(new Event('input', { bubbles: true }));
-
         expect(speedLabel.classList.contains('hidden')).toBe(false);
+
+        animatedInput.checked = false;
+        animatedInput.dispatchEvent(new Event('input', { bubbles: true }));
+        expect(speedLabel.classList.contains('hidden')).toBe(true);
     });
 });
 

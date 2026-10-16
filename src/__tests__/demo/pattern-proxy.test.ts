@@ -90,6 +90,18 @@ describe('PatternProxy', () => {
     });
 
     describe('switchPattern', () => {
+        it('uses the denser Perlin preset until density is customized', () => {
+            patternProxy.switchPattern('perlin-noise');
+            expect(renderer.options.characterDensity).toBe(4);
+            patternProxy.switchPattern('rain');
+            expect(renderer.options.characterDensity).toBe(1);
+            patternProxy.handleControlChange('renderer', 'characterDensity', 2);
+            patternProxy.switchPattern('perlin-noise');
+            expect(renderer.options.characterDensity).toBe(2);
+            patternProxy.switchPattern('static');
+            expect(renderer.options.characterDensity).toBe(2);
+        });
+
         it('should switch to different pattern', () => {
             expect(() => {
                 patternProxy.switchPattern('perlin-noise');
@@ -202,6 +214,7 @@ describe('PatternProxy', () => {
 
     describe('update optimization', () => {
         it('should not process updates when no changes pending', () => {
+            mockRequestAnimationFrame.mockClear();
             const renderSpy = vi.spyOn(renderer, 'render');
             
             // Call _processPendingUpdates directly without any pending changes

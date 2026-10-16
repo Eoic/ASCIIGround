@@ -337,7 +337,7 @@ describe('PatternControlsManager Extended Tests', () => {
             manager = new PatternControlsManager(mockControlsContainer, renderer);
 
             expect(() => {
-                renderer.startAnimation();
+                expect(renderer.isAnimating).toBe(true);
                 manager.switchPattern('rain');
                 renderer.stopAnimation();
                 manager.switchPattern('perlin-noise');
