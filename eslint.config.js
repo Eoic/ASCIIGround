@@ -14,6 +14,19 @@ export default tseslint.config(
         },
         rules: {
             'no-unused-vars': 'off',
+            '@typescript-eslint/no-unused-vars': [
+                'warn',
+                {
+                    argsIgnorePattern: '^_',
+                    varsIgnorePattern: '^_',
+                    caughtErrorsIgnorePattern: '^_',
+                },
+            ],
+        },
+    },
+    {
+        files: ['**/*.ts', 'scripts/**/*.js', 'scripts/**/*.mjs'],
+        rules: {
             curly: ['error', 'multi-or-nest'],
             quotes: ['error', 'single'],
             'indent': ['error', 4, { 'SwitchCase': 1 }],
@@ -27,18 +40,27 @@ export default tseslint.config(
                 'exports': 'never',
                 'functions': 'never'
             }],
-            '@typescript-eslint/no-unused-vars': [
-                'warn',
-                {
-                    argsIgnorePattern: '^_',
-                    varsIgnorePattern: '^_',
-                    caughtErrorsIgnorePattern: '^_',
-                },
-            ],
         },
     },
     {
-        files: ['**/*.js'],
+        files: ['**/*.js', '**/*.mjs'],
         ...tseslint.configs.disableTypeChecked,
+        rules: {
+            ...tseslint.configs.disableTypeChecked.rules,
+            'no-undef': 'error',
+        },
+    },
+    {
+        files: ['scripts/docs/version-selector.js'],
+        languageOptions: {
+            sourceType: 'script',
+            globals: {
+                console: 'readonly',
+                document: 'readonly',
+                fetch: 'readonly',
+                URL: 'readonly',
+                window: 'readonly',
+            },
+        },
     },
 );
