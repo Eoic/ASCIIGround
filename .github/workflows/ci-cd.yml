@@ -2,14 +2,27 @@ name: CI pipeline
 
 on:
   push:
-    branches: [master, integration]
+    branches: [master, development]
   pull_request:
-    branches: [master]
+    branches: [master, development]
 
 permissions:
   contents: read
 
 jobs:
+  release-source:
+    name: Release source
+    if: github.event_name == 'pull_request' && github.base_ref == 'master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require releases from development
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+        run: |
+          test "$HEAD_REPOSITORY" = "$GITHUB_REPOSITORY"
+          test "$HEAD_BRANCH" = development
+
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -30,7 +43,7 @@ jobs:
       - run: npm run test:coverage
         if: matrix.node-version == '24.x'
       - name: Upload coverage
-        if: matrix.node-version == '24.x' && github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: matrix.node-version == '24.x' && github.event_name == 'push' && github.ref == 'refs/heads/development'
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage/lcov.info

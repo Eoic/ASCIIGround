@@ -1,6 +1,6 @@
 # Working on issues with Codex
 
-Start a fresh chat for each issue. Select **Worktree**, choose an up-to-date `master`, and invoke the
+Start a fresh chat for each issue. Select **Worktree**, choose an up-to-date `development`, and invoke the
 [work-issue skill](.agents/skills/work-issue/SKILL.md) by name or through the skill picker.
 
 Example prompt:
@@ -12,6 +12,8 @@ Example prompt:
 
 Review the final diff and check results before approving commits or pushes. A PR request does not replace
 this approval. Later edits, including review and CI fixes, must be reviewed and approved before delivery.
+
+Target feature and fix PRs at `development`. Reserve `master` for releases from `development`.
 
 ## Parallel work
 
