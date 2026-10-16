@@ -1,9 +1,13 @@
 # Contributing
 
-1. Follow the [development setup](README.md#development) and create a branch.
+1. Follow the [development setup](README.md#development) and create a branch from `development`.
 2. Make your changes and add relevant tests.
 3. Run `npm run check`.
-4. Commit and open a pull request. CI must pass before merging.
+4. Commit and open a pull request targeting `development`. CI must pass before merging.
+
+`master` is the default branch and contains releases. Release PRs merge `development` into `master`.
+
+Dependabot version updates target `development`. Retarget security-update PRs there too, since [GitHub opens them against the default branch](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference#target-branch).
 
 Use [Conventional Commits](https://www.conventionalcommits.org/), for example:
 

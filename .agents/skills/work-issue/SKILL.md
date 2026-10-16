@@ -10,7 +10,7 @@ before editing. Treat the issue's expected results as the scope. Resolve materia
 
 ## Isolate the work
 
-Use one branch and worktree per issue, starting from current `origin/master`. Reuse the current worktree
+Use one branch and worktree per issue, starting from current `origin/development`. Reuse the current worktree
 when it already belongs to this issue. Keep unrelated user changes intact. Give parallel issue implementations
 separate worktrees and serialize work that depends on another issue or changes the same behavior.
 
@@ -33,7 +33,7 @@ Present the completed diff and validation results for user review. Wait for expl
 and push the reviewed changes, even when a PR was requested. Follow the approval rule in `AGENTS.md`
 for later edits, including review and CI fixes.
 
-After approval, commit with a Conventional Commit message and open one PR for the issue when requested.
+After approval, commit with a Conventional Commit message and open one PR targeting `development` when requested.
 Use `Closes #<number>` and describe the behavior change and validation briefly. Check CI and prepare fixes
 for failures caused by the change. Leave merging and publishing to the user unless requested.
 

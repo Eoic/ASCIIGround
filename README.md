@@ -273,7 +273,7 @@ The documentation includes:
 ## Development
 
 ```bash
-git clone https://github.com/Eoic/asciiground.git
+git clone --branch development https://github.com/Eoic/asciiground.git
 cd asciiground
 nvm use
 npm ci
