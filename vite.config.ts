@@ -51,6 +51,7 @@ export default defineConfig(({ mode }) => {
                 input: {
                     main: resolve(import.meta.dirname, 'src/demo/index.eta'),
                     demo: resolve(import.meta.dirname, 'src/demo/demo.ts'),
+                    landing: resolve(import.meta.dirname, 'src/demo/landing.ts'),
                 },
                 output: {
                     entryFileNames: '[name].js',

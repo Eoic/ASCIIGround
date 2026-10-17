@@ -23,15 +23,14 @@
 </head>
 
 <body>
-    <canvas id="ascii-bg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></canvas>
+    <canvas id="ascii-bg" aria-hidden="true"></canvas>
     <div class="content">
         <h1 class="gradient-text">
             <span class="terminal-symbol">></span>
             ASCIIGround
         </h1>
 
-        <p> A lightweight JavaScript library for rendering stunning animated ASCII backgrounds using the HTML5 canvas,
-            with support for both 2D and WebGL contexts.
+        <p> A JavaScript library for rendering animated ASCII backgrounds using the HTML5 canvas.
             Suitable for adding retro-futuristic feeling to your web projects.
         </p>
 
@@ -60,6 +59,7 @@
         </svg>
         GitHub
     </a>
+    <script type="module" src="./demo/landing.js"></script>
 </body>
 
 </html>
