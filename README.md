@@ -7,13 +7,14 @@
 [![](https://data.jsdelivr.com/v1/package/npm/asciiground/badge)](https://www.jsdelivr.com/package/npm/asciiground)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A TypeScript library for creating animated ASCII canvas backgrounds.
+A TypeScript library for creating animated ASCII backgrounds.
+
+![image](public/image.png)
 
 ## Features
 
 - Multiple pattern generation implementations: **Perlin noise**, **rain**, **static noise** with extensible pattern system.
 - Configuration options for font, animation speed, character sets, noise parameters, and much more.
-- Responsive and resizable canvas rendering.
 - Support for 2D Canvas and WebGL rendering.
 - Comprehensive API documentation.
 - Mouse interaction support.
