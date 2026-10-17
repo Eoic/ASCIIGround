@@ -49,11 +49,7 @@
     </div>
 
     <% scripts.forEach(function(scriptPath) { %>
-        <% if (scriptPath.endsWith(".ts")) { %>
-            <script type="module" src="<%= scriptPath %>"></script>
-        <% } else { %>
-            <script src="<%= scriptPath %>"></script>
-        <% } %>
+        <script type="module" src="<%= scriptPath %>"></script>
     <% }) %>
 </body>
 
