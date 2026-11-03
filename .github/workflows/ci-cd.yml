@@ -44,7 +44,7 @@ jobs:
         if: matrix.node-version == '24.x'
       - name: Upload coverage
         if: matrix.node-version == '24.x' && github.event_name == 'push' && github.ref == 'refs/heads/development'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: ./coverage/lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}
